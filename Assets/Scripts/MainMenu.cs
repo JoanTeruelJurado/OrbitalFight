@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
     public AudioSource source;
     private bool Muted = false;
 
-
+    public Sprite[] spriteArray;
 
 
 
@@ -15,15 +16,23 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    public void MuteButton(GameObject button) {
+    public void MuteButton(Button button) {
        if (Muted) Muted = false;
        else Muted = true;
-
-       button.S
-
-       if (Muted) { source.Pause(); Debug.Log("MUTING"); }
-       else { source.Play(); Debug.Log("PLAYING"); }
-
+        
+       var State = button.spriteState;
+       
+       if (Muted) { 
+            button.image.sprite = spriteArray[0];
+            State.pressedSprite = spriteArray[1];
+            source.Pause(); 
+       }
+       else { 
+            button.image.sprite = spriteArray[2];
+            State.pressedSprite = spriteArray[3];
+            source.Play();
+       }
+       button.spriteState = State;
     }
 
     public void QuitApp() {

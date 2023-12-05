@@ -1082,6 +1082,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 1434878724}
+  spriteArray: []
 --- !u!1 &905595795
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,17 +1242,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 916724182}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1469974566}
-  m_Father: {fileID: 1106636763}
+  m_Father: {fileID: 2093244045}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -646.6, y: -280.7}
+  m_AnchoredPosition: {x: 130, y: 5.4523926}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &916724184
@@ -1761,7 +1762,6 @@ RectTransform:
   m_Children:
   - {fileID: 1001093424}
   - {fileID: 2093244045}
-  - {fileID: 916724183}
   - {fileID: 2010361777}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1783,6 +1783,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 1434878724}
+  spriteArray:
+  - {fileID: -680016153, guid: a11ea103d81f8dd4b896a5dcd08d3fcc, type: 3}
+  - {fileID: 216374977, guid: a11ea103d81f8dd4b896a5dcd08d3fcc, type: 3}
+  - {fileID: -954648705, guid: a11ea103d81f8dd4b896a5dcd08d3fcc, type: 3}
+  - {fileID: -1105898298, guid: a11ea103d81f8dd4b896a5dcd08d3fcc, type: 3}
 --- !u!1 &1107342858
 GameObject:
   m_ObjectHideFlags: 0
@@ -2208,7 +2213,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 10.348633
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -2776,6 +2781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 1434878724}
+  spriteArray: []
 --- !u!1 &1839300652
 GameObject:
   m_ObjectHideFlags: 0
@@ -3028,6 +3034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 1434878724}
+  spriteArray: []
 --- !u!1 &2010361776
 GameObject:
   m_ObjectHideFlags: 0
@@ -3232,6 +3239,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1528288567}
+  - {fileID: 916724183}
   m_Father: {fileID: 1106636763}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3288,8 +3296,8 @@ MonoBehaviour:
         m_MethodName: MuteButton
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 2093244044}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 2093244046}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
