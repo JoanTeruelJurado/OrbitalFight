@@ -26,7 +26,6 @@ public class MovePlayer : MonoBehaviour
 
     private bool ringExterior = true;
     private float altura;
-    private bool pressedJump;
 
     
 
@@ -45,7 +44,6 @@ public class MovePlayer : MonoBehaviour
         speedY = 0;
         radius = radioExterior;
         altura = 0f;
-        pressedJump = false;
 
         canDash = true;
         isDashing = false;
@@ -122,7 +120,6 @@ public class MovePlayer : MonoBehaviour
             if (speedY < 0.0f) speedY = 0.0f;
             if (Input.GetKey(KeyCode.W)) {
                 speedY = jumpSpeed;
-                pressedJump = true;
             }
         }
         else speedY -= gravity * Time.deltaTime;
