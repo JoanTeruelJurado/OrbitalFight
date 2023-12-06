@@ -12,6 +12,7 @@ public class MovePlayer : MonoBehaviour
     Vector3 startDirection;
     float speedY;
 
+    //dash
     private bool canDash;
     private bool isDashing;
     public float dashingPower;
@@ -19,11 +20,16 @@ public class MovePlayer : MonoBehaviour
     private float dashingCooldown;
     //public TrailRenderer tr;
 
+    //plataformas
     float tiempoPulsandoJ = 0.0f;
     float tiempoRequeridoJ = 1.2f;
 
+    //shooting
     public GameObject balaPrefab;
+    private float tiempoEntreDisparosMin = 0.2f;
+    private float tiempoEntreDisparos = 0f;
 
+    //tema anillos
     private bool ringExterior = true;
     private float altura;
 
@@ -127,10 +133,12 @@ public class MovePlayer : MonoBehaviour
         
 
         //Disparar
-        // if (Input.GetMouseButtonDown(0)) // 0 representa el botón izquierdo del ratón
-        // {
-        //     Disparar();
-        // }
+        tiempoEntreDisparos += Time.deltaTime;
+        if (Input.GetMouseButtonDown(0) && tiempoEntreDisparos > tiempoEntreDisparosMin) // 0 representa el botón izquierdo del ratón
+        {
+            Disparar();
+            tiempoEntreDisparos = 0f;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -237,13 +245,11 @@ public class MovePlayer : MonoBehaviour
     void Disparar()
     {
         // Instancia una nueva bala en el centro del jugador
-        GameObject nuevaBala = Instantiate(balaPrefab, transform.position, Quaternion.identity);
-
-        // Obtiene la dirección hacia la que está mirando el jugador
-        Vector3 direccionDisparo = transform.forward;
-
-        // Asigna la dirección a la bala
-        nuevaBala.transform.forward = direccionDisparo;
+        GameObject nuevaBalaObject = Instantiate(balaPrefab, transform.position, Quaternion.identity);
+        // 'miraDerecha' es un atributo del componente 'bulletScript'
+        bulletScript componente = nuevaBalaObject.GetComponent<bulletScript>();
+        componente.miraDerecha = miraDerecha;
+        componente.altura = altura;
     }
 }
 

@@ -4,36 +4,54 @@ using UnityEngine;
 
 public class bulletScript : MonoBehaviour
 {
-    public float velocidad = 10f;
-    public Vector3 directionIzq = new Vector3(-1f,0f,-1f);
     public float rotationSpeed;
-    Vector3 startDirection;
-    float speedY;
+    public bool miraDerecha;
+    public float altura;
+    private float tiempoVidaMax = 0.3f;
+    private float tiempoVidaAct;
+    private Vector3 center;
 
-    void Update()
-    {   
-        float angle;
-        Vector3 target;
-        CharacterController charControl = GetComponent<CharacterController>();
-        Vector3 position = transform.position;
-        angle = rotationSpeed * Time.deltaTime;
+    void Start() {
+        //rotationSpeed = 100f;
+        Destroy(gameObject, tiempoVidaMax);
+        center = new Vector3(0f,0f,0f);
 
-        //if (Input.GetKey(KeyCode.D)) angle = -angle;
-
-        // Dirección inicial de la bala (puede ser ajustada según tus necesidades)
-        Vector3 directionIzq = new Vector3(0f, 0f, 1f);
-
-        // Calcula la nueva posición de la bala en una trayectoria circular
-        target = position + Quaternion.AngleAxis(angle, Vector3.up) * directionIzq;
-
-        // Mueve la bala hacia la nueva posición
-        charControl.Move(target - position);
-
-        // Actualiza la posición del transform para que coincida con la posición del CharacterController
-        transform.position = charControl.transform.position;
-
-        // Destruye la bala después de cierto tiempo o distancia (ajusta según tus necesidades)
-        Destroy(gameObject, 2f);
+        // Obtener la rotación actual del objeto
+        Quaternion rotacionActual = transform.rotation;
+        Quaternion nuevaRotacion = Quaternion.Euler(rotacionActual.eulerAngles + new Vector3(0, 0, 90f));
+        transform.rotation = nuevaRotacion;
     }
 
+    void FixedUpdate()
+    {
+        float angle = rotationSpeed * Time.deltaTime;
+        if(miraDerecha) angle *= -1f;
+        transform.RotateAround(center, Vector3.up, angle);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        // Destruye la bala cuando colisiona con otro objeto
+        if(collision.gameObject.tag != "Player") Destroy(gameObject);
+    }
+
+//     // Calcula la nueva posición de la bala
+    //     float anglePerStep = rotationSpeed * Time.deltaTime;
+    //     if(miraDerecha) anglePerStep = -anglePerStep;
+    //     Vector3 center = new Vector3(0, 3 * altura, 0);
+    //     Vector3 direction = transform.position - center;
+    //     Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
+
+    //     // Mueve la bala hacia la nueva posición
+    //     transform.position = Vector3.MoveTowards(transform.position, target, rotationSpeed * Time.deltaTime);
+
+    //     // Rotación
+    //     transform.LookAt(new Vector3(0, transform.position.y, 0));
+
+    //     // Verificar tiempo de vida
+    //     tiempoVidaAct += Time.deltaTime;
+    //     if (tiempoVidaAct >= tiempoVidaMax)
+    //     {
+    //         Destroy(gameObject);
+    //     }
 }
