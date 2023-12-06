@@ -7,15 +7,16 @@ public class MovePlayer : MonoBehaviour
     public float rotationSpeed, jumpSpeed, gravity, radius;
     const float radioInterior = 3.5f;
     const float radioExterior = 6.77f;
+    private bool miraDerecha = true;
 
     Vector3 startDirection;
     float speedY;
 
-    private bool canDash = true;
+    private bool canDash;
     private bool isDashing;
-    private float dashingPower = 24f;
-    private float dashingTime = 0.2f;
-    private float dashingCooldown = 1f;
+    private float dashingPower;
+    private float dashingTime;
+    private float dashingCooldown;
     //public TrailRenderer tr;
 
     float tiempoPulsandoJ = 0.0f;
@@ -25,15 +26,16 @@ public class MovePlayer : MonoBehaviour
 
     private bool ringExterior = true;
     private float altura;
+    private bool pressedJump;
 
     
 
     // Start is called before the first frame update
     void Start()
     {
-        // if(isDashing) {
-        //     return;
-        // }
+        if(isDashing) {
+            return;
+        }
         // Store starting direction of the player with respect to the axis of the level
         Vector3 center = new Vector3(0,0,0);
         startDirection = transform.position - center;
@@ -43,6 +45,13 @@ public class MovePlayer : MonoBehaviour
         speedY = 0;
         radius = radioExterior;
         altura = 0f;
+        pressedJump = false;
+
+        canDash = true;
+        isDashing = false;
+        dashingPower = 20f;
+        dashingTime = 0.5f;
+        dashingCooldown = 0.5f;
     }
 
     // Update is called once per frame
@@ -51,45 +60,16 @@ public class MovePlayer : MonoBehaviour
         CharacterController charControl = GetComponent<CharacterController>();
         Vector3 position;
 
-        // if(isDashing) {
-        //     return;
-        // }
-        // if (Input.GetKey(KeyCode.E) && canDash) {
-        //     StartCoroutine(Dash());
-        // }
-
-        // if (saltoRing)
-        // {
-        //     if(ringExterior) ringExterior = false;
-        //     else ringExterior = true;
-
-        //     position = transform.position;
-        //     float angle = rotationSpeed * Time.deltaTime;
-        //     Vector3 direction = position - transform.parent.position;
-        //     Vector3 target;
-        //     float multiplicador;
-            
-        //     if (ringExterior) multiplicador = 1.2f;
-        //     else multiplicador = 0.8f;
-
-        //     target = transform.parent.position + Quaternion.AngleAxis(angle, Vector3.up) * direction * 0.8f;
-
-        //     if (charControl.Move(target - position) != CollisionFlags.None)
-        //     {
-        //         transform.position = position;
-        //         Physics.SyncTransforms();
-        //     }
-
-        //     // Asegúrate de establecer saltoRing en false para que no entre continuamente en este bloque de código
-        //     saltoRing = false;
-        // }
-
+        if(isDashing) {
+            return;
+        }
+        if (Input.GetKey(KeyCode.E) && canDash) {
+            StartCoroutine(Dash());
+        }
 
         // Left-right movement
-        //if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
-            //solocuin chatgpt 05/ a las 13
             float angle;
             Vector3 direction, target;
 
@@ -98,11 +78,12 @@ public class MovePlayer : MonoBehaviour
             Vector3 center = new Vector3(0,3*altura,0);
             direction = position - center;
 
-            if (Input.GetKey(KeyCode.D)) 
-            {
+            if (Input.GetKey(KeyCode.D)) {
                 angle = -angle;
+                miraDerecha = true;
             }
-
+            else miraDerecha = false;
+            
             target = center + Quaternion.AngleAxis(angle, Vector3.up) * direction;
             
             if (charControl.Move(target - position) != CollisionFlags.None)
@@ -138,12 +119,15 @@ public class MovePlayer : MonoBehaviour
         }
         if (charControl.isGrounded)
         {
-            if (speedY < 0.0f)
-                speedY = 0.0f;
-            if (Input.GetKey(KeyCode.W))
+            if (speedY < 0.0f) speedY = 0.0f;
+            if (Input.GetKey(KeyCode.W)) {
                 speedY = jumpSpeed;
+                pressedJump = true;
+            }
         }
         else speedY -= gravity * Time.deltaTime;
+        
+        
 
         //Disparar
         // if (Input.GetMouseButtonDown(0)) // 0 representa el botón izquierdo del ratón
@@ -205,30 +189,52 @@ public class MovePlayer : MonoBehaviour
             }
             else tiempoPulsandoJ = 0.0f;
         }
-        
-        
-        // Verificar si la colisión es con un objeto etiquetado como suelo
-        // if (other.gameObject.tag == "Jumper")
-        // {
-        //     if (Input.GetKey(KeyCode.J)) {
-        //         Vector3 position = transform.position;
-        //         position.y += 6;
-        //         transform.position = position;
-        //     }
-        // }
     }
 
-    // private IEnumerator Dash() {
-    //     canDash = false;
-    //     isDashing = true;
-    //     GetComponent<Rigidbody>().velocity = new Vector2 (transform.localScale.x * dashingPower, 0f);
-    //     tr.emitting = true;
-    //     yield return new WaitForSeconds (dashingTime);
-    //     tr.emitting = false;
-    //     isDashing = false;
-    //     yield return new WaitForSeconds (dashingCooldown); 
-    //     canDash = true;
-    // }
+    private IEnumerator Dash() {
+        canDash = false;
+        isDashing = true;
+
+        CharacterController charControl = GetComponent<CharacterController>();
+        Vector3 position;
+        float anglePerStep = dashingPower * Time.deltaTime;
+        if(miraDerecha) anglePerStep = -anglePerStep;
+        Vector3 center = new Vector3(0,3*altura,0);
+        Vector3 direction;
+
+        float elapsedTime = 0;
+        while (elapsedTime < dashingTime) {
+            position = transform.position;
+            direction = position - center;
+            Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
+            if (charControl.Move(target - position) != CollisionFlags.None) {
+                transform.position = position;
+                Physics.SyncTransforms();
+                elapsedTime = dashingTime;
+            }
+            else elapsedTime += Time.deltaTime;
+            transform.LookAt(new Vector3(0,transform.position.y,0));
+
+            //codigo caida
+            if (charControl.Move(speedY * Time.deltaTime * Vector3.up) != CollisionFlags.None)
+            {
+                transform.position = position;
+                Physics.SyncTransforms();
+            }
+            if (charControl.isGrounded)
+            {
+                if (speedY < 0.0f) speedY = 0.0f;
+            }
+            else speedY -= gravity * Time.deltaTime;
+            /////
+            
+            yield return null; // espera hasta el próximo frame
+        }
+
+        isDashing = false;
+        yield return new WaitForSecondsRealtime(dashingCooldown);
+        canDash = true;
+    }
 
     void Disparar()
     {
