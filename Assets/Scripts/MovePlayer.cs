@@ -14,7 +14,7 @@ public class MovePlayer : MonoBehaviour
 
     private bool canDash;
     private bool isDashing;
-    private float dashingPower;
+    public float dashingPower;
     private float dashingTime;
     private float dashingCooldown;
     //public TrailRenderer tr;
@@ -47,7 +47,7 @@ public class MovePlayer : MonoBehaviour
 
         canDash = true;
         isDashing = false;
-        dashingPower = 20f;
+        //dashingPower = 100f;
         dashingTime = 0.5f;
         dashingCooldown = 0.5f;
     }
@@ -213,6 +213,7 @@ public class MovePlayer : MonoBehaviour
             transform.LookAt(new Vector3(0,transform.position.y,0));
 
             //codigo caida
+            position = transform.position;
             if (charControl.Move(speedY * Time.deltaTime * Vector3.up) != CollisionFlags.None)
             {
                 transform.position = position;
