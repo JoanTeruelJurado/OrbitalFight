@@ -33,5 +33,9 @@ public class FollowPlayer : MonoBehaviour
         else
             orientation = Quaternion.FromToRotation(startDirection, currentDirection);
         transform.parent.rotation = orientation;
+
+        Vector3 newPosition = transform.parent.position;
+        newPosition.y = player.transform.position.y;
+        transform.parent.position = newPosition;
     }
 }
