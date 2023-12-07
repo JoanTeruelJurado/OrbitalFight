@@ -48,7 +48,7 @@ public class MovePlayer : MonoBehaviour
             return;
         }
         // Store starting direction of the player with respect to the axis of the level
-        Vector3 center = new Vector3(0,0,0);
+        Vector3 center = new Vector3(0,transform.position.y,0);
         startDirection = transform.position - center;
         startDirection.y = 0.0f;
         startDirection.Normalize();
@@ -85,7 +85,7 @@ public class MovePlayer : MonoBehaviour
 
             position = transform.position;
             angle = rotationSpeed * Time.deltaTime;
-            Vector3 center = new Vector3(0,3*altura,0);
+            Vector3 center = new Vector3(0,transform.position.y,0);
             direction = position - center;
 
             if (Input.GetKey(KeyCode.D)) {
@@ -225,7 +225,7 @@ public class MovePlayer : MonoBehaviour
         Vector3 position;
         float anglePerStep = dashingPower * Time.deltaTime;
         if(miraDerecha) anglePerStep = -anglePerStep;
-        Vector3 center = new Vector3(0,3*altura,0);
+        Vector3 center = new Vector3(0,transform.position.y,0);
         Vector3 direction;
 
         float elapsedTime = 0;

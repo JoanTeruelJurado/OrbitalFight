@@ -1357,7 +1357,7 @@ MonoBehaviour:
   jumpSpeed: 7.5
   gravity: 25
   radius: 0
-  dashingPower: 100
+  dashingPower: 15
   balaPistola: {fileID: 7468536691191750616, guid: f72eaa25d58a3eb409465987dc653152, type: 3}
   balaFusil: {fileID: 2303705621612731526, guid: 14f609e864ce68744b9cbe8abc3e86f6, type: 3}
 --- !u!1 &1102420038
