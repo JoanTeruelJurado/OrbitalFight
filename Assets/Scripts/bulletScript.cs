@@ -7,11 +7,15 @@ public class bulletScript : MonoBehaviour
     public float rotationSpeed;
     public bool miraDerecha;
     public float altura;
-    private float tiempoVidaMax = 0.3f;
+    public string equipedGun;
     private float tiempoVidaAct;
     private Vector3 center;
 
     void Start() {
+        float tiempoVidaMax = 7f;
+        if(equipedGun == "Fusil") tiempoVidaMax = 2f;
+        else if(equipedGun == "Pistola") tiempoVidaMax = 0.3f;
+
         //rotationSpeed = 100f;
         Destroy(gameObject, tiempoVidaMax);
         center = new Vector3(0f,0f,0f);

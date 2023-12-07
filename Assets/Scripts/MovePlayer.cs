@@ -25,8 +25,14 @@ public class MovePlayer : MonoBehaviour
     float tiempoRequeridoJ = 1.2f;
 
     //shooting
-    public GameObject balaPrefab;
-    private float tiempoEntreDisparosMin = 0.2f;
+    public GameObject balaPistola;
+    public GameObject balaFusil;
+    private bool pistolaDesbloqueada = false;
+    private bool fusilDesbloqueado = false;
+    private enum Armas {Ninguna,Fusil,Pistola};
+    private Armas armaEquipada = Armas.Ninguna;
+    private float tiempoEntreDisparosMinFusil = 0.3f;
+    private float tiempoEntreDisparosMinPistola = 0.7f;
     private float tiempoEntreDisparos = 0f;
 
     //tema anillos
@@ -134,9 +140,24 @@ public class MovePlayer : MonoBehaviour
 
         //Disparar
         tiempoEntreDisparos += Time.deltaTime;
-        if (Input.GetMouseButtonDown(0) && tiempoEntreDisparos > tiempoEntreDisparosMin) // 0 representa el botón izquierdo del ratón
+        if (Input.GetMouseButtonDown(0) || Input.GetKey(KeyCode.T)) // 0 representa el botón izquierdo del ratón
         {
-            Disparar();
+            if(armaEquipada == Armas.Fusil && tiempoEntreDisparos > tiempoEntreDisparosMinFusil) {
+                Disparar();
+                tiempoEntreDisparos = 0f;
+            }
+            else if(armaEquipada == Armas.Pistola && tiempoEntreDisparos > tiempoEntreDisparosMinPistola) {
+                Disparar();
+                tiempoEntreDisparos = 0f;
+            }
+        }
+
+        if(Input.GetKey(KeyCode.Z)) {
+            armaEquipada = Armas.Fusil;
+            tiempoEntreDisparos = 0f;
+        }
+        if(Input.GetKey(KeyCode.X)) {
+            armaEquipada = Armas.Pistola;
             tiempoEntreDisparos = 0f;
         }
     }
@@ -245,11 +266,17 @@ public class MovePlayer : MonoBehaviour
     void Disparar()
     {
         // Instancia una nueva bala en el centro del jugador
-        GameObject nuevaBalaObject = Instantiate(balaPrefab, transform.position, Quaternion.identity);
-        // 'miraDerecha' es un atributo del componente 'bulletScript'
-        bulletScript componente = nuevaBalaObject.GetComponent<bulletScript>();
-        componente.miraDerecha = miraDerecha;
-        componente.altura = altura;
+        if(armaEquipada != Armas.Ninguna) {
+            GameObject nuevaBalaObject;
+            if(armaEquipada == Armas.Fusil) nuevaBalaObject = Instantiate(balaFusil, transform.position, Quaternion.identity);
+            else nuevaBalaObject = Instantiate(balaPistola, transform.position, Quaternion.identity);
+            // 'miraDerecha' es un atributo del componente 'bulletScript'
+            bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
+            balita.miraDerecha = miraDerecha;
+            balita.altura = altura;
+            if(armaEquipada == Armas.Fusil) balita.equipedGun = "Fusil";
+            else balita.equipedGun = "Pistola";
+        }
     }
 }
 

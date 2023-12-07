@@ -166,7 +166,8 @@ GameObject:
   - component: {fileID: 9114292886331237215}
   - component: {fileID: 4340100767569129885}
   - component: {fileID: 2410203982829269738}
-  - component: {fileID: 5588425418386998330}
+  - component: {fileID: 7779869061555980032}
+  - component: {fileID: -2232130479461849272}
   m_Layer: 0
   m_Name: balaPrefab
   m_TagString: Untagged
@@ -255,7 +256,29 @@ MonoBehaviour:
   rotationSpeed: 130
   miraDerecha: 0
   altura: 0
---- !u!54 &5588425418386998330
+  equipedGun: 
+--- !u!135 &7779869061555980032
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7468536691191750616}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.49999997
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &-2232130479461849272
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
