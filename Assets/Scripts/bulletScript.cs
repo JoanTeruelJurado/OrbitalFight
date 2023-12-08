@@ -18,12 +18,7 @@ public class bulletScript : MonoBehaviour
 
         //rotationSpeed = 100f;
         Destroy(gameObject, tiempoVidaMax);
-        center = new Vector3(0f,0f,0f);
-
-        // Obtener la rotación actual del objeto
-        Quaternion rotacionActual = transform.rotation;
-        Quaternion nuevaRotacion = Quaternion.Euler(rotacionActual.eulerAngles + new Vector3(0, 0, 90f));
-        transform.rotation = nuevaRotacion;
+        center = new Vector3(0f,transform.position.y,0f);
     }
 
     void FixedUpdate()
@@ -31,6 +26,12 @@ public class bulletScript : MonoBehaviour
         float angle = rotationSpeed * Time.deltaTime;
         if(miraDerecha) angle *= -1f;
         transform.RotateAround(center, Vector3.up, angle);
+
+        //rotando la bala como toca
+        transform.LookAt(new Vector3(0,transform.position.y,0));
+        Quaternion rotacionActual = transform.rotation;
+        Quaternion nuevaRotacion = Quaternion.Euler(rotacionActual.eulerAngles + new Vector3(0, 0, 90f));
+        transform.rotation = nuevaRotacion;
     }
 
     void OnCollisionEnter(Collision collision)
