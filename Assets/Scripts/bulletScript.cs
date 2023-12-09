@@ -9,12 +9,19 @@ public class bulletScript : MonoBehaviour
     public float altura;
     public string equipedGun;
     private float tiempoVidaAct;
+    private float damageHit;
     private Vector3 center;
 
     void Start() {
         float tiempoVidaMax = 7f;
-        if(equipedGun == "Fusil") tiempoVidaMax = 2f;
-        else if(equipedGun == "Pistola") tiempoVidaMax = 0.3f;
+        if(equipedGun == "Fusil") {
+            tiempoVidaMax = 2f;
+            damageHit = 3f;
+        }
+        else if(equipedGun == "Pistola") {
+            tiempoVidaMax = 0.3f;
+            damageHit = 7f;
+        }
 
         //rotationSpeed = 100f;
         Destroy(gameObject, tiempoVidaMax);
