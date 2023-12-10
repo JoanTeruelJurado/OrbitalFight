@@ -9,21 +9,23 @@ public class bulletScript : MonoBehaviour
     public float altura;
     public string equipedGun;
     private float tiempoVidaAct;
+    public int damageHit;
     private Vector3 center;
 
     void Start() {
         float tiempoVidaMax = 7f;
-        if(equipedGun == "Fusil") tiempoVidaMax = 2f;
-        else if(equipedGun == "Pistola") tiempoVidaMax = 0.3f;
+        if(equipedGun == "Fusil") {
+            tiempoVidaMax = 2f;
+            damageHit = 20;
+        }
+        else if(equipedGun == "Pistola") {
+            tiempoVidaMax = 0.3f;
+            damageHit = 33;
+        }
 
         //rotationSpeed = 100f;
         Destroy(gameObject, tiempoVidaMax);
-        center = new Vector3(0f,0f,0f);
-
-        // Obtener la rotación actual del objeto
-        Quaternion rotacionActual = transform.rotation;
-        Quaternion nuevaRotacion = Quaternion.Euler(rotacionActual.eulerAngles + new Vector3(0, 0, 90f));
-        transform.rotation = nuevaRotacion;
+        center = new Vector3(0f,transform.position.y,0f);
     }
 
     void FixedUpdate()
@@ -31,6 +33,12 @@ public class bulletScript : MonoBehaviour
         float angle = rotationSpeed * Time.deltaTime;
         if(miraDerecha) angle *= -1f;
         transform.RotateAround(center, Vector3.up, angle);
+
+        //rotando la bala como toca
+        transform.LookAt(new Vector3(0,transform.position.y,0));
+        Quaternion rotacionActual = transform.rotation;
+        Quaternion nuevaRotacion = Quaternion.Euler(rotacionActual.eulerAngles + new Vector3(0, 0, 90f));
+        transform.rotation = nuevaRotacion;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -39,7 +47,7 @@ public class bulletScript : MonoBehaviour
         if(collision.gameObject.tag != "Player") Destroy(gameObject);
     }
 
-//     // Calcula la nueva posición de la bala
+    // Calcula la nueva posición de la bala
     //     float anglePerStep = rotationSpeed * Time.deltaTime;
     //     if(miraDerecha) anglePerStep = -anglePerStep;
     //     Vector3 center = new Vector3(0, 3 * altura, 0);

@@ -170,7 +170,7 @@ GameObject:
   - component: {fileID: -2232130479461849272}
   m_Layer: 0
   m_Name: balaPrefab
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -257,6 +257,7 @@ MonoBehaviour:
   miraDerecha: 0
   altura: 0
   equipedGun: 
+  damageHit: 0
 --- !u!135 &7779869061555980032
 SphereCollider:
   m_ObjectHideFlags: 0

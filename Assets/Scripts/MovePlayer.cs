@@ -270,6 +270,7 @@ public class MovePlayer : MonoBehaviour
             GameObject nuevaBalaObject;
             if(armaEquipada == Armas.Fusil) nuevaBalaObject = Instantiate(balaFusil, transform.position, Quaternion.identity);
             else nuevaBalaObject = Instantiate(balaPistola, transform.position, Quaternion.identity);
+            Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
             // 'miraDerecha' es un atributo del componente 'bulletScript'
             bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
             balita.miraDerecha = miraDerecha;
@@ -279,8 +280,6 @@ public class MovePlayer : MonoBehaviour
         }
     }
 }
-
-
 
 
 
