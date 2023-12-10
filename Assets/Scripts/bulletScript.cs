@@ -9,18 +9,18 @@ public class bulletScript : MonoBehaviour
     public float altura;
     public string equipedGun;
     private float tiempoVidaAct;
-    private float damageHit;
+    public int damageHit;
     private Vector3 center;
 
     void Start() {
         float tiempoVidaMax = 7f;
         if(equipedGun == "Fusil") {
             tiempoVidaMax = 2f;
-            damageHit = 3f;
+            damageHit = 20;
         }
         else if(equipedGun == "Pistola") {
             tiempoVidaMax = 0.3f;
-            damageHit = 7f;
+            damageHit = 33;
         }
 
         //rotationSpeed = 100f;
@@ -47,7 +47,7 @@ public class bulletScript : MonoBehaviour
         if(collision.gameObject.tag != "Player") Destroy(gameObject);
     }
 
-//     // Calcula la nueva posición de la bala
+    // Calcula la nueva posición de la bala
     //     float anglePerStep = rotationSpeed * Time.deltaTime;
     //     if(miraDerecha) anglePerStep = -anglePerStep;
     //     Vector3 center = new Vector3(0, 3 * altura, 0);
