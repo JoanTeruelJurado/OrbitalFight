@@ -23,6 +23,10 @@ public class FloatingHealthBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.rotation = camera.transform.rotation;
+        if(gameObject.tag == "Enemy") transform.rotation = camera.transform.rotation;
+    }
+
+    public void pintarBarraBoss() {
+        gameObject.SetActive(true);
     }
 }
