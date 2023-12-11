@@ -39,6 +39,12 @@ public class MovePlayer : MonoBehaviour
     private bool ringExterior = true;
     private float altura;
 
+    //interaccion
+    private int shield = 100;
+    private int live = 100;
+    private float immortalityTimeMax = 2f;
+    private float immortalityTime = -1f;
+
     
 
     // Start is called before the first frame update
@@ -69,6 +75,11 @@ public class MovePlayer : MonoBehaviour
     {
         CharacterController charControl = GetComponent<CharacterController>();
         Vector3 position;
+        
+        if(immortalityTime >= 0) {
+            immortalityTime += Time.deltaTime;
+            if(immortalityTime > immortalityTimeMax) immortalityTime = -1f;
+        }
 
         if(isDashing) {
             return;
@@ -162,61 +173,6 @@ public class MovePlayer : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-       tiempoPulsandoJ = 0.0f;
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if(other.gameObject.tag == "Jumper") {
-            if (Input.GetKey(KeyCode.J))
-            {
-                tiempoPulsandoJ += Time.deltaTime;
-                // Verifica si se ha estado pulsando la tecla durante el tiempo requerido
-                if (tiempoPulsandoJ >= tiempoRequeridoJ)
-                {
-                    Vector3 position = transform.position;
-                    position.y += 6.1f;
-                    altura += 1f;
-                    transform.position = position;
-                }
-            }
-            else
-            {
-                // Resetea el tiempo si la tecla J no está siendo pulsada
-                tiempoPulsandoJ = 0.0f;
-            }
-        }
-
-        else if(other.gameObject.tag == "ChangerRing") {
-            if (Input.GetKey(KeyCode.J))
-            {
-                tiempoPulsandoJ += Time.deltaTime;
-                if (tiempoPulsandoJ >= tiempoRequeridoJ)
-                {
-                    ringExterior = !ringExterior;
-
-                    Vector3 center = new Vector3(0f, transform.position.y, 0f);
-                    float distanciaSalto = ringExterior ? 3f : -3f;
-                    Vector3 direccion = (transform.position - center).normalized;
-                    float distanciaActual = Vector3.Distance(transform.position, center);
-                    float nuevaDistancia = Mathf.Clamp(distanciaActual + distanciaSalto, 0f, float.MaxValue);
-                    Vector3 nuevaPosicion = center + direccion * nuevaDistancia;
-                    CharacterController charControl = GetComponent<CharacterController>();
-                    if (charControl.Move(nuevaPosicion - transform.position) != CollisionFlags.None)
-                    {
-                        transform.position = nuevaPosicion;
-                        Physics.SyncTransforms();
-                    }
-
-                    tiempoPulsandoJ = 0.0f;
-                }
-            }
-            else tiempoPulsandoJ = 0.0f;
-        }
-    }
-
     private IEnumerator Dash() {
         canDash = false;
         isDashing = true;
@@ -277,6 +233,84 @@ public class MovePlayer : MonoBehaviour
             balita.altura = altura;
             if(armaEquipada == Armas.Fusil) balita.equipedGun = "Fusil";
             else balita.equipedGun = "Pistola";
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+       tiempoPulsandoJ = 0.0f;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.gameObject.tag == "Jumper") {
+            if (Input.GetKey(KeyCode.J))
+            {
+                tiempoPulsandoJ += Time.deltaTime;
+                // Verifica si se ha estado pulsando la tecla durante el tiempo requerido
+                if (tiempoPulsandoJ >= tiempoRequeridoJ)
+                {
+                    Vector3 position = transform.position;
+                    position.y += 6.1f;
+                    altura += 1f;
+                    transform.position = position;
+                }
+            }
+            else
+            {
+                // Resetea el tiempo si la tecla J no está siendo pulsada
+                tiempoPulsandoJ = 0.0f;
+            }
+        }
+
+        else if(other.gameObject.tag == "ChangerRing") {
+            if (Input.GetKey(KeyCode.J))
+            {
+                tiempoPulsandoJ += Time.deltaTime;
+                if (tiempoPulsandoJ >= tiempoRequeridoJ)
+                {
+                    ringExterior = !ringExterior;
+
+                    Vector3 center = new Vector3(0f, transform.position.y, 0f);
+                    float distanciaSalto = ringExterior ? 3f : -3f;
+                    Vector3 direccion = (transform.position - center).normalized;
+                    float distanciaActual = Vector3.Distance(transform.position, center);
+                    float nuevaDistancia = Mathf.Clamp(distanciaActual + distanciaSalto, 0f, float.MaxValue);
+                    Vector3 nuevaPosicion = center + direccion * nuevaDistancia;
+                    CharacterController charControl = GetComponent<CharacterController>();
+                    if (charControl.Move(nuevaPosicion - transform.position) != CollisionFlags.None)
+                    {
+                        transform.position = nuevaPosicion;
+                        Physics.SyncTransforms();
+                    }
+
+                    tiempoPulsandoJ = 0.0f;
+                }
+            }
+            else tiempoPulsandoJ = 0.0f;
+        }
+    }
+
+    void lessLive(int damage) {
+        if(immortalityTime == -1f) { //no está en tiempo de immortalidad
+            shield -= damage;
+            if(shield < 0) {
+                live += shield;
+                shield = 0;
+                if(live < 0) { //muere
+                    live = 0;
+                }
+            }
+            print(shield);
+            print(live);
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Enemy") {
+            print("Hit");
+            lessLive(10);
         }
     }
 }
