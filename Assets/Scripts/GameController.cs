@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.P)){
+        if (Input.GetKeyDown(KeyCode.P)){
             if (Paused) Paused = false;
             else Paused = true;
             canvasobj.enabled = Paused;
