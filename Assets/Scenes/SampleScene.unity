@@ -1634,6 +1634,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1614345174}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1438241040
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1438241041}
+  m_Layer: 0
+  m_Name: AlturaBoss
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1438241041
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438241040}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 9, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 411746326}
+  - {fileID: 2036491410}
+  m_Father: {fileID: 1614345174}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1507986576 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3165874449683715785, guid: 134936989f0cf6445ae65b5c5a0f46ec, type: 3}
@@ -1732,6 +1765,7 @@ Transform:
   - {fileID: 62463820}
   - {fileID: 1791295851}
   - {fileID: 401004518}
+  - {fileID: 1438241041}
   - {fileID: 1083843993}
   - {fileID: 1123896028}
   - {fileID: 1380043868}

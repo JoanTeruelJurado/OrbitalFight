@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class enemyV1 : MonoBehaviour
+public class bossEnemy : MonoBehaviour
 {
     private float speed;
     private int rutina;
@@ -11,15 +11,15 @@ public class enemyV1 : MonoBehaviour
     private bool followingPlayer;
     private bool attacking;
     private int direccionDerecha;
-    private int shield = 100;
-    private int live = 50;
+    private int shield = 400;
+    private int shieldMax = 400;
+    private int live = 200;
+    private int liveMax = 200;
 
-    private FloatingHealthBar healthBar;
+    public FloatingHealthBar healthBar;
 
     void Start()
     {
-        healthBar = GetComponentInChildren<FloatingHealthBar>();
-        healthBar.updateHealthBar(shield, 100);
         speed = 40f;
         rutina = 0;
         timer = 0f;
@@ -51,16 +51,21 @@ public class enemyV1 : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void respawn() {
+        healthBar.pintarBarraBoss();
+        healthBar.updateHealthBar(shield, shieldMax);
+    }
+
     void lessLive(int damage) {
         shield -= damage;
         if(shield > 0) {
-            healthBar.updateHealthBar(shield, 100);
+            healthBar.updateHealthBar(shield, shieldMax);
         }
         else {
             live += shield;
             shield = 0;
             healthBar.ShieldDestroyed();
-            healthBar.updateHealthBar(live, 50);
+            healthBar.updateHealthBar(live, liveMax);
             if(live < 0) { //muere
                 live = 0;
                 die();
@@ -82,8 +87,6 @@ public class enemyV1 : MonoBehaviour
             }
         }
     }
-
-
 
 }
 

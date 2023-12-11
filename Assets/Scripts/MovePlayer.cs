@@ -45,6 +45,9 @@ public class MovePlayer : MonoBehaviour
     private float immortalityTimeMax = 2f;
     private float immortalityTime = -1f;
 
+    //control arena boss
+    private float alturaPlataformaBoss;
+    public bossEnemy boss; 
     
 
     // Start is called before the first frame update
@@ -68,6 +71,8 @@ public class MovePlayer : MonoBehaviour
         //dashingPower = 100f;
         dashingTime = 0.5f;
         dashingCooldown = 0.5f;
+
+        alturaPlataformaBoss = boss.transform.position.y-1f;
     }
 
     // Update is called once per frame
@@ -254,6 +259,11 @@ public class MovePlayer : MonoBehaviour
                     position.y += 6.1f;
                     altura += 1f;
                     transform.position = position;
+
+                    //control boss
+                    if(alturaPlataformaBoss < position.y) {
+                        boss.respawn();
+                    }
                 }
             }
             else
