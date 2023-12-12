@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class MovePlayer : MonoBehaviour
 {
+    //animator
+    public Animator _animator;
+    //
+
+
     public float rotationSpeed, jumpSpeed, gravity, radius;
     const float radioInterior = 3.5f;
     const float radioExterior = 6.77f;
@@ -11,7 +16,7 @@ public class MovePlayer : MonoBehaviour
 
     Vector3 startDirection;
     float speedY;
-
+    private bool isJumping;
     //dash
     private bool canDash;
     private bool isDashing;
@@ -61,7 +66,7 @@ public class MovePlayer : MonoBehaviour
         startDirection = transform.position - center;
         startDirection.y = 0.0f;
         startDirection.Normalize();
-
+        isJumping = false;
         speedY = 0;
         radius = radioExterior;
         altura = 0f;
@@ -78,6 +83,10 @@ public class MovePlayer : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.I)) live = 0; //DEBUG FOR DEAD ANIMATION // TO ERASE
+        animatorFunction();
+        if (live <= 0) return; // When dead do not compute a thing
+        
         CharacterController charControl = GetComponent<CharacterController>();
         Vector3 position;
         
@@ -145,8 +154,10 @@ public class MovePlayer : MonoBehaviour
         }
         if (charControl.isGrounded)
         {
+            isJumping = false;
             if (speedY < 0.0f) speedY = 0.0f;
-            if (Input.GetKey(KeyCode.W)) {
+            if (Input.GetKey(KeyCode.W)) { //jumping
+                isJumping = true;
                 speedY = jumpSpeed;
             }
         }
@@ -323,6 +334,26 @@ public class MovePlayer : MonoBehaviour
             lessLive(10);
         }
     }
+
+    private void animatorFunction() {
+        bool isWalking = _animator.GetBool("isWalking");
+        bool ADpressed = Input.GetKey(KeyCode.A);
+        ADpressed |= Input.GetKey(KeyCode.D);
+        bool isAlreadyDashing = _animator.GetBool("isDashing");
+        bool isAlreadyJumping = _animator.GetBool("isJumping");
+
+        if (!isWalking && ADpressed) { _animator.SetBool("isWalking", true); }
+        if (isWalking && !ADpressed) { _animator.SetBool("isWalking", false); }
+        
+        if (live == -100) { _animator.SetBool("isDead", false);}
+        else if (live <= 0) { _animator.SetBool("isDead", true); live = -100; }
+        
+        if (isAlreadyDashing && !isDashing) { _animator.SetBool("isDashing", false); }
+        if (!isAlreadyDashing && isDashing) { _animator.SetBool("isDashing", true); }
+
+        if (isAlreadyJumping && !isJumping) { _animator.SetBool("isJumping", false); }
+        if (!isAlreadyJumping && isJumping) { _animator.SetBool("isJumping", true); }
+    }   
 }
 
 

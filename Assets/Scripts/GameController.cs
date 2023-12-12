@@ -16,8 +16,8 @@ public class GameController : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P)){
-            if (Paused) Paused = false;
-            else Paused = true;
+            if (Paused) { Paused = false; Time.timeScale = 1; }
+            else { Paused = true; Time.timeScale = 0; }
             canvasobj.enabled = Paused;
         }
         
@@ -26,6 +26,8 @@ public class GameController : MonoBehaviour
     public void PlayApp()
     {
         canvasobj.enabled = false;
+        Paused = false;
+        Time.timeScale = 1;
     }
 
     public void QuitApp()
