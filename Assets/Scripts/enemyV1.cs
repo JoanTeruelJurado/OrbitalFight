@@ -13,8 +13,17 @@ public class enemyV1 : MonoBehaviour
     private int direccionDerecha;
     private int shield = 100;
     private int live = 50;
+    private bool armorActive = true;
 
     private FloatingHealthBar healthBar;
+
+
+    //sounds
+    private AudioSource audioSource;
+    public AudioClip armorHitSound;
+    public AudioClip armorCrashSound;
+    public AudioClip fleshHitSound;
+    public AudioClip dieSound;
 
     void Start()
     {
@@ -23,6 +32,8 @@ public class enemyV1 : MonoBehaviour
         speed = 40f;
         rutina = 0;
         timer = 0f;
+
+        audioSource = GetComponent<AudioSource>();
     }
 
 
@@ -48,6 +59,7 @@ public class enemyV1 : MonoBehaviour
     }
 
     private void die() {
+        audioSource.PlayOneShot(dieSound);
         Destroy(gameObject);
     }
 
@@ -55,12 +67,18 @@ public class enemyV1 : MonoBehaviour
         shield -= damage;
         if(shield > 0) {
             healthBar.updateHealthBar(shield, 100);
+            audioSource.PlayOneShot(armorHitSound);
         }
-        else {
+        if(shield <= 0 && armorActive) {
+            audioSource.PlayOneShot(armorCrashSound);
+        }
+        if(shield <= 0) {
+            armorActive = false;
             live += shield;
             shield = 0;
             healthBar.ShieldDestroyed();
             healthBar.updateHealthBar(live, 50);
+            audioSource.PlayOneShot(fleshHitSound);
             if(live < 0) { //muere
                 live = 0;
                 die();
