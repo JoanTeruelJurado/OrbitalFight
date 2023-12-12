@@ -26,8 +26,9 @@ public class MovePlayer : MonoBehaviour
     //public TrailRenderer tr;
 
     //plataformas
-    float tiempoPulsandoJ = 0.0f;
-    float tiempoRequeridoJ = 1.2f;
+    private float tiempoPulsandoJ = 0.0f;
+    private float tiempoRequeridoJ = 1.2f;
+    private bool subiendoDeNivel = false;
 
     //shooting
     public GameObject balaPistola;
@@ -95,9 +96,21 @@ public class MovePlayer : MonoBehaviour
             if(immortalityTime > immortalityTimeMax) immortalityTime = -1f;
         }
 
-        if(isDashing) {
+        if(isDashing || subiendoDeNivel) {
+            if(isDashing) {}
+            if(subiendoDeNivel) {
+                transform.Translate(Vector3.up * rotationSpeed * Time.deltaTime / 6f);
+                if (transform.position.y >= altura * 7f) {
+                    subiendoDeNivel = false;
+                    if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = true;
+                    if(alturaPlataformaBoss < transform.position.y) {
+                        boss.respawn();
+                    }
+                }
+            }
             return;
         }
+
         if (Input.GetKey(KeyCode.E) && canDash) {
             StartCoroutine(Dash());
         }
@@ -235,7 +248,7 @@ public class MovePlayer : MonoBehaviour
         canDash = true;
     }
 
-    void Disparar()
+    private void Disparar()
     {
         // Instancia una nueva bala en el centro del jugador
         if(armaEquipada != Armas.Ninguna) {
@@ -263,19 +276,22 @@ public class MovePlayer : MonoBehaviour
             if (Input.GetKey(KeyCode.J))
             {
                 tiempoPulsandoJ += Time.deltaTime;
-                // Verifica si se ha estado pulsando la tecla durante el tiempo requerido
-                if (tiempoPulsandoJ >= tiempoRequeridoJ)
-                {
-                    Vector3 position = transform.position;
-                    position.y += 6.1f;
+                if (tiempoPulsandoJ >= tiempoRequeridoJ) {
+                    subiendoDeNivel = true;
                     altura += 1f;
-                    transform.position = position;
-
-                    //control boss
-                    if(alturaPlataformaBoss < position.y) {
-                        boss.respawn();
-                    }
+                    if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = false;
                 }
+                // {
+                //     Vector3 position = transform.position;
+                //     position.y += 6.1f;
+                //     altura += 1f;
+                //     transform.position = position;
+
+                //     //control boss
+                //     if(alturaPlataformaBoss < position.y) {
+                //         boss.respawn();
+                //     }
+                // }
             }
             else
             {
