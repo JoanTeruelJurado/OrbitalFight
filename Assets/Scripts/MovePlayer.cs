@@ -17,12 +17,15 @@ public class MovePlayer : MonoBehaviour
     Vector3 startDirection;
     float speedY;
     private bool isJumping;
+
     //dash
     private bool canDash;
     private bool isDashing;
-    public float dashingPower;
-    private float dashingTime;
+    private float dashingPower;
+    private float dashingTimeMax;
+    private float dashingTimeTimer;
     private float dashingCooldown;
+    private float dashingCooldownTimer = -1f;
     //public TrailRenderer tr;
 
     //plataformas
@@ -75,8 +78,10 @@ public class MovePlayer : MonoBehaviour
         canDash = true;
         isDashing = false;
         //dashingPower = 100f;
-        dashingTime = 0.5f;
+        dashingTimeTimer = 0f;
+        dashingTimeMax = 0.5f;
         dashingCooldown = 0.5f;
+        dashingPower = 150f;
 
         alturaPlataformaBoss = boss.transform.position.y-1f;
     }
@@ -97,22 +102,28 @@ public class MovePlayer : MonoBehaviour
         }
 
         if(isDashing || subiendoDeNivel) {
-            if(isDashing) {}
+            if(isDashing) {
+                Dash();
+            }
             if(subiendoDeNivel) {
-                transform.Translate(Vector3.up * rotationSpeed * Time.deltaTime / 6f);
-                if (transform.position.y >= altura * 7f) {
-                    subiendoDeNivel = false;
-                    if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = true;
-                    if(alturaPlataformaBoss < transform.position.y) {
-                        boss.respawn();
-                    }
-                }
+                SubirDeNivel();
             }
             return;
         }
 
+        if(dashingCooldownTimer >= 0.0f) {
+            dashingCooldownTimer += Time.deltaTime;
+            if(dashingCooldownTimer >= dashingCooldown) {
+                canDash = true;
+                dashingTimeTimer = -1f;
+            }
+        }
+
         if (Input.GetKey(KeyCode.E) && canDash) {
-            StartCoroutine(Dash());
+            //StartCoroutine(Dash());
+            isDashing = true;
+            canDash = false;
+            dashingTimeTimer = 0f;
         }
 
         // Left-right movement
@@ -202,28 +213,22 @@ public class MovePlayer : MonoBehaviour
         }
     }
 
-    private IEnumerator Dash() {
-        canDash = false;
-        isDashing = true;
-
+    private void Dash() {
         CharacterController charControl = GetComponent<CharacterController>();
-        Vector3 position;
         float anglePerStep = dashingPower * Time.deltaTime;
         if(miraDerecha) anglePerStep = -anglePerStep;
         Vector3 center = new Vector3(0,transform.position.y,0);
-        Vector3 direction;
 
-        float elapsedTime = 0;
-        while (elapsedTime < dashingTime) {
-            position = transform.position;
-            direction = position - center;
+        if (dashingTimeTimer < dashingTimeMax) {
+            Vector3 position = transform.position;
+            Vector3 direction = position - center;
             Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
             if (charControl.Move(target - position) != CollisionFlags.None) {
                 transform.position = position;
                 Physics.SyncTransforms();
-                elapsedTime = dashingTime;
+                dashingTimeTimer = dashingTimeMax;
             }
-            else elapsedTime += Time.deltaTime;
+            else dashingTimeTimer += Time.deltaTime;
             transform.LookAt(new Vector3(0,transform.position.y,0));
 
             //codigo caida
@@ -238,14 +243,67 @@ public class MovePlayer : MonoBehaviour
                 if (speedY < 0.0f) speedY = 0.0f;
             }
             else speedY -= gravity * Time.deltaTime;
-            /////
-            
-            yield return null; // espera hasta el próximo frame
+            //
         }
+        else {
+            isDashing = false;
+            //se empieza a contar el cooldown
+            dashingCooldownTimer = 0f;
+        }
+        // canDash = false;
+        // isDashing = true;
 
-        isDashing = false;
-        yield return new WaitForSecondsRealtime(dashingCooldown);
-        canDash = true;
+        // CharacterController charControl = GetComponent<CharacterController>();
+        // Vector3 position;
+        // float anglePerStep = dashingPower * Time.deltaTime;
+        // if(miraDerecha) anglePerStep = -anglePerStep;
+        // Vector3 center = new Vector3(0,transform.position.y,0);
+        // Vector3 direction;
+
+        // float elapsedTime = 0;
+        // while (elapsedTime < dashingTimeTimer) {
+        //     position = transform.position;
+        //     direction = position - center;
+        //     Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
+        //     if (charControl.Move(target - position) != CollisionFlags.None) {
+        //         transform.position = position;
+        //         Physics.SyncTransforms();
+        //         elapsedTime = dashingTimeTimer;
+        //     }
+        //     else elapsedTime += Time.deltaTime;
+        //     transform.LookAt(new Vector3(0,transform.position.y,0));
+
+        //     //codigo caida
+        //     position = transform.position;
+        //     if (charControl.Move(speedY * Time.deltaTime * Vector3.up) != CollisionFlags.None)
+        //     {
+        //         transform.position = position;
+        //         Physics.SyncTransforms();
+        //     }
+        //     if (charControl.isGrounded)
+        //     {
+        //         if (speedY < 0.0f) speedY = 0.0f;
+        //     }
+        //     else speedY -= gravity * Time.deltaTime;
+        //     /////
+            
+        //     yield return null; // espera hasta el próximo frame
+        // }
+
+        // isDashing = false;
+        // yield return new WaitForSecondsRealtime(dashingCooldown);
+        // canDash = true;
+    }
+
+    private void SubirDeNivel() {
+        transform.Translate(Vector3.up * rotationSpeed * Time.deltaTime / 6f);
+        if (transform.position.y >= altura * 7f) {
+            subiendoDeNivel = false;
+            if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = true;
+            if(alturaPlataformaBoss < transform.position.y) {
+                boss.respawn();
+            }
+        }
     }
 
     private void Disparar()

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.17468646, g: 0.21849993, b: 0.30076626, a: 1}
+  m_IndirectSpecularColor: {r: 0.17468673, g: 0.21850069, b: 0.30076748, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -554,23 +554,23 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 941453655003268466, guid: 2eeb7d6d812d2624180f2795c1990910, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 941453655003268466, guid: 2eeb7d6d812d2624180f2795c1990910, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1921993435559313743, guid: 2eeb7d6d812d2624180f2795c1990910, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1921993435559313743, guid: 2eeb7d6d812d2624180f2795c1990910, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1921993435559313743, guid: 2eeb7d6d812d2624180f2795c1990910, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4084577369441637925, guid: 2eeb7d6d812d2624180f2795c1990910, type: 3}
       propertyPath: m_Pivot.x
@@ -659,6 +659,10 @@ PrefabInstance:
     - target: {fileID: 8523235378087515527, guid: 2eeb7d6d812d2624180f2795c1990910, type: 3}
       propertyPath: m_Name
       value: PauseCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523235378087515527, guid: 2eeb7d6d812d2624180f2795c1990910, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1367,7 +1371,6 @@ MonoBehaviour:
   jumpSpeed: 7.5
   gravity: 25
   radius: 0
-  dashingPower: 15
   balaPistola: {fileID: 7468536691191750616, guid: f72eaa25d58a3eb409465987dc653152, type: 3}
   balaFusil: {fileID: 2303705621612731526, guid: 14f609e864ce68744b9cbe8abc3e86f6, type: 3}
   boss: {fileID: 6931894794492508755}
@@ -2967,6 +2970,10 @@ PrefabInstance:
     - target: {fileID: 1134767249285695323, guid: 5847a50acec77474e909a232e9af0d95, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6698033642516001496, guid: 5847a50acec77474e909a232e9af0d95, type: 3}
+      propertyPath: m_text
+      value: Maliketh - Sword of Malenia
       objectReference: {fileID: 0}
     - target: {fileID: 9011363608019670102, guid: 5847a50acec77474e909a232e9af0d95, type: 3}
       propertyPath: camera
