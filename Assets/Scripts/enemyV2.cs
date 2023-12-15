@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class enemyV1 : MonoBehaviour
+public class enemyV2 : MonoBehaviour
 {
     private float speed;
     private Animator ani;
@@ -10,10 +10,19 @@ public class enemyV1 : MonoBehaviour
     private bool attacking;
     private bool direccionDerecha;
     private int shield = 100;
+    private int shieldMax = 100;
     private int live = 50;
+    private int liveMax = 50;
     private bool armorActive = true;
 
     private FloatingHealthBar healthBar;
+
+
+    //V2
+    public GameObject target;
+    private float tiempoEntreDisparosMin = 2.5f;
+    private float tiempoEntreDisparos = 10f;
+    public GameObject bala;
 
 
     //sounds
@@ -26,24 +35,44 @@ public class enemyV1 : MonoBehaviour
     void Start()
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
-        healthBar.updateHealthBar(shield, 100);
-        speed = 40f;
+        healthBar.updateHealthBar(shield, shieldMax);
+        speed = 20f;
         direccionDerecha = Random.Range(0,2) == 0 ? false : true;
 
         audioSource = GetComponent<AudioSource>();
+
+        //V2
+        target = GameObject.Find("Player");
     }
 
 
     void Update()
     {
-        Vector3 center = new Vector3(0f,transform.position.y,0f);
-        float angle = speed * Time.deltaTime;
-        if(direccionDerecha) angle *= -1f;
-        transform.RotateAround(center, Vector3.up, angle);
+        if(Vector3.Distance(transform.position, target.transform.position) > 10f) {
+            Vector3 center = new Vector3(0f,transform.position.y,0f);
+            float angle = speed * Time.deltaTime;
+            if(direccionDerecha) angle *= -1f;
+            transform.RotateAround(center, Vector3.up, angle);
+        }
+        else {
+            tiempoEntreDisparos += Time.deltaTime;
+            if(tiempoEntreDisparos > tiempoEntreDisparosMin) {
+                MovePlayer player = target.GetComponent<MovePlayer>();
+                direccionDerecha = !player.miraDerecha;
+                Disparar();
+                tiempoEntreDisparos = 0f;
+            }
+        }
+        
     }
 
-    private IEnumerator move() {
-        return null;
+    private void Disparar() {
+        GameObject nuevaBalaObject = Instantiate(bala, transform.position, Quaternion.identity);
+        Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
+        // 'miraDerecha' es un atributo del componente 'bulletScript'
+        bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
+        balita.miraDerecha = direccionDerecha;
+        balita.altura = transform.position.y;
     }
 
     private void die() {
@@ -54,7 +83,7 @@ public class enemyV1 : MonoBehaviour
     void lessLive(int damage) {
         shield -= damage;
         if(shield > 0) {
-            healthBar.updateHealthBar(shield, 100);
+            healthBar.updateHealthBar(shield, shieldMax);
             audioSource.PlayOneShot(armorHitSound);
         }
         if(shield <= 0 && armorActive) {
@@ -65,7 +94,7 @@ public class enemyV1 : MonoBehaviour
             live += shield;
             shield = 0;
             healthBar.ShieldDestroyed();
-            healthBar.updateHealthBar(live, 50);
+            healthBar.updateHealthBar(live, liveMax);
             audioSource.PlayOneShot(fleshHitSound);
             if(live < 0) { //muere
                 live = 0;
@@ -78,9 +107,10 @@ public class enemyV1 : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Entorno") {
-            direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
+            direccionDerecha = !direccionDerecha;
         }
         else if(collision.gameObject.tag == "BulletPlayer") {
+            Physics.IgnoreCollision(GetComponent<Collider>(), collision.collider);
             bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
             if (scriptBullet != null){
                 int damage = scriptBullet.damageHit;
@@ -88,9 +118,6 @@ public class enemyV1 : MonoBehaviour
             }
         }
     }
-
-
-
 }
 
 /*

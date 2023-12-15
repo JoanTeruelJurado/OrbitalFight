@@ -79,7 +79,7 @@ public class bossEnemy : MonoBehaviour
         if(collision.gameObject.tag == "Entorno") {
             direccionDerecha = 1 - direccionDerecha; // Cambia el signo de anglePerStep
         }
-        else if(collision.gameObject.tag == "Bullet") {
+        else if(collision.gameObject.tag == "BulletPlayer") {
             bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
             if (scriptBullet != null){
                 int damage = scriptBullet.damageHit;

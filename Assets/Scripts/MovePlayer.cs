@@ -12,7 +12,7 @@ public class MovePlayer : MonoBehaviour
     public float rotationSpeed, jumpSpeed, gravity, radius;
     const float radioInterior = 3.5f;
     const float radioExterior = 6.77f;
-    private bool miraDerecha = true;
+    public bool miraDerecha = true;
 
     Vector3 startDirection;
     float speedY;
@@ -186,7 +186,6 @@ public class MovePlayer : MonoBehaviour
             }
         }
         else speedY -= gravity * Time.deltaTime;
-        
         
 
         //Disparar
@@ -406,6 +405,13 @@ public class MovePlayer : MonoBehaviour
         if(collision.gameObject.tag == "Enemy") {
             print("Hit");
             lessLive(10);
+        }
+        else if(collision.gameObject.tag == "BulletEnemy") {
+            bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
+            if (scriptBullet != null){
+                int damage = scriptBullet.damageHit;
+                lessLive(damage);
+            }
         }
     }
 
