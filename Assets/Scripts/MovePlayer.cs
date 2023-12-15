@@ -13,6 +13,7 @@ public class MovePlayer : MonoBehaviour
     const float radioInterior = 3.5f;
     const float radioExterior = 6.77f;
     public bool miraDerecha = true;
+    private bool hayQueGirar = false;
 
     Vector3 startDirection;
     float speedY;
@@ -120,7 +121,6 @@ public class MovePlayer : MonoBehaviour
         }
 
         if (Input.GetKey(KeyCode.E) && canDash) {
-            //StartCoroutine(Dash());
             isDashing = true;
             canDash = false;
             dashingTimeTimer = 0f;
@@ -139,35 +139,30 @@ public class MovePlayer : MonoBehaviour
 
             if (Input.GetKey(KeyCode.D)) {
                 angle = -angle;
+                if(!miraDerecha) hayQueGirar = true;
                 miraDerecha = true;
             }
-            else miraDerecha = false;
+            else {
+                if(miraDerecha) hayQueGirar = true;
+                miraDerecha = false;
+            }
             
             target = center + Quaternion.AngleAxis(angle, Vector3.up) * direction;
             
-            if (charControl.Move(target - position) != CollisionFlags.None)
-            {
+            if (charControl.Move(target - position) != CollisionFlags.None) {
                 transform.position = position;
                 Physics.SyncTransforms();
             }
         }
 
+        //ajustar orientación
         transform.LookAt(new Vector3(0,transform.position.y,0));
-        // Correct orientation of player
-        // Compute current direction
-        // Vector3 currentDirection = transform.position - transform.parent.position;
-        // currentDirection.y = 0.0f;
-        // currentDirection.Normalize();
-        // // Change orientation of player accordingly
-        // Quaternion orientation;
-        // if ((startDirection - currentDirection).magnitude < 1e-3)
-        //     orientation = Quaternion.AngleAxis(0.0f, Vector3.up);
-        // else if ((startDirection + currentDirection).magnitude < 1e-3)
-        //     orientation = Quaternion.AngleAxis(180.0f, Vector3.up);
-        // else
-        //     orientation = Quaternion.FromToRotation(startDirection, currentDirection);
-        // transform.rotation = orientation;
-
+        if(hayQueGirar) {
+            Vector3 escalaActual = transform.localScale;
+            escalaActual.x *= -1;
+            transform.localScale = escalaActual;
+            hayQueGirar = false;
+        }
 
         // Apply up-down movement
         position = transform.position;
