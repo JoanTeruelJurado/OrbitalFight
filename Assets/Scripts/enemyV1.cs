@@ -10,7 +10,9 @@ public class enemyV1 : MonoBehaviour
     private bool attacking;
     private bool direccionDerecha;
     private int shield = 100;
+    private int shieldMax = 100;
     private int live = 50;
+    private int liveMax = 50;
     private bool armorActive = true;
 
     private FloatingHealthBar healthBar;
@@ -26,7 +28,7 @@ public class enemyV1 : MonoBehaviour
     void Start()
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
-        healthBar.updateHealthBar(shield, 100);
+        healthBar.updateHealthBar(shield, shieldMax);
         speed = 40f;
         direccionDerecha = Random.Range(0,2) == 0 ? false : true;
 
@@ -54,7 +56,7 @@ public class enemyV1 : MonoBehaviour
     void lessLive(int damage) {
         shield -= damage;
         if(shield > 0) {
-            healthBar.updateHealthBar(shield, 100);
+            healthBar.updateHealthBar(shield, shieldMax);
             audioSource.PlayOneShot(armorHitSound);
         }
         if(shield <= 0 && armorActive) {
@@ -65,7 +67,7 @@ public class enemyV1 : MonoBehaviour
             live += shield;
             shield = 0;
             healthBar.ShieldDestroyed();
-            healthBar.updateHealthBar(live, 50);
+            healthBar.updateHealthBar(live, liveMax);
             audioSource.PlayOneShot(fleshHitSound);
             if(live < 0) { //muere
                 live = 0;
