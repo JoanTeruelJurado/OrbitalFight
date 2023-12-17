@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class MovePlayer : MonoBehaviour
 {
+    //animator
+    public Animator _animator;
+    //
+    public GameController _gameController;
+
     public float rotationSpeed, jumpSpeed, gravity, radius;
     const float radioInterior = 3.5f;
     const float radioExterior = 6.77f;
@@ -11,7 +16,7 @@ public class MovePlayer : MonoBehaviour
 
     Vector3 startDirection;
     float speedY;
-
+    private bool isJumping;
     //dash
     private bool canDash;
     private bool isDashing;
@@ -45,6 +50,9 @@ public class MovePlayer : MonoBehaviour
     private float immortalityTimeMax = 2f;
     private float immortalityTime = -1f;
 
+    //control arena boss
+    private float alturaPlataformaBoss;
+    public bossEnemy boss; 
     
 
     // Start is called before the first frame update
@@ -58,7 +66,7 @@ public class MovePlayer : MonoBehaviour
         startDirection = transform.position - center;
         startDirection.y = 0.0f;
         startDirection.Normalize();
-
+        isJumping = false;
         speedY = 0;
         radius = radioExterior;
         altura = 0f;
@@ -68,11 +76,20 @@ public class MovePlayer : MonoBehaviour
         //dashingPower = 100f;
         dashingTime = 0.5f;
         dashingCooldown = 0.5f;
+
+        alturaPlataformaBoss = boss.transform.position.y-1f;
+
+        _gameController.SetHealth(100);
+        _gameController.SetShield(100);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.I)) live = 0; //DEBUG FOR DEAD ANIMATION // TO ERASE
+        animatorFunction();
+        if (live <= 0) return; // When dead do not compute a thing
+        
         CharacterController charControl = GetComponent<CharacterController>();
         Vector3 position;
         
@@ -138,14 +155,18 @@ public class MovePlayer : MonoBehaviour
             transform.position = position;
             Physics.SyncTransforms();
         }
+        isJumping = false;
         if (charControl.isGrounded)
         {
+            isJumping = false;
             if (speedY < 0.0f) speedY = 0.0f;
-            if (Input.GetKey(KeyCode.W)) {
+            if (Input.GetKey(KeyCode.W))
+            { //jumping
+                isJumping = true;
                 speedY = jumpSpeed;
             }
         }
-        else speedY -= gravity * Time.deltaTime;
+        else { speedY -= gravity * Time.deltaTime; }
         
         
 
@@ -254,6 +275,11 @@ public class MovePlayer : MonoBehaviour
                     position.y += 6.1f;
                     altura += 1f;
                     transform.position = position;
+
+                    //control boss
+                    if(alturaPlataformaBoss < position.y) {
+                        boss.respawn();
+                    }
                 }
             }
             else
@@ -294,8 +320,10 @@ public class MovePlayer : MonoBehaviour
     void lessLive(int damage) {
         if(immortalityTime == -1f) { //no está en tiempo de immortalidad
             shield -= damage;
-            if(shield < 0) {
+            _gameController.SetShield(shield);
+            if (shield < 0) {
                 live += shield;
+                _gameController.SetHealth(live);
                 shield = 0;
                 if(live < 0) { //muere
                     live = 0;
@@ -313,6 +341,26 @@ public class MovePlayer : MonoBehaviour
             lessLive(10);
         }
     }
+
+    private void animatorFunction() {
+        bool isWalking = _animator.GetBool("isWalking");
+        bool ADpressed = Input.GetKey(KeyCode.A);
+        ADpressed |= Input.GetKey(KeyCode.D);
+        bool isAlreadyDashing = _animator.GetBool("isDashing");
+        bool isAlreadyJumping = _animator.GetBool("isJumping");
+
+        if (!isWalking && ADpressed) { _animator.SetBool("isWalking", true); }
+        if (isWalking && !ADpressed) { _animator.SetBool("isWalking", false); }
+        
+        if (live == -100) { _animator.SetBool("isDead", false);}
+        else if (live <= 0) { _animator.SetBool("isDead", true); live = -100; }
+        
+        if (isAlreadyDashing && !isDashing) { _animator.SetBool("isDashing", false); }
+        if (!isAlreadyDashing && isDashing) { _animator.SetBool("isDashing", true); }
+
+        if (isAlreadyJumping && !isJumping) { _animator.SetBool("isJumping", false); }
+        if (!isAlreadyJumping && isJumping) { _animator.SetBool("isJumping", true); }
+    }   
 }
 
 

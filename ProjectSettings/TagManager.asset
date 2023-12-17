@@ -9,6 +9,7 @@ TagManager:
   - Entorno
   - Enemy
   - Bullet
+  - Boss
   layers:
   - Default
   - TransparentFX
