@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class bossEnemy : MonoBehaviour
 {
+    public GameController _gameController;
+
     private float speed;
     private int rutina;
     private float timer;
@@ -48,6 +50,7 @@ public class bossEnemy : MonoBehaviour
     }
 
     private void die() {
+        _gameController.Setbosskilled();
         Destroy(gameObject);
     }
 

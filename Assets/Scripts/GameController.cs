@@ -13,11 +13,15 @@ public class GameController : MonoBehaviour
     public Canvas canvasobj;
     public Canvas endgame;
 
+    public Image _image;
+
+    private int GunSelected = 0;
 
     private bool Paused = false;
     private bool Muted = false;
 
     public Sprite[] spriteArray;
+    public Sprite[] GunspriteArray;
 
     private bool bosskilled = false;
     private bool playerkilled = false;
@@ -26,25 +30,46 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P)){
+        
+        if (Input.GetKeyDown(KeyCode.P) && !(bosskilled || playerkilled)){
             if (Paused) { Paused = false; Time.timeScale = 1; }
             else { Paused = true; Time.timeScale = 0; }
             canvasobj.enabled = Paused;
         }
-        if (bosskilled) {
-            canvasobj.enabled = false;
-            endgame.enabled = true;
-            _title.text = "You won!";
+        switch (GunSelected) {
+            case 1: _image.enabled = true;   //rifle
+                _image.sprite = GunspriteArray[0];
+                break;
+            case 2: _image.enabled = true;   //laser
+                _image.sprite = GunspriteArray[1];
+                break;
+            default: break;
         }
-        else if (playerkilled) {
-            canvasobj.enabled = false;
-            endgame.enabled = true;
-            _title.text = "You lost!";
-        }
+    }
+
+    public void SetGunSelected(int n) { GunSelected = n; }
+
+    public void Setplayerkilled() {
+        playerkilled = true;
+        print("You lost!");
+        canvasobj.enabled = false;
+        endgame.enabled = true;
+        Time.timeScale = 0;
+        _title.SetText("You lost!");
+    }
+
+    public void Setbosskilled() {
+        bosskilled = true;
+        print("You won!");
+        canvasobj.enabled = false;
+        endgame.enabled = true;
+        Time.timeScale = 0;
+        _title.SetText("You won!");
     }
 
     public void ReturnApp() {
         SceneManager.LoadScene("MainMenu");
+        Time.timeScale = 1;
     }
 
     public void SetHealth(int health) { 

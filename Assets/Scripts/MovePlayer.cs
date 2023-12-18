@@ -88,8 +88,8 @@ public class MovePlayer : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.I)) live = 0; //DEBUG FOR DEAD ANIMATION // TO ERASE
         animatorFunction();
-        if (live <= 0) return; // When dead do not compute a thing
-        
+        if (live == -100) { _gameController.Setplayerkilled(); return; }  // When dead do not compute a thing
+ 
         CharacterController charControl = GetComponent<CharacterController>();
         Vector3 position;
         
@@ -184,13 +184,15 @@ public class MovePlayer : MonoBehaviour
             }
         }
 
-        if(Input.GetKey(KeyCode.Z)) {
+        if(Input.GetKey(KeyCode.Z)) { //arma
             armaEquipada = Armas.Fusil;
             tiempoEntreDisparos = 0f;
+            _gameController.SetGunSelected(1);
         }
-        if(Input.GetKey(KeyCode.X)) {
+        if(Input.GetKey(KeyCode.X)) { //laser
             armaEquipada = Armas.Pistola;
             tiempoEntreDisparos = 0f;
+            _gameController.SetGunSelected(2);
         }
     }
 
