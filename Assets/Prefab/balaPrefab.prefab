@@ -253,7 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9d9695b19b28e34d9e79129d6ea8ea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 130
+  rotationSpeed: 150
   miraDerecha: 0
   altura: 0
   equipedGun: 
