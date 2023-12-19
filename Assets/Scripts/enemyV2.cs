@@ -7,7 +7,7 @@ public class enemyV2 : MonoBehaviour
     private float speed;
     private Animator ani;
     private bool followingPlayer;
-    private bool attacking;
+    private bool attacking = false;
     private bool direccionDerecha;
     private int shield = 100;
     private int shieldMax = 100;
@@ -32,6 +32,7 @@ public class enemyV2 : MonoBehaviour
     public AudioClip fleshHitSound;
     public AudioClip dieSound;
 
+
     void Start()
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
@@ -53,12 +54,16 @@ public class enemyV2 : MonoBehaviour
             float angle = speed * Time.deltaTime;
             if(direccionDerecha) angle *= -1f;
             transform.RotateAround(center, Vector3.up, angle);
+            attacking = false;
         }
         else {
+            MovePlayer player = target.GetComponent<MovePlayer>();
+            if(!attacking) {
+                direccionDerecha = !player.miraDerecha;
+            }
+            attacking = true;
             tiempoEntreDisparos += Time.deltaTime;
             if(tiempoEntreDisparos > tiempoEntreDisparosMin) {
-                MovePlayer player = target.GetComponent<MovePlayer>();
-                direccionDerecha = !player.miraDerecha;
                 Disparar();
                 tiempoEntreDisparos = 0f;
             }
