@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     public Canvas endgame;
 
     public Image _image;
+    [SerializeField] private TextMeshProUGUI _timer;
 
     private int GunSelected = 0;
 
@@ -48,6 +49,15 @@ public class GameController : MonoBehaviour
     }
 
     public void SetGunSelected(int n) { GunSelected = n; }
+
+    public void SetTimer(float TIMELEFT) {
+        int minutes, seconds, cents;
+        minutes = (int)(TIMELEFT / 60f);
+        seconds = (int)(TIMELEFT - minutes*60f);
+        cents = (int)((TIMELEFT - (int)TIMELEFT) * 100f);
+
+        _timer.SetText("{0:00}:{1:00}:{2:00}", minutes, seconds, cents);
+    }
 
     public void Setplayerkilled() {
         playerkilled = true;

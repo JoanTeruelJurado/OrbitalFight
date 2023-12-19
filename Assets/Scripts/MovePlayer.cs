@@ -52,8 +52,10 @@ public class MovePlayer : MonoBehaviour
 
     //control arena boss
     private float alturaPlataformaBoss;
-    public bossEnemy boss; 
-    
+    public bossEnemy boss;
+
+    //temporizador
+    private float timeLEFT = 120f;
 
     // Start is called before the first frame update
     void Start()
@@ -81,11 +83,18 @@ public class MovePlayer : MonoBehaviour
 
         _gameController.SetHealth(100);
         _gameController.SetShield(100);
+
+        timeLEFT = 120f;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (timeLEFT <= 0) live = 0; // TIME HAS RUN OUT!
+
+        timeLEFT -= Time.deltaTime;
+        _gameController.SetTimer(timeLEFT);
+
         if (Input.GetKey(KeyCode.I)) live = 0; //DEBUG FOR DEAD ANIMATION // TO ERASE
         animatorFunction();
         if (live == -100) { _gameController.Setplayerkilled(); return; }  // When dead do not compute a thing
