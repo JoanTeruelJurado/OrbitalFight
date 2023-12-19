@@ -96,6 +96,8 @@ public class GameController : MonoBehaviour
         canvasobj.enabled = false;
         Paused = false;
         Time.timeScale = 1;
+        Paused = false;
+        Time.timeScale = 1;
     }
 
     public void QuitApp()

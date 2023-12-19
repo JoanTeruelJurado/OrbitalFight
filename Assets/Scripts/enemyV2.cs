@@ -2,74 +2,100 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class bossEnemy : MonoBehaviour
+public class enemyV2 : MonoBehaviour
 {
-    public GameController _gameController;
-
     private float speed;
-    private int rutina;
-    private float timer;
     private Animator ani;
     private bool followingPlayer;
     private bool attacking;
-    private int direccionDerecha;
-    private int shield = 400;
-    private int shieldMax = 400;
-    private int live = 200;
-    private int liveMax = 200;
+    private bool direccionDerecha;
+    private int shield = 100;
+    private int shieldMax = 100;
+    private int live = 50;
+    private int liveMax = 50;
+    private bool armorActive = true;
 
-    public FloatingHealthBar healthBar;
+    private FloatingHealthBar healthBar;
+
+
+    //V2
+    public GameObject target;
+    private float tiempoEntreDisparosMin = 2.5f;
+    private float tiempoEntreDisparos = 10f;
+    public GameObject bala;
+
+
+    //sounds
+    private AudioSource audioSource;
+    public AudioClip armorHitSound;
+    public AudioClip armorCrashSound;
+    public AudioClip fleshHitSound;
+    public AudioClip dieSound;
 
     void Start()
     {
-        speed = 40f;
-        rutina = 0;
-        timer = 0f;
+        healthBar = GetComponentInChildren<FloatingHealthBar>();
+        healthBar.updateHealthBar(shield, shieldMax);
+        speed = 20f;
+        direccionDerecha = Random.Range(0,2) == 0 ? false : true;
+
+        audioSource = GetComponent<AudioSource>();
+
+        //V2
+        target = GameObject.Find("Player");
     }
 
 
     void Update()
     {
-        timer += Time.deltaTime;
-        if(timer >= 2) {
-            timer = 0;
-            if (rutina == 0) {
-                direccionDerecha = Random.Range(0,2);
-                //StartCoroutine(move());
-                rutina = 1;
+        if(Vector3.Distance(transform.position, target.transform.position) > 10f) {
+            Vector3 center = new Vector3(0f,transform.position.y,0f);
+            float angle = speed * Time.deltaTime;
+            if(direccionDerecha) angle *= -1f;
+            transform.RotateAround(center, Vector3.up, angle);
+        }
+        else {
+            tiempoEntreDisparos += Time.deltaTime;
+            if(tiempoEntreDisparos > tiempoEntreDisparosMin) {
+                MovePlayer player = target.GetComponent<MovePlayer>();
+                direccionDerecha = !player.miraDerecha;
+                Disparar();
+                tiempoEntreDisparos = 0f;
             }
         }
-        Vector3 center = new Vector3(0f,transform.position.y,0f);
-        float angle = speed * Time.deltaTime;
-        if(direccionDerecha == 1) angle *= -1f;
-        transform.RotateAround(center, Vector3.up, angle);
+        
     }
 
-    private IEnumerator move() {
-        return null;
+    private void Disparar() {
+        GameObject nuevaBalaObject = Instantiate(bala, transform.position, Quaternion.identity);
+        Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
+        // 'miraDerecha' es un atributo del componente 'bulletScript'
+        bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
+        balita.miraDerecha = direccionDerecha;
+        balita.altura = transform.position.y;
     }
 
     private void die() {
-        _gameController.Setbosskilled();
-
+        audioSource.PlayOneShot(dieSound);
         Destroy(gameObject);
-    }
-
-    public void respawn() {
-        healthBar.pintarBarraBoss();
-        healthBar.updateHealthBar(shield, shieldMax);
     }
 
     void lessLive(int damage) {
         shield -= damage;
         if(shield > 0) {
             healthBar.updateHealthBar(shield, shieldMax);
+            audioSource.PlayOneShot(armorHitSound);
         }
-        else {
+        if(shield <= 0 && armorActive) {
+            audioSource.PlayOneShot(armorCrashSound);
+        }
+        if(shield <= 0) {
+            armorActive = false;
             live += shield;
             shield = 0;
             healthBar.ShieldDestroyed();
             healthBar.updateHealthBar(live, liveMax);
+            audioSource.PlayOneShot(fleshHitSound);
             if(live < 0) { //muere
                 live = 0;
                 die();
@@ -81,10 +107,10 @@ public class bossEnemy : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Entorno") {
-            direccionDerecha = 1 - direccionDerecha; // Cambia el signo de anglePerStep
+            direccionDerecha = !direccionDerecha;
         }
-
         else if(collision.gameObject.tag == "BulletPlayer") {
+            Physics.IgnoreCollision(GetComponent<Collider>(), collision.collider);
             bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
             if (scriptBullet != null){
                 int damage = scriptBullet.damageHit;
@@ -92,7 +118,6 @@ public class bossEnemy : MonoBehaviour
             }
         }
     }
-
 }
 
 /*

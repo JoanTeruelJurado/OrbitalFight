@@ -5,41 +5,42 @@ using UnityEngine;
 public class enemyV1 : MonoBehaviour
 {
     private float speed;
-    private int rutina;
-    private float timer;
     private Animator ani;
     private bool followingPlayer;
     private bool attacking;
-    private int direccionDerecha;
+    private bool direccionDerecha;
     private int shield = 100;
+    private int shieldMax = 100;
     private int live = 50;
+    private int liveMax = 50;
+    private bool armorActive = true;
 
     private FloatingHealthBar healthBar;
+
+
+    //sounds
+    private AudioSource audioSource;
+    public AudioClip armorHitSound;
+    public AudioClip armorCrashSound;
+    public AudioClip fleshHitSound;
+    public AudioClip dieSound;
 
     void Start()
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
-        healthBar.updateHealthBar(shield, 100);
+        healthBar.updateHealthBar(shield, shieldMax);
         speed = 40f;
-        rutina = 0;
-        timer = 0f;
+        direccionDerecha = Random.Range(0,2) == 0 ? false : true;
+
+        audioSource = GetComponent<AudioSource>();
     }
 
 
     void Update()
     {
-        timer += Time.deltaTime;
-        if(timer >= 2) {
-            timer = 0;
-            if (rutina == 0) {
-                direccionDerecha = Random.Range(0,2);
-                //StartCoroutine(move());
-                rutina = 1;
-            }
-        }
         Vector3 center = new Vector3(0f,transform.position.y,0f);
         float angle = speed * Time.deltaTime;
-        if(direccionDerecha == 1) angle *= -1f;
+        if(direccionDerecha) angle *= -1f;
         transform.RotateAround(center, Vector3.up, angle);
     }
 
@@ -48,19 +49,26 @@ public class enemyV1 : MonoBehaviour
     }
 
     private void die() {
+        audioSource.PlayOneShot(dieSound);
         Destroy(gameObject);
     }
 
     void lessLive(int damage) {
         shield -= damage;
         if(shield > 0) {
-            healthBar.updateHealthBar(shield, 100);
+            healthBar.updateHealthBar(shield, shieldMax);
+            audioSource.PlayOneShot(armorHitSound);
         }
-        else {
+        if(shield <= 0 && armorActive) {
+            audioSource.PlayOneShot(armorCrashSound);
+        }
+        if(shield <= 0) {
+            armorActive = false;
             live += shield;
             shield = 0;
             healthBar.ShieldDestroyed();
-            healthBar.updateHealthBar(live, 50);
+            healthBar.updateHealthBar(live, liveMax);
+            audioSource.PlayOneShot(fleshHitSound);
             if(live < 0) { //muere
                 live = 0;
                 die();
@@ -72,9 +80,9 @@ public class enemyV1 : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Entorno") {
-            direccionDerecha = 1 - direccionDerecha; // Cambia el signo de anglePerStep
+            direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
         }
-        else if(collision.gameObject.tag == "Bullet") {
+        else if(collision.gameObject.tag == "BulletPlayer") {
             bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
             if (scriptBullet != null){
                 int damage = scriptBullet.damageHit;

@@ -22,6 +22,10 @@ public class bulletScript : MonoBehaviour
             tiempoVidaMax = 0.3f;
             damageHit = 33;
         }
+        else {
+            tiempoVidaMax = 1.5f;
+            damageHit = 20;
+        }
 
         //rotationSpeed = 100f;
         Destroy(gameObject, tiempoVidaMax);
@@ -44,7 +48,8 @@ public class bulletScript : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         // Destruye la bala cuando colisiona con otro objeto
-        if(collision.gameObject.tag != "Player") Destroy(gameObject);
+        if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player") Destroy(gameObject);
+        if(gameObject.tag == "BulletEnemy" && (collision.gameObject.tag != "EnemyV1" || collision.gameObject.tag != "EnemyV2")) Destroy(gameObject);
     }
 
     // Calcula la nueva posición de la bala

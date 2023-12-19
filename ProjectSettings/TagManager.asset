@@ -8,8 +8,9 @@ TagManager:
   - Jumper
   - Entorno
   - Enemy
-  - Bullet
   - Boss
+  - BulletEnemy
+  - BulletPlayer
   layers:
   - Default
   - TransparentFX
