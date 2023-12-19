@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class enemyV1 : MonoBehaviour
+public class enemyV2 : MonoBehaviour
 {
     private float speed;
     private Animator ani;
@@ -18,6 +18,13 @@ public class enemyV1 : MonoBehaviour
     private FloatingHealthBar healthBar;
 
 
+    //V2
+    public GameObject target;
+    private float tiempoEntreDisparosMin = 2.5f;
+    private float tiempoEntreDisparos = 10f;
+    public GameObject bala;
+
+
     //sounds
     private AudioSource audioSource;
     public AudioClip armorHitSound;
@@ -29,23 +36,43 @@ public class enemyV1 : MonoBehaviour
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
         healthBar.updateHealthBar(shield, shieldMax);
-        speed = 40f;
+        speed = 20f;
         direccionDerecha = Random.Range(0,2) == 0 ? false : true;
 
         audioSource = GetComponent<AudioSource>();
+
+        //V2
+        target = GameObject.Find("Player");
     }
 
 
     void Update()
     {
-        Vector3 center = new Vector3(0f,transform.position.y,0f);
-        float angle = speed * Time.deltaTime;
-        if(direccionDerecha) angle *= -1f;
-        transform.RotateAround(center, Vector3.up, angle);
+        if(Vector3.Distance(transform.position, target.transform.position) > 10f) {
+            Vector3 center = new Vector3(0f,transform.position.y,0f);
+            float angle = speed * Time.deltaTime;
+            if(direccionDerecha) angle *= -1f;
+            transform.RotateAround(center, Vector3.up, angle);
+        }
+        else {
+            tiempoEntreDisparos += Time.deltaTime;
+            if(tiempoEntreDisparos > tiempoEntreDisparosMin) {
+                MovePlayer player = target.GetComponent<MovePlayer>();
+                direccionDerecha = !player.miraDerecha;
+                Disparar();
+                tiempoEntreDisparos = 0f;
+            }
+        }
+        
     }
 
-    private IEnumerator move() {
-        return null;
+    private void Disparar() {
+        GameObject nuevaBalaObject = Instantiate(bala, transform.position, Quaternion.identity);
+        Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
+        // 'miraDerecha' es un atributo del componente 'bulletScript'
+        bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
+        balita.miraDerecha = direccionDerecha;
+        balita.altura = transform.position.y;
     }
 
     private void die() {
@@ -80,9 +107,10 @@ public class enemyV1 : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Entorno") {
-            direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
+            direccionDerecha = !direccionDerecha;
         }
         else if(collision.gameObject.tag == "BulletPlayer") {
+            Physics.IgnoreCollision(GetComponent<Collider>(), collision.collider);
             bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
             if (scriptBullet != null){
                 int damage = scriptBullet.damageHit;
@@ -90,9 +118,6 @@ public class enemyV1 : MonoBehaviour
             }
         }
     }
-
-
-
 }
 
 /*

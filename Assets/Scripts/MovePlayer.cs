@@ -4,25 +4,35 @@ using UnityEngine;
 
 public class MovePlayer : MonoBehaviour
 {
+    //animator
+    public Animator _animator;
+    //
+
+
     public float rotationSpeed, jumpSpeed, gravity, radius;
     const float radioInterior = 3.5f;
     const float radioExterior = 6.77f;
-    private bool miraDerecha = true;
+    public bool miraDerecha = true;
+    private bool hayQueGirar = false;
 
     Vector3 startDirection;
     float speedY;
+    private bool isJumping;
 
     //dash
     private bool canDash;
     private bool isDashing;
-    public float dashingPower;
-    private float dashingTime;
+    private float dashingPower;
+    private float dashingTimeMax;
+    private float dashingTimeTimer;
     private float dashingCooldown;
+    private float dashingCooldownTimer = -1f;
     //public TrailRenderer tr;
 
     //plataformas
-    float tiempoPulsandoJ = 0.0f;
-    float tiempoRequeridoJ = 1.2f;
+    private float tiempoPulsandoJ = 0.0f;
+    private float tiempoRequeridoJ = 1.2f;
+    private bool subiendoDeNivel = false;
 
     //shooting
     public GameObject balaPistola;
@@ -61,7 +71,7 @@ public class MovePlayer : MonoBehaviour
         startDirection = transform.position - center;
         startDirection.y = 0.0f;
         startDirection.Normalize();
-
+        isJumping = false;
         speedY = 0;
         radius = radioExterior;
         altura = 0f;
@@ -69,8 +79,10 @@ public class MovePlayer : MonoBehaviour
         canDash = true;
         isDashing = false;
         //dashingPower = 100f;
-        dashingTime = 0.5f;
+        dashingTimeTimer = 0f;
+        dashingTimeMax = 0.5f;
         dashingCooldown = 0.5f;
+        dashingPower = 150f;
 
         alturaPlataformaBoss = boss.transform.position.y-1f;
     }
@@ -78,6 +90,10 @@ public class MovePlayer : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.I)) live = 0; //DEBUG FOR DEAD ANIMATION // TO ERASE
+        animatorFunction();
+        if (live <= 0) return; // When dead do not compute a thing
+        
         CharacterController charControl = GetComponent<CharacterController>();
         Vector3 position;
         
@@ -86,11 +102,28 @@ public class MovePlayer : MonoBehaviour
             if(immortalityTime > immortalityTimeMax) immortalityTime = -1f;
         }
 
-        if(isDashing) {
+        if(isDashing || subiendoDeNivel) {
+            if(isDashing) {
+                Dash();
+            }
+            if(subiendoDeNivel) {
+                SubirDeNivel();
+            }
             return;
         }
+
+        if(dashingCooldownTimer >= 0.0f) {
+            dashingCooldownTimer += Time.deltaTime;
+            if(dashingCooldownTimer >= dashingCooldown) {
+                canDash = true;
+                dashingTimeTimer = -1f;
+            }
+        }
+
         if (Input.GetKey(KeyCode.E) && canDash) {
-            StartCoroutine(Dash());
+            isDashing = true;
+            canDash = false;
+            dashingTimeTimer = 0f;
         }
 
         // Left-right movement
@@ -106,35 +139,30 @@ public class MovePlayer : MonoBehaviour
 
             if (Input.GetKey(KeyCode.D)) {
                 angle = -angle;
+                if(!miraDerecha) hayQueGirar = true;
                 miraDerecha = true;
             }
-            else miraDerecha = false;
+            else {
+                if(miraDerecha) hayQueGirar = true;
+                miraDerecha = false;
+            }
             
             target = center + Quaternion.AngleAxis(angle, Vector3.up) * direction;
             
-            if (charControl.Move(target - position) != CollisionFlags.None)
-            {
+            if (charControl.Move(target - position) != CollisionFlags.None) {
                 transform.position = position;
                 Physics.SyncTransforms();
             }
         }
 
+        //ajustar orientación
         transform.LookAt(new Vector3(0,transform.position.y,0));
-        // Correct orientation of player
-        // Compute current direction
-        // Vector3 currentDirection = transform.position - transform.parent.position;
-        // currentDirection.y = 0.0f;
-        // currentDirection.Normalize();
-        // // Change orientation of player accordingly
-        // Quaternion orientation;
-        // if ((startDirection - currentDirection).magnitude < 1e-3)
-        //     orientation = Quaternion.AngleAxis(0.0f, Vector3.up);
-        // else if ((startDirection + currentDirection).magnitude < 1e-3)
-        //     orientation = Quaternion.AngleAxis(180.0f, Vector3.up);
-        // else
-        //     orientation = Quaternion.FromToRotation(startDirection, currentDirection);
-        // transform.rotation = orientation;
-
+        if(hayQueGirar) {
+            Vector3 escalaActual = transform.localScale;
+            escalaActual.x *= -1;
+            transform.localScale = escalaActual;
+            hayQueGirar = false;
+        }
 
         // Apply up-down movement
         position = transform.position;
@@ -145,13 +173,14 @@ public class MovePlayer : MonoBehaviour
         }
         if (charControl.isGrounded)
         {
+            isJumping = false;
             if (speedY < 0.0f) speedY = 0.0f;
-            if (Input.GetKey(KeyCode.W)) {
+            if (Input.GetKey(KeyCode.W)) { //jumping
+                isJumping = true;
                 speedY = jumpSpeed;
             }
         }
         else speedY -= gravity * Time.deltaTime;
-        
         
 
         //Disparar
@@ -178,28 +207,22 @@ public class MovePlayer : MonoBehaviour
         }
     }
 
-    private IEnumerator Dash() {
-        canDash = false;
-        isDashing = true;
-
+    private void Dash() {
         CharacterController charControl = GetComponent<CharacterController>();
-        Vector3 position;
         float anglePerStep = dashingPower * Time.deltaTime;
         if(miraDerecha) anglePerStep = -anglePerStep;
         Vector3 center = new Vector3(0,transform.position.y,0);
-        Vector3 direction;
 
-        float elapsedTime = 0;
-        while (elapsedTime < dashingTime) {
-            position = transform.position;
-            direction = position - center;
+        if (dashingTimeTimer < dashingTimeMax) {
+            Vector3 position = transform.position;
+            Vector3 direction = position - center;
             Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
             if (charControl.Move(target - position) != CollisionFlags.None) {
                 transform.position = position;
                 Physics.SyncTransforms();
-                elapsedTime = dashingTime;
+                dashingTimeTimer = dashingTimeMax;
             }
-            else elapsedTime += Time.deltaTime;
+            else dashingTimeTimer += Time.deltaTime;
             transform.LookAt(new Vector3(0,transform.position.y,0));
 
             //codigo caida
@@ -214,17 +237,70 @@ public class MovePlayer : MonoBehaviour
                 if (speedY < 0.0f) speedY = 0.0f;
             }
             else speedY -= gravity * Time.deltaTime;
-            /////
-            
-            yield return null; // espera hasta el próximo frame
+            //
         }
+        else {
+            isDashing = false;
+            //se empieza a contar el cooldown
+            dashingCooldownTimer = 0f;
+        }
+        // canDash = false;
+        // isDashing = true;
 
-        isDashing = false;
-        yield return new WaitForSecondsRealtime(dashingCooldown);
-        canDash = true;
+        // CharacterController charControl = GetComponent<CharacterController>();
+        // Vector3 position;
+        // float anglePerStep = dashingPower * Time.deltaTime;
+        // if(miraDerecha) anglePerStep = -anglePerStep;
+        // Vector3 center = new Vector3(0,transform.position.y,0);
+        // Vector3 direction;
+
+        // float elapsedTime = 0;
+        // while (elapsedTime < dashingTimeTimer) {
+        //     position = transform.position;
+        //     direction = position - center;
+        //     Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
+        //     if (charControl.Move(target - position) != CollisionFlags.None) {
+        //         transform.position = position;
+        //         Physics.SyncTransforms();
+        //         elapsedTime = dashingTimeTimer;
+        //     }
+        //     else elapsedTime += Time.deltaTime;
+        //     transform.LookAt(new Vector3(0,transform.position.y,0));
+
+        //     //codigo caida
+        //     position = transform.position;
+        //     if (charControl.Move(speedY * Time.deltaTime * Vector3.up) != CollisionFlags.None)
+        //     {
+        //         transform.position = position;
+        //         Physics.SyncTransforms();
+        //     }
+        //     if (charControl.isGrounded)
+        //     {
+        //         if (speedY < 0.0f) speedY = 0.0f;
+        //     }
+        //     else speedY -= gravity * Time.deltaTime;
+        //     /////
+            
+        //     yield return null; // espera hasta el próximo frame
+        // }
+
+        // isDashing = false;
+        // yield return new WaitForSecondsRealtime(dashingCooldown);
+        // canDash = true;
     }
 
-    void Disparar()
+    private void SubirDeNivel() {
+        transform.Translate(Vector3.up * rotationSpeed * Time.deltaTime / 6f);
+        if (transform.position.y >= altura * 7f) {
+            subiendoDeNivel = false;
+            if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = true;
+            if(alturaPlataformaBoss < transform.position.y) {
+                boss.respawn();
+            }
+        }
+    }
+
+    private void Disparar()
     {
         // Instancia una nueva bala en el centro del jugador
         if(armaEquipada != Armas.Ninguna) {
@@ -252,19 +328,22 @@ public class MovePlayer : MonoBehaviour
             if (Input.GetKey(KeyCode.J))
             {
                 tiempoPulsandoJ += Time.deltaTime;
-                // Verifica si se ha estado pulsando la tecla durante el tiempo requerido
-                if (tiempoPulsandoJ >= tiempoRequeridoJ)
-                {
-                    Vector3 position = transform.position;
-                    position.y += 6.1f;
+                if (tiempoPulsandoJ >= tiempoRequeridoJ) {
+                    subiendoDeNivel = true;
                     altura += 1f;
-                    transform.position = position;
-
-                    //control boss
-                    if(alturaPlataformaBoss < position.y) {
-                        boss.respawn();
-                    }
+                    if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = false;
                 }
+                // {
+                //     Vector3 position = transform.position;
+                //     position.y += 6.1f;
+                //     altura += 1f;
+                //     transform.position = position;
+
+                //     //control boss
+                //     if(alturaPlataformaBoss < position.y) {
+                //         boss.respawn();
+                //     }
+                // }
             }
             else
             {
@@ -322,7 +401,34 @@ public class MovePlayer : MonoBehaviour
             print("Hit");
             lessLive(10);
         }
+        else if(collision.gameObject.tag == "BulletEnemy") {
+            bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
+            if (scriptBullet != null){
+                int damage = scriptBullet.damageHit;
+                lessLive(damage);
+            }
+        }
     }
+
+    private void animatorFunction() {
+        bool isWalking = _animator.GetBool("isWalking");
+        bool ADpressed = Input.GetKey(KeyCode.A);
+        ADpressed |= Input.GetKey(KeyCode.D);
+        bool isAlreadyDashing = _animator.GetBool("isDashing");
+        bool isAlreadyJumping = _animator.GetBool("isJumping");
+
+        if (!isWalking && ADpressed) { _animator.SetBool("isWalking", true); }
+        if (isWalking && !ADpressed) { _animator.SetBool("isWalking", false); }
+        
+        if (live == -100) { _animator.SetBool("isDead", false);}
+        else if (live <= 0) { _animator.SetBool("isDead", true); live = -100; }
+        
+        if (isAlreadyDashing && !isDashing) { _animator.SetBool("isDashing", false); }
+        if (!isAlreadyDashing && isDashing) { _animator.SetBool("isDashing", true); }
+
+        if (isAlreadyJumping && !isJumping) { _animator.SetBool("isJumping", false); }
+        if (!isAlreadyJumping && isJumping) { _animator.SetBool("isJumping", true); }
+    }   
 }
 
 
