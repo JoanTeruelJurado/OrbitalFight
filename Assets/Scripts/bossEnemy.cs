@@ -19,6 +19,16 @@ public class bossEnemy : MonoBehaviour
     private int liveMax = 200;
 
     public FloatingHealthBar healthBar;
+    public GameObject target;
+    public GameObject gun;
+
+    //Lanzallamas
+    public GameObject fire;
+    private float timeEntreFuego = 0f;
+    private float timeEntreFuegoMin = 0.07f;
+    private float timerDisparandoFuego = 0f;
+    private float timerDisparandoFuegoMax = 2.5f;
+    private bool disparandoFuego = false; 
 
     void Start()
     {
@@ -30,19 +40,24 @@ public class bossEnemy : MonoBehaviour
 
     void Update()
     {
-        timer += Time.deltaTime;
-        if(timer >= 2) {
-            timer = 0;
-            if (rutina == 0) {
-                direccionDerecha = Random.Range(0,2) == 0 ? false : true;
-                //StartCoroutine(move());
-                rutina = 1;
+        if(Vector3.Distance(transform.position, target.transform.position) < 10f && !attacking) {
+            disparandoFuego = true;
+            attacking = true;
+        }
+        if(disparandoFuego) {
+            timerDisparandoFuego += Time.deltaTime;
+            timeEntreFuego += Time.deltaTime;
+            if(timeEntreFuego >= timeEntreFuegoMin) {
+                timeEntreFuego = 0f;
+                Lanzallamas();
+            }
+            if(timerDisparandoFuego > timerDisparandoFuegoMax) {
+                timerDisparandoFuego = 0f;
+                timeEntreFuego = 0f;
+                disparandoFuego = false;
+                attacking = false;
             }
         }
-        Vector3 center = new Vector3(0f,transform.position.y,0f);
-        float angle = speed * Time.deltaTime;
-        if(direccionDerecha) angle *= -1f;
-        transform.RotateAround(center, Vector3.up, angle);
     }
 
     private IEnumerator move() {
@@ -94,6 +109,13 @@ public class bossEnemy : MonoBehaviour
                 lessLive(damage);
             }
         }
+    }
+
+    void Lanzallamas() {
+        GameObject nuevoFireObject = Instantiate(fire, gun.transform.position, Quaternion.identity);
+        // 'miraDerecha' es un atributo del componente 'bulletScript'
+        fireScript fueguito = nuevoFireObject.GetComponent<fireScript>();
+        fueguito.direccionDerecha = direccionDerecha;
     }
 
 }

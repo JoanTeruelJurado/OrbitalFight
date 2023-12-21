@@ -340,8 +340,11 @@ public class MovePlayer : MonoBehaviour
                 lessLive(damage);
             }
         }
-        if(other.gameObject.tag == "Jumper" || other.gameObject.tag == "ChangerRing") {
+        else if(other.gameObject.tag == "Jumper" || other.gameObject.tag == "ChangerRing") {
             tiempoPulsandoJ = 0.0f;
+        }
+        else if(other.gameObject.tag == "Fire") {
+            lessLive(5);
         }
     }
 
@@ -374,7 +377,6 @@ public class MovePlayer : MonoBehaviour
                 tiempoPulsandoJ = 0.0f;
             }
         }
-
         else if(other.gameObject.tag == "ChangerRing") {
             if (Input.GetKey(KeyCode.J))
             {
