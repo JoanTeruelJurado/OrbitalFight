@@ -12,7 +12,7 @@ public class bossEnemy : MonoBehaviour
     private Animator ani;
     private bool followingPlayer;
     private bool attacking;
-    private int direccionDerecha;
+    private bool direccionDerecha;
     private int shield = 400;
     private int shieldMax = 400;
     private int live = 200;
@@ -34,14 +34,14 @@ public class bossEnemy : MonoBehaviour
         if(timer >= 2) {
             timer = 0;
             if (rutina == 0) {
-                direccionDerecha = Random.Range(0,2);
+                direccionDerecha = Random.Range(0,2) == 0 ? false : true;
                 //StartCoroutine(move());
                 rutina = 1;
             }
         }
         Vector3 center = new Vector3(0f,transform.position.y,0f);
         float angle = speed * Time.deltaTime;
-        if(direccionDerecha == 1) angle *= -1f;
+        if(direccionDerecha) angle *= -1f;
         transform.RotateAround(center, Vector3.up, angle);
     }
 
@@ -81,11 +81,14 @@ public class bossEnemy : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Entorno") {
-            direccionDerecha = 1 - direccionDerecha; // Cambia el signo de anglePerStep
+            direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
         }
+        
+    }
 
-        else if(collision.gameObject.tag == "BulletPlayer") {
-            bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
+    void OnTriggerEnter(Collider collider) {
+        if(collider.gameObject.tag == "BulletPlayer") {
+            bulletScript scriptBullet = collider.gameObject.GetComponent<bulletScript>();
             if (scriptBullet != null){
                 int damage = scriptBullet.damageHit;
                 lessLive(damage);

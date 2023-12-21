@@ -45,7 +45,7 @@ public class bulletScript : MonoBehaviour
         transform.rotation = nuevaRotacion;
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider collision)
     {
         // Destruye la bala cuando colisiona con otro objeto
         if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player") Destroy(gameObject);

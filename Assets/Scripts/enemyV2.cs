@@ -112,11 +112,14 @@ public class enemyV2 : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Entorno") {
-            direccionDerecha = !direccionDerecha;
+            direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
         }
-        else if(collision.gameObject.tag == "BulletPlayer") {
-            Physics.IgnoreCollision(GetComponent<Collider>(), collision.collider);
-            bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
+        
+    }
+
+    void OnTriggerEnter(Collider collider) {
+        if(collider.gameObject.tag == "BulletPlayer") {
+            bulletScript scriptBullet = collider.gameObject.GetComponent<bulletScript>();
             if (scriptBullet != null){
                 int damage = scriptBullet.damageHit;
                 lessLive(damage);

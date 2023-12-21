@@ -333,7 +333,16 @@ public class MovePlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-       tiempoPulsandoJ = 0.0f;
+       if(other.gameObject.tag == "BulletEnemy") {
+            bulletScript scriptBullet = other.gameObject.GetComponent<bulletScript>();
+            if (scriptBullet != null){
+                int damage = scriptBullet.damageHit;
+                lessLive(damage);
+            }
+        }
+        if(other.gameObject.tag == "Jumper" || other.gameObject.tag == "ChangerRing") {
+            tiempoPulsandoJ = 0.0f;
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -416,13 +425,6 @@ public class MovePlayer : MonoBehaviour
         if(collision.gameObject.tag == "Enemy") {
             print("Hit");
             lessLive(10);
-        }
-        else if(collision.gameObject.tag == "BulletEnemy") {
-            bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
-            if (scriptBullet != null){
-                int damage = scriptBullet.damageHit;
-                lessLive(damage);
-            }
         }
     }
 
