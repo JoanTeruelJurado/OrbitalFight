@@ -2979,6 +2979,7 @@ MonoBehaviour:
   gravity: 25
   radius: 0
   miraDerecha: 1
+  immortal: 0
   balaPistola: {fileID: 7468536691191750616, guid: f72eaa25d58a3eb409465987dc653152, type: 3}
   balaFusil: {fileID: 2303705621612731526, guid: 14f609e864ce68744b9cbe8abc3e86f6, type: 3}
   boss: {fileID: 6931894794492508755}
@@ -5336,7 +5337,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134767249285695323, guid: 5847a50acec77474e909a232e9af0d95, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 12.7
+      value: 19.6
       objectReference: {fileID: 0}
     - target: {fileID: 1134767249285695323, guid: 5847a50acec77474e909a232e9af0d95, type: 3}
       propertyPath: m_LocalPosition.z
