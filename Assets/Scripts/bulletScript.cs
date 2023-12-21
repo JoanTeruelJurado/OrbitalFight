@@ -49,7 +49,17 @@ public class bulletScript : MonoBehaviour
     {
         // Destruye la bala cuando colisiona con otro objeto
         if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player") Destroy(gameObject);
-        if(gameObject.tag == "BulletEnemy" && (collision.gameObject.tag != "EnemyV1" || collision.gameObject.tag != "EnemyV2")) Destroy(gameObject);
+        if(gameObject.tag == "BulletEnemy" && (collision.gameObject.tag != "EnemyV1" || collision.gameObject.tag != "EnemyV2")) {
+            if(collision.gameObject.tag == "Player") {
+                MovePlayer p = collision.GetComponent<MovePlayer>();
+                if(!p.immortal) {
+                    Destroy(gameObject);
+                }
+            }
+            else {
+                Destroy(gameObject);
+            }
+        }
     }
 
     // Calcula la nueva posición de la bala

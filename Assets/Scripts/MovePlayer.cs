@@ -27,7 +27,7 @@ public class MovePlayer : MonoBehaviour
     private float dashingTimeTimer;
     private float dashingCooldown;
     private float dashingCooldownTimer = -1f;
-    //public TrailRenderer tr;
+    public bool immortal = false;
 
     //plataformas
     private float tiempoPulsandoJ = 0.0f;
@@ -222,6 +222,7 @@ public class MovePlayer : MonoBehaviour
     }
 
     private void Dash() {
+        immortal = true;
         CharacterController charControl = GetComponent<CharacterController>();
         float anglePerStep = dashingPower * Time.deltaTime;
         if(miraDerecha) anglePerStep = -anglePerStep;
@@ -255,6 +256,7 @@ public class MovePlayer : MonoBehaviour
         }
         else {
             isDashing = false;
+            immortal = false;
             //se empieza a contar el cooldown
             dashingCooldownTimer = 0f;
         }
@@ -334,17 +336,21 @@ public class MovePlayer : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
        if(other.gameObject.tag == "BulletEnemy") {
-            bulletScript scriptBullet = other.gameObject.GetComponent<bulletScript>();
-            if (scriptBullet != null){
-                int damage = scriptBullet.damageHit;
-                lessLive(damage);
+            if(!immortal) {
+                bulletScript scriptBullet = other.gameObject.GetComponent<bulletScript>();
+                if (scriptBullet != null){
+                    int damage = scriptBullet.damageHit;
+                    lessLive(damage);
+                }
             }
         }
         else if(other.gameObject.tag == "Jumper" || other.gameObject.tag == "ChangerRing") {
             tiempoPulsandoJ = 0.0f;
         }
         else if(other.gameObject.tag == "Fire") {
-            lessLive(5);
+            if(!immortal) {
+                lessLive(5);
+            }
         }
     }
 

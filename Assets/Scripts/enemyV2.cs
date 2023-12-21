@@ -49,7 +49,7 @@ public class enemyV2 : MonoBehaviour
 
     void Update()
     {
-        if(Vector3.Distance(transform.position, target.transform.position) > 10f) {
+        if(Vector3.Distance(transform.position, target.transform.position) > 8f) {
             Vector3 center = new Vector3(0f,transform.position.y,0f);
             float angle = speed * Time.deltaTime;
             if(direccionDerecha) angle *= -1f;
