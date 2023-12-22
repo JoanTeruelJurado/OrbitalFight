@@ -30,11 +30,26 @@ public class bossEnemy : MonoBehaviour
     private float timerDisparandoFuegoMax = 2.5f;
     private bool disparandoFuego = false; 
 
+    //Cortes
+    public GameObject corte;
+    private float timeEntreCorte = 0f;
+    private float timeEntreCorteMin = 0.5f;
+    private float timerDisparandoCorte = 0f;
+    private float timerDisparandoCorteMax = 2.5f;
+    private bool lanzandoCortes = true;
+    private List<Vector3> cortesLocations = new List<Vector3>();
+
     void Start()
     {
         speed = 40f;
         rutina = 0;
         timer = 0f;
+
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("PoscCortes");
+        foreach (GameObject obj in objects)
+        {
+            cortesLocations.Add(obj.transform.position);
+        }
     }
 
 
@@ -42,6 +57,10 @@ public class bossEnemy : MonoBehaviour
     {
         if(Vector3.Distance(transform.position, target.transform.position) < 10f && !attacking) {
             disparandoFuego = true;
+            attacking = true;
+        }
+        else if(!attacking) {
+            lanzandoCortes = true;
             attacking = true;
         }
         if(disparandoFuego) {
@@ -55,6 +74,20 @@ public class bossEnemy : MonoBehaviour
                 timerDisparandoFuego = 0f;
                 timeEntreFuego = 0f;
                 disparandoFuego = false;
+                attacking = false;
+            }
+        }
+        if(lanzandoCortes) {
+            timerDisparandoCorte += Time.deltaTime;
+            timeEntreCorte += Time.deltaTime;
+            if(timeEntreCorte >= timeEntreCorteMin) {
+                timeEntreCorte = 0f;
+                Cortar();
+            }
+            if(timerDisparandoCorte > timerDisparandoCorteMax) {
+                timerDisparandoCorte = 0f;
+                timeEntreCorte = 0f;
+                lanzandoCortes = false;
                 attacking = false;
             }
         }
@@ -116,6 +149,14 @@ public class bossEnemy : MonoBehaviour
         // 'miraDerecha' es un atributo del componente 'bulletScript'
         fireScript fueguito = nuevoFireObject.GetComponent<fireScript>();
         fueguito.direccionDerecha = direccionDerecha;
+    }
+
+    void Cortar() {
+        Vector3 randomLocation = cortesLocations[Random.Range(0, cortesLocations.Count)];
+        GameObject nuevoCorteObject = Instantiate(corte, gun.transform.position, Quaternion.identity);
+        // 'miraDerecha' es un atributo del componente 'bulletScript'
+        bulletScript corteLanzado = nuevoCorteObject.GetComponent<bulletScript>();
+        corteLanzado.miraDerecha = direccionDerecha;
     }
 
 }

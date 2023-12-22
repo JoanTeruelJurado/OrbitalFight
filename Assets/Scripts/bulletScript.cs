@@ -22,6 +22,10 @@ public class bulletScript : MonoBehaviour
             tiempoVidaMax = 0.3f;
             damageHit = 33;
         }
+        else if(equipedGun == "Corte") {
+            tiempoVidaMax = 3f;
+            damageHit = 40;
+        }
         else {
             tiempoVidaMax = 1.5f;
             damageHit = 20;

@@ -12,6 +12,8 @@ TagManager:
   - BulletEnemy
   - BulletPlayer
   - Fire
+  - Corte
+  - PoscCortes
   layers:
   - Default
   - TransparentFX
