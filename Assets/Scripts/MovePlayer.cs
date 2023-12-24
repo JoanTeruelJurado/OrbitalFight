@@ -49,6 +49,8 @@ public class MovePlayer : MonoBehaviour
     //tema anillos
     private bool ringExterior = true;
     private float altura;
+    public GameObject barraPressingJGO;
+    private PressingJ barraPressingJ;
 
     //interaccion
     private int shield = 100;
@@ -92,6 +94,8 @@ public class MovePlayer : MonoBehaviour
         _gameController.SetShield(100);
 
         timeLEFT = 120f;
+
+        barraPressingJ = barraPressingJGO.GetComponent<PressingJ>();
     }
 
     // Update is called once per frame
@@ -114,6 +118,14 @@ public class MovePlayer : MonoBehaviour
             if(immortalityTime > immortalityTimeMax) immortalityTime = -1f;
         }
 
+        if(dashingCooldownTimer >= 0.0f) {
+            dashingCooldownTimer += Time.deltaTime;
+            if(dashingCooldownTimer >= dashingCooldown) {
+                canDash = true;
+                dashingTimeTimer = -1f;
+            }
+        }
+
         if(isDashing || subiendoDeNivel) {
             if(isDashing) {
                 Dash();
@@ -124,13 +136,6 @@ public class MovePlayer : MonoBehaviour
             return;
         }
 
-        if(dashingCooldownTimer >= 0.0f) {
-            dashingCooldownTimer += Time.deltaTime;
-            if(dashingCooldownTimer >= dashingCooldown) {
-                canDash = true;
-                dashingTimeTimer = -1f;
-            }
-        }
 
         if (Input.GetKey(KeyCode.E) && canDash) {
             isDashing = true;
@@ -174,6 +179,8 @@ public class MovePlayer : MonoBehaviour
             escalaActual.x *= -1;
             transform.localScale = escalaActual;
             hayQueGirar = false;
+
+            barraPressingJ.hayQueGirar = true;
         }
 
         // Apply up-down movement
@@ -347,6 +354,7 @@ public class MovePlayer : MonoBehaviour
         }
         else if(other.gameObject.tag == "Jumper" || other.gameObject.tag == "ChangerRing") {
             tiempoPulsandoJ = 0.0f;
+            barraPressingJ.pintarBarraPressingJ();
         }
         else if(other.gameObject.tag == "Fire") {
             if(!immortal) {
@@ -361,9 +369,12 @@ public class MovePlayer : MonoBehaviour
             if (Input.GetKey(KeyCode.J))
             {
                 tiempoPulsandoJ += Time.deltaTime;
+                barraPressingJ.updateHealthBar(tiempoPulsandoJ, tiempoRequeridoJ);
                 if (tiempoPulsandoJ >= tiempoRequeridoJ) {
                     subiendoDeNivel = true;
                     altura += 1f;
+                    barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
+                    barraPressingJ.esconderBarraPressingJ();
                     if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = false;
                 }
                 // {
@@ -380,17 +391,19 @@ public class MovePlayer : MonoBehaviour
             }
             else
             {
-                // Resetea el tiempo si la tecla J no está siendo pulsada
+                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
                 tiempoPulsandoJ = 0.0f;
             }
         }
         else if(other.gameObject.tag == "ChangerRing") {
-            if (Input.GetKey(KeyCode.J))
-            {
+            if (Input.GetKey(KeyCode.J)) {
                 tiempoPulsandoJ += Time.deltaTime;
+                barraPressingJ.updateHealthBar(tiempoPulsandoJ, tiempoRequeridoJ);
                 if (tiempoPulsandoJ >= tiempoRequeridoJ)
                 {
                     ringExterior = !ringExterior;
+                    barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
+                    barraPressingJ.esconderBarraPressingJ();
 
                     Vector3 center = new Vector3(0f, transform.position.y, 0f);
                     float distanciaSalto = ringExterior ? 3f : -3f;
@@ -408,7 +421,17 @@ public class MovePlayer : MonoBehaviour
                     tiempoPulsandoJ = 0.0f;
                 }
             }
-            else tiempoPulsandoJ = 0.0f;
+            else {
+                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
+                tiempoPulsandoJ = 0.0f;
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.gameObject.tag == "Jumper" || other.gameObject.tag == "ChangerRing") {
+            barraPressingJ.esconderBarraPressingJ();
         }
     }
 
