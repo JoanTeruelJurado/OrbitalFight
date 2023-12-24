@@ -44,6 +44,7 @@ public class MovePlayer : MonoBehaviour
     private float tiempoEntreDisparosMinFusil = 0.3f;
     private float tiempoEntreDisparosMinPistola = 0.7f;
     private float tiempoEntreDisparos = 0f;
+    public GameObject puntoDisparo;
 
     //tema anillos
     private bool ringExterior = true;
