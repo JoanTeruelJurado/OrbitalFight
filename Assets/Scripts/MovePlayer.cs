@@ -335,7 +335,7 @@ public class MovePlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-       if(other.gameObject.tag == "BulletEnemy") {
+       if(other.gameObject.tag == "BulletEnemy" || other.gameObject.tag == "Corte") {
             if(!immortal) {
                 bulletScript scriptBullet = other.gameObject.GetComponent<bulletScript>();
                 if (scriptBullet != null){

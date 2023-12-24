@@ -23,8 +23,9 @@ public class bulletScript : MonoBehaviour
             damageHit = 33;
         }
         else if(equipedGun == "Corte") {
-            tiempoVidaMax = 3f;
+            tiempoVidaMax = 1.7f;
             damageHit = 40;
+            rotationSpeed = 120f;
         }
         else {
             tiempoVidaMax = 1.5f;
@@ -47,13 +48,19 @@ public class bulletScript : MonoBehaviour
         Quaternion rotacionActual = transform.rotation;
         Quaternion nuevaRotacion = Quaternion.Euler(rotacionActual.eulerAngles + new Vector3(0, 0, 90f));
         transform.rotation = nuevaRotacion;
+
+        if(equipedGun == "Corte") {
+            rotacionActual = transform.rotation;
+            nuevaRotacion = Quaternion.Euler(rotacionActual.eulerAngles + new Vector3(0f, 0, 90f));
+            transform.rotation = nuevaRotacion;
+        }
     }
 
     void OnTriggerEnter(Collider collision)
     {
         // Destruye la bala cuando colisiona con otro objeto
         if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player") Destroy(gameObject);
-        if(gameObject.tag == "BulletEnemy" && (collision.gameObject.tag != "EnemyV1" || collision.gameObject.tag != "EnemyV2")) {
+        if((gameObject.tag == "BulletEnemy" || gameObject.tag == "Corte") && (collision.gameObject.tag != "EnemyV1" && collision.gameObject.tag != "EnemyV2" && collision.gameObject.tag != "Boss")) {
             if(collision.gameObject.tag == "Player") {
                 MovePlayer p = collision.GetComponent<MovePlayer>();
                 if(!p.immortal) {

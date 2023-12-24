@@ -38,6 +38,10 @@ public class bossEnemy : MonoBehaviour
     private float timerDisparandoCorteMax = 2.5f;
     private bool lanzandoCortes = true;
     private List<Vector3> cortesLocations = new List<Vector3>();
+    public GameObject corteLoc1;
+    public GameObject corteLoc2;
+    public GameObject corteLoc3;
+    public GameObject corteLoc4;
 
     void Start()
     {
@@ -59,7 +63,7 @@ public class bossEnemy : MonoBehaviour
             disparandoFuego = true;
             attacking = true;
         }
-        else if(!attacking) {
+        else if(Vector3.Distance(transform.position, target.transform.position) < 16f && !attacking) {
             lanzandoCortes = true;
             attacking = true;
         }
@@ -152,11 +156,32 @@ public class bossEnemy : MonoBehaviour
     }
 
     void Cortar() {
-        Vector3 randomLocation = cortesLocations[Random.Range(0, cortesLocations.Count)];
-        GameObject nuevoCorteObject = Instantiate(corte, gun.transform.position, Quaternion.identity);
+        int pos = Random.Range(0, 4) + 1;
+        Vector3 position = new Vector3(0f,0f,0f);
+        bool derecha = false;
+        switch(pos) {
+            case(1):
+                position = corteLoc1.transform.position;
+                derecha = false;
+                break;
+            case(2):
+                position = corteLoc2.transform.position;
+                derecha = false;
+                break;
+            case(3):
+                position = corteLoc3.transform.position;
+                derecha = true;
+                break;
+            case(4):
+                position = corteLoc4.transform.position;
+                derecha = true;
+                break;
+        }
+        GameObject nuevoCorteObject = Instantiate(corte, position, Quaternion.identity);
         // 'miraDerecha' es un atributo del componente 'bulletScript'
         bulletScript corteLanzado = nuevoCorteObject.GetComponent<bulletScript>();
-        corteLanzado.miraDerecha = direccionDerecha;
+        corteLanzado.miraDerecha = derecha;
+        corteLanzado.equipedGun = "Corte";
     }
 
 }

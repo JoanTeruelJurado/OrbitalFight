@@ -29,7 +29,7 @@ public class enemyV1 : MonoBehaviour
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
         healthBar.updateHealthBar(shield, shieldMax);
-        speed = 40f;
+        speed = 20f;
         direccionDerecha = Random.Range(0,2) == 0 ? false : true;
 
         audioSource = GetComponent<AudioSource>();
@@ -79,7 +79,7 @@ public class enemyV1 : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Entorno") {
+        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Player") {
             direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
         }
         
