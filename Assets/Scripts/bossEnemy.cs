@@ -43,6 +43,11 @@ public class bossEnemy : MonoBehaviour
     public GameObject corteLoc3;
     public GameObject corteLoc4;
 
+    //
+    private float tiempoEntreAtaques = 0f;
+    private bool vaAAtacar = false;
+    private bool cronningNewAttack = true;
+
     void Start()
     {
         speed = 40f;
@@ -59,11 +64,29 @@ public class bossEnemy : MonoBehaviour
 
     void Update()
     {
-        if(Vector3.Distance(transform.position, target.transform.position) < 10f && !attacking) {
+        if(cronningNewAttack) {
+            tiempoEntreAtaques = Random.Range(1000, 4000) * 0.001f; // Multiplicar por 0.001 para convertir milisegundos a segundos
+        }
+        if(tiempoEntreAtaques > 0f) {
+            tiempoEntreAtaques -= Time.deltaTime;
+            print(tiempoEntreAtaques);
+        }
+        else if(tiempoEntreAtaques <= 0f) {
+            vaAAtacar = true;
+        }
+
+        if(!attacking && !vaAAtacar) {
+            Vector3 center = new Vector3(0f,transform.position.y,0f);
+            float angle = speed * Time.deltaTime;
+            if(direccionDerecha) angle *= -1f;
+            transform.RotateAround(center, Vector3.up, angle);
+        }
+
+        if(Vector3.Distance(transform.position, target.transform.position) < 10f && !attacking && vaAAtacar) {
             disparandoFuego = true;
             attacking = true;
         }
-        else if(Vector3.Distance(transform.position, target.transform.position) < 16f && !attacking) {
+        else if(Vector3.Distance(transform.position, target.transform.position) < 16f && !attacking && vaAAtacar) {
             lanzandoCortes = true;
             attacking = true;
         }
@@ -79,6 +102,8 @@ public class bossEnemy : MonoBehaviour
                 timeEntreFuego = 0f;
                 disparandoFuego = false;
                 attacking = false;
+                vaAAtacar = false;
+                cronningNewAttack = true;
             }
         }
         if(lanzandoCortes) {
@@ -93,6 +118,8 @@ public class bossEnemy : MonoBehaviour
                 timeEntreCorte = 0f;
                 lanzandoCortes = false;
                 attacking = false;
+                vaAAtacar = false;
+                cronningNewAttack = true;
             }
         }
     }
