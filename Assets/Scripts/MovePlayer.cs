@@ -26,7 +26,7 @@ public class MovePlayer : MonoBehaviour
     private float dashingTimeMax;
     private float dashingTimeTimer;
     private float dashingCooldown;
-    private float dashingCooldownTimer = -1f;
+    private float dashingCooldownTimer;
     public bool immortal = false;
 
     //plataformas
@@ -86,9 +86,10 @@ public class MovePlayer : MonoBehaviour
         //dashingPower = 100f;
         dashingTimeTimer = 0f;
         dashingTimeMax = 0.5f;
+        dashingCooldownTimer = -1f;
         dashingCooldown = 0.5f;
         dashingPower = 150f;
-        alturaPlataformaBoss = boss.transform.position.y-1f;
+        alturaPlataformaBoss = 3;
 
         _gameController.SetHealth(100);
         _gameController.SetShield(100);
@@ -122,7 +123,7 @@ public class MovePlayer : MonoBehaviour
             dashingCooldownTimer += Time.deltaTime;
             if(dashingCooldownTimer >= dashingCooldown) {
                 canDash = true;
-                dashingTimeTimer = -1f;
+                dashingCooldownTimer = -1f;
             }
         }
 
@@ -318,7 +319,7 @@ public class MovePlayer : MonoBehaviour
         if (transform.position.y >= altura * 7f) {
             subiendoDeNivel = false;
             if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = true;
-            if(alturaPlataformaBoss < transform.position.y) {
+            if(altura >= alturaPlataformaBoss) {
                 boss.respawn();
             }
         }

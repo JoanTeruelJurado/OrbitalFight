@@ -6,6 +6,7 @@ public class bossEnemy : MonoBehaviour
 {
     public GameController _gameController;
 
+    private Vector3 center;
     private float speed;
     private int rutina;
     private float timer;
@@ -21,6 +22,7 @@ public class bossEnemy : MonoBehaviour
     public FloatingHealthBar healthBar;
     public GameObject target;
     public GameObject gun;
+    private MovePlayer movePlayer;
 
     //Lanzallamas
     public GameObject fire;
@@ -43,53 +45,90 @@ public class bossEnemy : MonoBehaviour
     public GameObject corteLoc3;
     public GameObject corteLoc4;
 
+    //dashing
+    private bool dashing = false;
+    private float timerDashing = 0f;
+    private float timerDashingMax = 0.3f;
+    private float dashingSpeed;
+
     //
     private float tiempoEntreAtaques = 0f;
     private bool vaAAtacar = false;
     private bool cronningNewAttack = true;
+    private float dashSpeed = 120f;
 
     void Start()
     {
         speed = 40f;
         rutina = 0;
         timer = 0f;
-
-        GameObject[] objects = GameObject.FindGameObjectsWithTag("PoscCortes");
-        foreach (GameObject obj in objects)
-        {
-            cortesLocations.Add(obj.transform.position);
-        }
+        movePlayer = target.GetComponent<MovePlayer>();
+        center = new Vector3(0f, transform.position.y, 0f);
     }
 
 
     void Update()
     {
+        if(dashing) {
+            timerDashing += Time.deltaTime;
+            if(timerDashing >= timerDashingMax) {
+                dashing = false;
+                return;
+            }
+            if (Vector3.Distance(transform.position, target.transform.position) > 5f) {
+                Vector3 center = new Vector3(0f,transform.position.y,0f);
+                float angle = 130f * Time.deltaTime;
+                if(direccionDerecha) angle *= -1f;
+                transform.RotateAround(center, Vector3.up, angle);
+            }
+            else {
+                dashing = false;
+            }
+            return;
+        }
+
         if(cronningNewAttack) {
-            tiempoEntreAtaques = Random.Range(1000, 4000) * 0.001f; // Multiplicar por 0.001 para convertir milisegundos a segundos
+            tiempoEntreAtaques = Random.Range(1, 4); 
+            cronningNewAttack = false;
         }
         if(tiempoEntreAtaques > 0f) {
             tiempoEntreAtaques -= Time.deltaTime;
-            print(tiempoEntreAtaques);
         }
         else if(tiempoEntreAtaques <= 0f) {
             vaAAtacar = true;
         }
 
         if(!attacking && !vaAAtacar) {
-            Vector3 center = new Vector3(0f,transform.position.y,0f);
-            float angle = speed * Time.deltaTime;
-            if(direccionDerecha) angle *= -1f;
-            transform.RotateAround(center, Vector3.up, angle);
+            if(Vector3.Distance(transform.position, target.transform.position) > 4f){   
+                Vector3 center = new Vector3(0f,transform.position.y,0f);
+                float angle = speed * Time.deltaTime;
+                if(direccionDerecha) angle *= -1f;
+                transform.RotateAround(center, Vector3.up, angle);
+            }
         }
 
         if(Vector3.Distance(transform.position, target.transform.position) < 10f && !attacking && vaAAtacar) {
             disparandoFuego = true;
             attacking = true;
+            bool aux = direccionDerecha;
+            //girar para encarar al player
+            direccionDerecha = !movePlayer.miraDerecha;
+            if(aux != direccionDerecha) {
+                Vector3 escalaActual = transform.localScale;
+                escalaActual.x *= -1;
+                transform.localScale = escalaActual;
+            }
         }
         else if(Vector3.Distance(transform.position, target.transform.position) < 16f && !attacking && vaAAtacar) {
             lanzandoCortes = true;
             attacking = true;
         }
+        else if(Vector3.Distance(transform.position, target.transform.position) > 10f && !attacking && !vaAAtacar) {
+            dashing = true;
+            timerDashing = 0f;
+        }
+
+
         if(disparandoFuego) {
             timerDisparandoFuego += Time.deltaTime;
             timeEntreFuego += Time.deltaTime;
