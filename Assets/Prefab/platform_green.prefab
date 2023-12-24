@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6413467607057201031}
   - component: {fileID: 1721537764477388796}
+  - component: {fileID: 444138824768456410}
   m_Layer: 0
   m_Name: platform_green
   m_TagString: ChangerRing
@@ -56,6 +57,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 11.786437, y: 3.3372293, z: 12.658838}
   m_Center: {x: -0.10537329, y: 1.1686144, z: -1.5902722}
+--- !u!114 &444138824768456410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2358856621496796557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1636a5baccd0fa94e9a54b79b0305dda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alturaMaxima: 2
+  velocidadAscenso: 1
 --- !u!1 &4890039080379077689
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,7 +221,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.29762915, g: 0.8018868, b: 0.14751688, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1.43
   m_Range: 9.22
   m_SpotAngle: 90
   m_InnerSpotAngle: 1
