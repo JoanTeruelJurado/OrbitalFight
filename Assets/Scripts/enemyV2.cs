@@ -112,7 +112,12 @@ public class enemyV2 : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Entorno") {
+
             direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
+            Vector3 escalaActual = transform.localScale;
+            escalaActual.z *= -1;
+            transform.localScale = escalaActual;
+
         }
         
     }

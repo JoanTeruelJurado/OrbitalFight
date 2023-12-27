@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c09541f4236345c4fa4e4745793a59f3
+guid: e2493964694111b4bac5142704de67e7
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -83,118 +83,118 @@ ModelImporter:
     second: Index_Proximal_Right
   - first:
       1: 100052
-    second: //RootNode
-  - first:
-      1: 100054
     second: Leg1
   - first:
-      1: 100056
+      1: 100054
     second: LowerArm_Left
   - first:
-      1: 100058
+      1: 100056
     second: LowerArm_Right
   - first:
-      1: 100060
+      1: 100058
     second: LowerLeg_Left
   - first:
-      1: 100062
+      1: 100060
     second: LowerLeg_Right
   - first:
-      1: 100064
+      1: 100062
     second: magazine_Right
   - first:
-      1: 100066
+      1: 100064
     second: Neck
   - first:
-      1: 100068
+      1: 100066
     second: RestOfFingers_Distal_Left
   - first:
-      1: 100070
+      1: 100068
     second: RestOfFingers_Distal_Right
   - first:
-      1: 100072
+      1: 100070
     second: RestOfFingers_Intermediate_Left
   - first:
-      1: 100074
+      1: 100072
     second: RestOfFingers_Intermediate_Right
   - first:
-      1: 100076
+      1: 100074
     second: RestOfFingers_Proximal_Left
   - first:
-      1: 100078
+      1: 100076
     second: RestOfFingers_Proximal_Right
   - first:
-      1: 100080
+      1: 100078
     second: Shoulder_Left
   - first:
-      1: 100082
+      1: 100080
     second: Shoulder_Right
   - first:
-      1: 100084
+      1: 100082
     second: ShoulderPadBlade_Left
   - first:
-      1: 100086
+      1: 100084
     second: ShoulderPadBlade_Right
   - first:
-      1: 100088
+      1: 100086
     second: ShoulderPadBody_Left
   - first:
-      1: 100090
+      1: 100088
     second: ShoulderPadBody_Right
   - first:
-      1: 100092
+      1: 100090
     second: ShoulderPadCTRL_Left
   - first:
-      1: 100094
+      1: 100092
     second: ShoulderPadCTRL_Right
   - first:
-      1: 100096
+      1: 100094
     second: Spine
   - first:
-      1: 100098
+      1: 100096
     second: Thumb_Distal_Left
   - first:
-      1: 100100
+      1: 100098
     second: Thumb_Distal_Right
   - first:
-      1: 100102
+      1: 100100
     second: Thumb_Intermediate_Left
   - first:
-      1: 100104
+      1: 100102
     second: Thumb_Intermediate_Right
   - first:
-      1: 100106
+      1: 100104
     second: Thumb_Proximal_Left
   - first:
-      1: 100108
+      1: 100106
     second: Thumb_Proximal_Right
   - first:
-      1: 100110
+      1: 100108
     second: Toe_Left
   - first:
-      1: 100112
+      1: 100110
     second: Toe_Right
   - first:
-      1: 100114
+      1: 100112
     second: Toetip_Left
   - first:
-      1: 100116
+      1: 100114
     second: Toetip_Right
   - first:
-      1: 100118
+      1: 100116
     second: Trigger_Right
   - first:
-      1: 100120
+      1: 100118
     second: UpperArm_Left
   - first:
-      1: 100122
+      1: 100120
     second: UpperArm_Right
   - first:
-      1: 100124
+      1: 100122
     second: UpperLeg_Left
   - first:
-      1: 100126
+      1: 100124
     second: UpperLeg_Right
+  - first:
+      1: 100126
+    second: //RootNode
   - first:
       4: 400000
     second: Arm1
@@ -275,118 +275,118 @@ ModelImporter:
     second: Index_Proximal_Right
   - first:
       4: 400052
-    second: //RootNode
-  - first:
-      4: 400054
     second: Leg1
   - first:
-      4: 400056
+      4: 400054
     second: LowerArm_Left
   - first:
-      4: 400058
+      4: 400056
     second: LowerArm_Right
   - first:
-      4: 400060
+      4: 400058
     second: LowerLeg_Left
   - first:
-      4: 400062
+      4: 400060
     second: LowerLeg_Right
   - first:
-      4: 400064
+      4: 400062
     second: magazine_Right
   - first:
-      4: 400066
+      4: 400064
     second: Neck
   - first:
-      4: 400068
+      4: 400066
     second: RestOfFingers_Distal_Left
   - first:
-      4: 400070
+      4: 400068
     second: RestOfFingers_Distal_Right
   - first:
-      4: 400072
+      4: 400070
     second: RestOfFingers_Intermediate_Left
   - first:
-      4: 400074
+      4: 400072
     second: RestOfFingers_Intermediate_Right
   - first:
-      4: 400076
+      4: 400074
     second: RestOfFingers_Proximal_Left
   - first:
-      4: 400078
+      4: 400076
     second: RestOfFingers_Proximal_Right
   - first:
-      4: 400080
+      4: 400078
     second: Shoulder_Left
   - first:
-      4: 400082
+      4: 400080
     second: Shoulder_Right
   - first:
-      4: 400084
+      4: 400082
     second: ShoulderPadBlade_Left
   - first:
-      4: 400086
+      4: 400084
     second: ShoulderPadBlade_Right
   - first:
-      4: 400088
+      4: 400086
     second: ShoulderPadBody_Left
   - first:
-      4: 400090
+      4: 400088
     second: ShoulderPadBody_Right
   - first:
-      4: 400092
+      4: 400090
     second: ShoulderPadCTRL_Left
   - first:
-      4: 400094
+      4: 400092
     second: ShoulderPadCTRL_Right
   - first:
-      4: 400096
+      4: 400094
     second: Spine
   - first:
-      4: 400098
+      4: 400096
     second: Thumb_Distal_Left
   - first:
-      4: 400100
+      4: 400098
     second: Thumb_Distal_Right
   - first:
-      4: 400102
+      4: 400100
     second: Thumb_Intermediate_Left
   - first:
-      4: 400104
+      4: 400102
     second: Thumb_Intermediate_Right
   - first:
-      4: 400106
+      4: 400104
     second: Thumb_Proximal_Left
   - first:
-      4: 400108
+      4: 400106
     second: Thumb_Proximal_Right
   - first:
-      4: 400110
+      4: 400108
     second: Toe_Left
   - first:
-      4: 400112
+      4: 400110
     second: Toe_Right
   - first:
-      4: 400114
+      4: 400112
     second: Toetip_Left
   - first:
-      4: 400116
+      4: 400114
     second: Toetip_Right
   - first:
-      4: 400118
+      4: 400116
     second: Trigger_Right
   - first:
-      4: 400120
+      4: 400118
     second: UpperArm_Left
   - first:
-      4: 400122
+      4: 400120
     second: UpperArm_Right
   - first:
-      4: 400124
+      4: 400122
     second: UpperLeg_Left
   - first:
-      4: 400126
+      4: 400124
     second: UpperLeg_Right
+  - first:
+      4: 400126
+    second: //RootNode
   - first:
       21: 2100000
     second: w_h_01
@@ -425,7 +425,7 @@ ModelImporter:
     second: AssaultRifle
   - first:
       74: 7400000
-    second: Jump
+    second: WalkFront_Shoot_AR
   - first:
       95: 9500000
     second: //RootNode
@@ -480,11 +480,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Jump
+      name: WalkFront_Shoot_AR
       takeName: Take 001
       internalID: 0
       firstFrame: 0
-      lastFrame: 36
+      lastFrame: 40
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

@@ -46,6 +46,11 @@ public class MovePlayer : MonoBehaviour
     private float tiempoEntreDisparos = 0f;
     public GameObject puntoDisparo;
 
+    //sounds
+    private AudioSource audioSource;
+    public AudioClip Blaster;
+    public AudioClip Rifle;
+
     //tema anillos
     private bool ringExterior = true;
     private float altura;
@@ -68,7 +73,8 @@ public class MovePlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(isDashing) {
+        audioSource = GetComponent<AudioSource>();
+        if (isDashing) {
             return;
         }
         // Store starting direction of the player with respect to the axis of the level
@@ -181,7 +187,7 @@ public class MovePlayer : MonoBehaviour
             transform.localScale = escalaActual;
             hayQueGirar = false;
 
-            barraPressingJ.hayQueGirar = true;
+            barraPressingJ.hayQueGirar();
         }
 
         // Apply up-down movement
@@ -327,11 +333,21 @@ public class MovePlayer : MonoBehaviour
 
     private void Disparar()
     {
+       
+
         // Instancia una nueva bala en el centro del jugador
-        if(armaEquipada != Armas.Ninguna) {
+        if (armaEquipada != Armas.Ninguna) {
             GameObject nuevaBalaObject;
-            if(armaEquipada == Armas.Fusil) nuevaBalaObject = Instantiate(balaFusil, transform.position, Quaternion.identity);
-            else nuevaBalaObject = Instantiate(balaPistola, transform.position, Quaternion.identity);
+            if (armaEquipada == Armas.Fusil)
+            {
+                nuevaBalaObject = Instantiate(balaFusil, transform.position, Quaternion.identity);
+                audioSource.PlayOneShot(Rifle);
+            }
+            else
+            {
+                audioSource.PlayOneShot(Blaster);
+                nuevaBalaObject = Instantiate(balaPistola, transform.position, Quaternion.identity);
+            }
             Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
             // 'miraDerecha' es un atributo del componente 'bulletScript'
             bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();

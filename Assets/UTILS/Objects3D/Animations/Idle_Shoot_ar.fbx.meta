@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c09541f4236345c4fa4e4745793a59f3
+guid: 9c113c98ae473c449ab60a816ccc4b6f
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -65,25 +65,25 @@ ModelImporter:
     second: Hips
   - first:
       1: 100040
-    second: Index_Distal_Left
+    second: //RootNode
   - first:
       1: 100042
-    second: Index_Distal_Right
+    second: Index_Distal_Left
   - first:
       1: 100044
-    second: Index_Intermediate_Left
+    second: Index_Distal_Right
   - first:
       1: 100046
-    second: Index_Intermediate_Right
+    second: Index_Intermediate_Left
   - first:
       1: 100048
-    second: Index_Proximal_Left
+    second: Index_Intermediate_Right
   - first:
       1: 100050
-    second: Index_Proximal_Right
+    second: Index_Proximal_Left
   - first:
       1: 100052
-    second: //RootNode
+    second: Index_Proximal_Right
   - first:
       1: 100054
     second: Leg1
@@ -257,25 +257,25 @@ ModelImporter:
     second: Hips
   - first:
       4: 400040
-    second: Index_Distal_Left
+    second: //RootNode
   - first:
       4: 400042
-    second: Index_Distal_Right
+    second: Index_Distal_Left
   - first:
       4: 400044
-    second: Index_Intermediate_Left
+    second: Index_Distal_Right
   - first:
       4: 400046
-    second: Index_Intermediate_Right
+    second: Index_Intermediate_Left
   - first:
       4: 400048
-    second: Index_Proximal_Left
+    second: Index_Intermediate_Right
   - first:
       4: 400050
-    second: Index_Proximal_Right
+    second: Index_Proximal_Left
   - first:
       4: 400052
-    second: //RootNode
+    second: Index_Proximal_Right
   - first:
       4: 400054
     second: Leg1
@@ -425,7 +425,7 @@ ModelImporter:
     second: AssaultRifle
   - first:
       74: 7400000
-    second: Jump
+    second: Idle_Shoot_Ar
   - first:
       95: 9500000
     second: //RootNode
@@ -480,11 +480,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Jump
+      name: Idle_Shoot_Ar
       takeName: Take 001
       internalID: 0
       firstFrame: 0
-      lastFrame: 36
+      lastFrame: 40
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -633,8 +633,8 @@ ModelImporter:
         weight: 1
       - path: Leg1
         weight: 0
-      maskType: 1
-      maskSource: {fileID: 31900000, guid: e0402be4321aa2646a7af179c44591a7, type: 2}
+      maskType: 0
+      maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
