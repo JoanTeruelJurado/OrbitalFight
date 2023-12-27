@@ -340,12 +340,12 @@ public class MovePlayer : MonoBehaviour
             GameObject nuevaBalaObject;
             if (armaEquipada == Armas.Fusil)
             {
+                AudioSource.PlayClipAtPoint(Rifle, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaFusil, transform.position, Quaternion.identity);
-                audioSource.PlayOneShot(Rifle);
             }
             else
             {
-                audioSource.PlayOneShot(Blaster);
+                AudioSource.PlayClipAtPoint(Blaster, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaPistola, transform.position, Quaternion.identity);
             }
             Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());

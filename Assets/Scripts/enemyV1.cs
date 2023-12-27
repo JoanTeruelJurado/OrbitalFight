@@ -14,6 +14,7 @@ public class enemyV1 : MonoBehaviour
     private int live = 50;
     private int liveMax = 50;
     private bool armorActive = true;
+    private bool hayQueGirar = false; 
 
     private FloatingHealthBar healthBar;
 
@@ -25,14 +26,19 @@ public class enemyV1 : MonoBehaviour
     public AudioClip fleshHitSound;
     public AudioClip dieSound;
 
+    //Animator
+    //public Animator animator;
+
     void Start()
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
         healthBar.updateHealthBar(shield, shieldMax);
         speed = 20f;
-        direccionDerecha = Random.Range(0,2) == 0 ? false : true;
+        //direccionDerecha = Random.Range(0,2) == 0 ? false : true;
+        direccionDerecha = false;
 
         audioSource = GetComponent<AudioSource>();
+        //animator.SetFloat("Speed", speed);
     }
 
 
@@ -42,6 +48,13 @@ public class enemyV1 : MonoBehaviour
         float angle = speed * Time.deltaTime;
         if(direccionDerecha) angle *= -1f;
         transform.RotateAround(center, Vector3.up, angle);
+
+        if(hayQueGirar) {
+            Vector3 escalaActual = transform.localScale;
+            escalaActual.z *= -1;
+            transform.localScale = escalaActual;
+            hayQueGirar = false;
+        }
     }
 
     private IEnumerator move() {
@@ -61,6 +74,7 @@ public class enemyV1 : MonoBehaviour
         }
         if(shield <= 0 && armorActive) {
             audioSource.PlayOneShot(armorCrashSound);
+            //AudioSource.PlayClipAtPoint(armorCrashSound, transform.position, 0.7f);
         }
         if(shield <= 0) {
             armorActive = false;
@@ -79,8 +93,9 @@ public class enemyV1 : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Player") {
+        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Player" || collision.gameObject.tag == "Enemy") {
             direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
+            hayQueGirar = true;
         }
         
     }
