@@ -3194,6 +3194,11 @@ MonoBehaviour:
   emptyMagazineShoot: {fileID: 8300000, guid: eb5b959c6ef6e1c44b0f47f55fcedef8, type: 3}
   reloadRifle: {fileID: 8300000, guid: 4eb8ec542e6ff68498712333164e19e6, type: 3}
   reloadPistol: {fileID: 8300000, guid: 87a915275f3542c448a7edc05c9fb235, type: 3}
+  changeSameHighRing: {fileID: 8300000, guid: 42404f0af0d322a4e9e671ead0aa8014, type: 3}
+  changeTopHighRing: {fileID: 8300000, guid: beeec77d7b308634db30fbe5a2895195, type: 3}
+  musicAudioSource: {fileID: 0}
+  destroyBullet: {fileID: 8300000, guid: 72d50f94636c04743b105ed7eef0f30a, type: 3}
+  enemyDie: {fileID: 8300000, guid: b523c3e03b4c7614a98ee0a1ef19df1f, type: 3}
   barraPressingJGO: {fileID: 1740054745}
   boss: {fileID: 6931894794492508755}
 --- !u!33 &1083843996
@@ -3214,11 +3219,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 119ddb31524df054ab53ef05707296e8, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.8
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -3808,7 +3813,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 37398ebb46c0bb74ab1381bea7445958, type: 2}
+  - {fileID: 2100000, guid: 3e9f7b516a935b445b6b743ae8f518e1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
