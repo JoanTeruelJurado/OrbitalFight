@@ -57,6 +57,11 @@ public class bossEnemy : MonoBehaviour
     private bool cronningNewAttack = true;
     private float dashSpeed = 120f;
 
+    //sounds
+    public AudioSource audioSource;
+    public AudioClip movement;
+    public AudioClip flamethrower;
+
     void Start()
     {
         speed = 40f;
@@ -64,6 +69,7 @@ public class bossEnemy : MonoBehaviour
         timer = 0f;
         movePlayer = target.GetComponent<MovePlayer>();
         center = new Vector3(0f, transform.position.y, 0f);
+
     }
 
 
@@ -144,6 +150,7 @@ public class bossEnemy : MonoBehaviour
                 vaAAtacar = false;
                 cronningNewAttack = true;
             }
+            
         }
         if(lanzandoCortes) {
             timerDisparandoCorte += Time.deltaTime;
@@ -215,6 +222,7 @@ public class bossEnemy : MonoBehaviour
     }
 
     void Lanzallamas() {
+        if (!audioSource.isPlaying) audioSource.PlayOneShot(flamethrower);
         GameObject nuevoFireObject = Instantiate(fire, gun.transform.position, Quaternion.identity);
         // 'miraDerecha' es un atributo del componente 'bulletScript'
         fireScript fueguito = nuevoFireObject.GetComponent<fireScript>();
