@@ -14,6 +14,7 @@ public class enemyV2 : MonoBehaviour
     private int live = 50;
     private int liveMax = 50;
     private bool armorActive = true;
+    private bool hayQueGirar = false;
 
     private FloatingHealthBar healthBar;
 
@@ -32,13 +33,18 @@ public class enemyV2 : MonoBehaviour
     public AudioClip fleshHitSound;
     public AudioClip dieSound;
 
+    //calcular distancia player
+    public GameObject delante;
+    public GameObject detras;
+
 
     void Start()
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
         healthBar.updateHealthBar(shield, shieldMax);
         speed = 20f;
-        direccionDerecha = Random.Range(0,2) == 0 ? false : true;
+        //direccionDerecha = Random.Range(0,2) == 0 ? false : true;
+        direccionDerecha = false;
 
         audioSource = GetComponent<AudioSource>();
 
@@ -49,17 +55,25 @@ public class enemyV2 : MonoBehaviour
 
     void Update()
     {
-        if(Vector3.Distance(transform.position, target.transform.position) > 8f) {
+        if(Vector3.Distance(transform.position, target.transform.position) > 9f) tiempoEntreDisparos = 99f;
+
+        if(Vector3.Distance(transform.position, target.transform.position) > 8f) { //anda
             Vector3 center = new Vector3(0f,transform.position.y,0f);
             float angle = speed * Time.deltaTime;
             if(direccionDerecha) angle *= -1f;
             transform.RotateAround(center, Vector3.up, angle);
             attacking = false;
         }
-        else {
+        else { //dispara
             MovePlayer player = target.GetComponent<MovePlayer>();
-            if(!attacking) {
-                direccionDerecha = !player.miraDerecha;
+            
+            bool aux = direccionDerecha;
+            //direccionDerecha = !player.miraDerecha;
+            if(Vector3.Distance(detras.transform.position, target.transform.position) < Vector3.Distance(delante.transform.position, target.transform.position)) {
+                direccionDerecha = !direccionDerecha;
+            }
+            if(aux != direccionDerecha) { //se gira si lo detecta en el otro sentido
+                girar();
             }
             attacking = true;
             tiempoEntreDisparos += Time.deltaTime;
@@ -68,7 +82,11 @@ public class enemyV2 : MonoBehaviour
                 tiempoEntreDisparos = 0f;
             }
         }
-        
+
+        if(hayQueGirar) {
+            girar();
+            hayQueGirar = false;
+        }
     }
 
     private void Disparar() {
@@ -83,6 +101,18 @@ public class enemyV2 : MonoBehaviour
     private void die() {
         audioSource.PlayOneShot(dieSound);
         Destroy(gameObject);
+    }
+
+    private void girar() {
+        Vector3 aux1 = delante.transform.position;
+        Vector3 aux2 = detras.transform.position;
+
+        Vector3 escalaActual = transform.localScale;
+        escalaActual.z *= -1;
+        transform.localScale = escalaActual;
+
+        delante.transform.position = aux2;
+        detras.transform.position = aux1;
     }
 
     void lessLive(int damage) {
@@ -111,13 +141,9 @@ public class enemyV2 : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Entorno") {
-
+        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Player") {
             direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
-            Vector3 escalaActual = transform.localScale;
-            escalaActual.z *= -1;
-            transform.localScale = escalaActual;
-
+            hayQueGirar = true;
         }
         
     }
@@ -132,77 +158,3 @@ public class enemyV2 : MonoBehaviour
         }
     }
 }
-
-/*
-//con rigidbody + capsule collider
-        Rigidbody rb = GetComponent<Rigidbody>();
-        Vector3 position;
-        float anglePerStep = speed * Time.deltaTime;
-        if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-        Vector3 center = new Vector3(0, transform.position.y, 0);
-        Vector3 direction;
-
-        float elapsedTime = 0f;
-        while (elapsedTime < 4f)
-        {
-            position = transform.position;
-            direction = position - center;
-            if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-            Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
-
-            // Calcular la dirección del movimiento
-            Vector3 movementDirection = (target - position).normalized;
-
-            // Realizar el barrido de colisión
-            RaycastHit hit;
-            if (rb.SweepTest(movementDirection, out hit, speed * Time.deltaTime))
-            {
-                // Hay una colisión, ajustar la posición
-                transform.position = hit.point;
-                Physics.SyncTransforms();
-            }
-            else
-            {
-                // No hay colisión, moverse a la nueva posición
-                rb.MovePosition(rb.position + movementDirection * speed * Time.deltaTime);
-                Physics.SyncTransforms();
-            }
-
-            // Rotación
-            transform.LookAt(new Vector3(0, transform.position.y, 0));
-
-            elapsedTime += Time.deltaTime;
-
-            yield return null;
-        }
-        rutina = 0;
-
-    //con character controller
-    CharacterController charControl = GetComponent<CharacterController>();
-        Vector3 position;
-        float anglePerStep = speed * Time.deltaTime;
-        if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-        Vector3 center = new Vector3(0, transform.position.y, 0);
-        Vector3 direction;
-
-        float elapsedTime = 0f;
-        while (elapsedTime < 4f)
-        {
-            position = transform.position;
-            direction = position - center;
-            if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-            Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
-
-            if (charControl.Move(target - position) != CollisionFlags.None) {
-                transform.position = position;
-            }
-
-            // Rotación
-            transform.LookAt(new Vector3(0, transform.position.y, 0));
-
-            elapsedTime += Time.deltaTime;
-
-            yield return null;
-        }
-        rutina = 0;
-*/

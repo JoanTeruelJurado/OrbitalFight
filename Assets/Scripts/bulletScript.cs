@@ -29,7 +29,7 @@ public class bulletScript : MonoBehaviour
         }
         else {
             tiempoVidaMax = 1.5f;
-            damageHit = 20;
+            damageHit = 40;
         }
 
         //rotationSpeed = 100f;

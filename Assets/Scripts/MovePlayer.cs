@@ -473,7 +473,7 @@ public class MovePlayer : MonoBehaviour
     {
         if(collision.gameObject.tag == "Enemy") {
             print("Hit");
-            lessLive(10);
+            lessLive(30);
         }
     }
 
