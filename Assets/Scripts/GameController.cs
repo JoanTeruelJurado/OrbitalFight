@@ -16,7 +16,7 @@ public class GameController : MonoBehaviour
     public Image _image;
     [SerializeField] private TextMeshProUGUI _timer;
 
-    private int GunSelected = 0;
+    private int GunSelected = 2;
 
     private bool Paused = false;
     private bool Muted = false;

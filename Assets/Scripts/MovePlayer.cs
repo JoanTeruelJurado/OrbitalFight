@@ -18,6 +18,7 @@ public class MovePlayer : MonoBehaviour
     Vector3 startDirection;
     float speedY;
     private bool isJumping;
+    private bool seEstaPulsandoW = false;
 
     //dash
     private bool canDash;
@@ -37,14 +38,27 @@ public class MovePlayer : MonoBehaviour
     //shooting
     public GameObject balaPistola;
     public GameObject balaFusil;
-    private bool pistolaDesbloqueada = false;
-    private bool fusilDesbloqueado = false;
+    private bool fusilDesbloqueado = true;
     private enum Armas {Ninguna,Fusil,Pistola};
-    private Armas armaEquipada = Armas.Ninguna;
+    private Armas armaEquipada = Armas.Pistola;
     private float tiempoEntreDisparosMinFusil = 0.3f;
     private float tiempoEntreDisparosMinPistola = 0.7f;
     private float tiempoEntreDisparos = 0f;
     public GameObject puntoDisparo;
+
+    //munición
+    private int municionPistolaCargadorAct = 6;
+    private int municionFusilCargadorAct = 20;
+    private int municionPistolaCargadorMax = 6;
+    private int municionFusilCargadorMax = 20; 
+    private int municionPistolaRestante = 7; //60
+    private int municionFusilRestante = 25; //100
+    private float timerRecarga = -1f;
+    private float timeRecargaPistola = 0.8f;
+    private float timeRecargaFusil = 1.8f;
+    private bool canDisparar = true;
+    private bool seEstaPulsandoQ = false;
+
 
     //sounds
     private AudioSource audioSource;
@@ -150,6 +164,41 @@ public class MovePlayer : MonoBehaviour
             dashingTimeTimer = 0f;
         }
 
+        //recarga timer
+        if(timerRecarga >= 0f) {
+            timerRecarga += Time.deltaTime;
+            float tiempoRecargaMin = 99f;
+            if(armaEquipada == Armas.Fusil) tiempoRecargaMin = timeRecargaFusil;
+            else if(armaEquipada == Armas.Pistola) tiempoRecargaMin = timeRecargaPistola;
+
+            if(timerRecarga >= tiempoRecargaMin) {
+                timerRecarga = -1f;
+                canDisparar = true;
+            }
+        }
+
+        //recarga botón
+        if(Input.GetKey(KeyCode.R) && canDisparar) {
+            Recarga();
+        }
+
+        //cambio de arma
+        if(Input.GetKey(KeyCode.Q) && canDisparar && !seEstaPulsandoQ) {
+            if(fusilDesbloqueado) {
+                if(armaEquipada == Armas.Pistola) {
+                    armaEquipada = Armas.Fusil;
+                    _gameController.SetGunSelected(1);
+                }
+                else if(armaEquipada == Armas.Fusil) {
+                    armaEquipada = Armas.Pistola;
+                    _gameController.SetGunSelected(2);
+                }
+                tiempoEntreDisparos = 0f;
+            }
+            seEstaPulsandoQ = true;
+        }
+        if(seEstaPulsandoQ && !Input.GetKey(KeyCode.Q)) seEstaPulsandoQ = false;
+
         // Left-right movement
         if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
@@ -202,17 +251,18 @@ public class MovePlayer : MonoBehaviour
         {
             isJumping = false;
             if (speedY < 0.0f) speedY = 0.0f;
-            if (Input.GetKey(KeyCode.W)) { //jumping
+            if (Input.GetKey(KeyCode.W) && !seEstaPulsandoW) { //jumping
                 isJumping = true;
                 speedY = jumpSpeed;
+                seEstaPulsandoW = true;
             }
         }
         else { speedY -= gravity * Time.deltaTime; }
-        
+        if(seEstaPulsandoW && !Input.GetKey(KeyCode.W)) seEstaPulsandoW = false;
 
         //Disparar
         tiempoEntreDisparos += Time.deltaTime;
-        if (Input.GetMouseButtonDown(0) || Input.GetKey(KeyCode.T)) // 0 representa el botón izquierdo del ratón
+        if ((Input.GetMouseButtonDown(0) || Input.GetKey(KeyCode.K)) && canDisparar) // 0 representa el botón izquierdo del ratón
         {
             if(armaEquipada == Armas.Fusil && tiempoEntreDisparos > tiempoEntreDisparosMinFusil) {
                 Disparar();
@@ -222,17 +272,6 @@ public class MovePlayer : MonoBehaviour
                 Disparar();
                 tiempoEntreDisparos = 0f;
             }
-        }
-
-        if(Input.GetKey(KeyCode.Z)) { //arma
-            armaEquipada = Armas.Fusil;
-            tiempoEntreDisparos = 0f;
-            _gameController.SetGunSelected(1);
-        }
-        if(Input.GetKey(KeyCode.X)) { //laser
-            armaEquipada = Armas.Pistola;
-            tiempoEntreDisparos = 0f;
-            _gameController.SetGunSelected(2);
         }
     }
 
@@ -275,49 +314,6 @@ public class MovePlayer : MonoBehaviour
             //se empieza a contar el cooldown
             dashingCooldownTimer = 0f;
         }
-        // canDash = false;
-        // isDashing = true;
-
-        // CharacterController charControl = GetComponent<CharacterController>();
-        // Vector3 position;
-        // float anglePerStep = dashingPower * Time.deltaTime;
-        // if(miraDerecha) anglePerStep = -anglePerStep;
-        // Vector3 center = new Vector3(0,transform.position.y,0);
-        // Vector3 direction;
-
-        // float elapsedTime = 0;
-        // while (elapsedTime < dashingTimeTimer) {
-        //     position = transform.position;
-        //     direction = position - center;
-        //     Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
-        //     if (charControl.Move(target - position) != CollisionFlags.None) {
-        //         transform.position = position;
-        //         Physics.SyncTransforms();
-        //         elapsedTime = dashingTimeTimer;
-        //     }
-        //     else elapsedTime += Time.deltaTime;
-        //     transform.LookAt(new Vector3(0,transform.position.y,0));
-
-        //     //codigo caida
-        //     position = transform.position;
-        //     if (charControl.Move(speedY * Time.deltaTime * Vector3.up) != CollisionFlags.None)
-        //     {
-        //         transform.position = position;
-        //         Physics.SyncTransforms();
-        //     }
-        //     if (charControl.isGrounded)
-        //     {
-        //         if (speedY < 0.0f) speedY = 0.0f;
-        //     }
-        //     else speedY -= gravity * Time.deltaTime;
-        //     /////
-            
-        //     yield return null; // espera hasta el próximo frame
-        // }
-
-        // isDashing = false;
-        // yield return new WaitForSecondsRealtime(dashingCooldown);
-        // canDash = true;
     }
 
     private void SubirDeNivel() {
@@ -331,22 +327,84 @@ public class MovePlayer : MonoBehaviour
         }
     }
 
-    private void Disparar()
-    {
-       
+    void lessLive(int damage) {
+        if(immortalityTime == -1f) { //no está en tiempo de immortalidad
+            shield -= damage;
+            _gameController.SetShield(shield);
+            if (shield < 0) {
+                live += shield;
+                _gameController.SetHealth(live);
+                shield = 0;
+                if(live < 0) { //muere
+                    live = 0;
+                }
+            }
+            print(shield);
+            print(live);
+        }
+    }
 
-        // Instancia una nueva bala en el centro del jugador
-        if (armaEquipada != Armas.Ninguna) {
+    private void Recarga() {
+        if(armaEquipada == Armas.Pistola) {
+            if(municionPistolaRestante > 0) {
+                int auxLasQueNoHaUsado = municionPistolaCargadorAct;
+                int cuantasBalasCoge = municionPistolaCargadorMax;
+                if (municionPistolaRestante-municionPistolaCargadorMax+auxLasQueNoHaUsado < 0) {
+                    cuantasBalasCoge = municionPistolaRestante;
+                }
+                municionPistolaCargadorAct = cuantasBalasCoge;
+                municionPistolaRestante = municionPistolaRestante - cuantasBalasCoge + auxLasQueNoHaUsado;
+            }
+        }
+        else if(armaEquipada == Armas.Fusil) {
+            if(municionFusilRestante > 0) {
+                int auxLasQueNoHaUsado = municionFusilCargadorAct;
+                int cuantasBalasCoge = municionFusilCargadorMax;
+                if (municionFusilRestante-municionFusilCargadorMax+auxLasQueNoHaUsado < 0) {
+                    cuantasBalasCoge = municionFusilRestante;
+                }
+                municionFusilCargadorAct = cuantasBalasCoge;
+                municionFusilRestante = municionFusilRestante - cuantasBalasCoge + auxLasQueNoHaUsado;
+            }
+        }
+        canDisparar = false;
+        timerRecarga = 0f;
+    }
+
+    private void Disparar() {
+        bool tieneMunicion = true;
+
+        //si no tiene munición no puede disparar
+        if(armaEquipada != Armas.Ninguna){
+            if(armaEquipada == Armas.Fusil){
+                if(municionFusilCargadorAct == 0) tieneMunicion = false;
+            }
+            else if(armaEquipada == Armas.Pistola){
+                if(municionPistolaCargadorAct == 0) tieneMunicion = false;
+            }
+        }
+
+        if (armaEquipada != Armas.Ninguna && tieneMunicion) {
             GameObject nuevaBalaObject;
             if (armaEquipada == Armas.Fusil)
             {
                 AudioSource.PlayClipAtPoint(Rifle, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaFusil, transform.position, Quaternion.identity);
+                --municionFusilCargadorAct;
+                if(municionFusilCargadorAct == 0) {
+                    Recarga();
+                }
+                print(municionFusilCargadorAct);
+                print(municionFusilRestante);
             }
             else
             {
                 AudioSource.PlayClipAtPoint(Blaster, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaPistola, transform.position, Quaternion.identity);
+                --municionPistolaCargadorAct;
+                if(municionPistolaCargadorAct == 0) Recarga();
+                print(municionPistolaCargadorAct);
+                print(municionPistolaRestante);
             }
             Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
             // 'miraDerecha' es un atributo del componente 'bulletScript'
@@ -358,8 +416,7 @@ public class MovePlayer : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
+    private void OnTriggerEnter(Collider other) {
        if(other.gameObject.tag == "BulletEnemy" || other.gameObject.tag == "Corte") {
             if(!immortal) {
                 bulletScript scriptBullet = other.gameObject.GetComponent<bulletScript>();
@@ -449,23 +506,6 @@ public class MovePlayer : MonoBehaviour
     {
         if(other.gameObject.tag == "Jumper" || other.gameObject.tag == "ChangerRing") {
             barraPressingJ.esconderBarraPressingJ();
-        }
-    }
-
-    void lessLive(int damage) {
-        if(immortalityTime == -1f) { //no está en tiempo de immortalidad
-            shield -= damage;
-            _gameController.SetShield(shield);
-            if (shield < 0) {
-                live += shield;
-                _gameController.SetHealth(live);
-                shield = 0;
-                if(live < 0) { //muere
-                    live = 0;
-                }
-            }
-            print(shield);
-            print(live);
         }
     }
 
