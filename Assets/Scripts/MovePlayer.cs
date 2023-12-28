@@ -62,8 +62,13 @@ public class MovePlayer : MonoBehaviour
 
     //sounds
     private AudioSource audioSource;
-    public AudioClip Blaster;
-    public AudioClip Rifle;
+    public AudioClip blasterShot;
+    public AudioClip rifleShot;
+    public AudioClip changeGun;
+    public AudioClip emptyMagazineShoot;
+    public AudioClip reloadRifle;
+    public AudioClip reloadPistol;
+
 
     //tema anillos
     private bool ringExterior = true;
@@ -193,6 +198,7 @@ public class MovePlayer : MonoBehaviour
                     armaEquipada = Armas.Pistola;
                     _gameController.SetGunSelected(2);
                 }
+                audioSource.PlayOneShot(changeGun);
                 tiempoEntreDisparos = 0f;
             }
             seEstaPulsandoQ = true;
@@ -354,6 +360,7 @@ public class MovePlayer : MonoBehaviour
                 }
                 municionPistolaCargadorAct = cuantasBalasCoge;
                 municionPistolaRestante = municionPistolaRestante - cuantasBalasCoge + auxLasQueNoHaUsado;
+                audioSource.PlayOneShot(reloadPistol);
             }
         }
         else if(armaEquipada == Armas.Fusil) {
@@ -365,6 +372,7 @@ public class MovePlayer : MonoBehaviour
                 }
                 municionFusilCargadorAct = cuantasBalasCoge;
                 municionFusilRestante = municionFusilRestante - cuantasBalasCoge + auxLasQueNoHaUsado;
+                audioSource.PlayOneShot(reloadRifle);
             }
         }
         canDisparar = false;
@@ -377,10 +385,16 @@ public class MovePlayer : MonoBehaviour
         //si no tiene munición no puede disparar
         if(armaEquipada != Armas.Ninguna){
             if(armaEquipada == Armas.Fusil){
-                if(municionFusilCargadorAct == 0) tieneMunicion = false;
+                if(municionFusilCargadorAct == 0) {
+                    tieneMunicion = false;
+                    audioSource.PlayOneShot(emptyMagazineShoot);
+                }
             }
             else if(armaEquipada == Armas.Pistola){
-                if(municionPistolaCargadorAct == 0) tieneMunicion = false;
+                if(municionPistolaCargadorAct == 0) {
+                    tieneMunicion = false;
+                    audioSource.PlayOneShot(emptyMagazineShoot);
+                }
             }
         }
 
@@ -388,7 +402,7 @@ public class MovePlayer : MonoBehaviour
             GameObject nuevaBalaObject;
             if (armaEquipada == Armas.Fusil)
             {
-                AudioSource.PlayClipAtPoint(Rifle, transform.position, 0.5f);
+                AudioSource.PlayClipAtPoint(rifleShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaFusil, transform.position, Quaternion.identity);
                 --municionFusilCargadorAct;
                 if(municionFusilCargadorAct == 0) {
@@ -399,7 +413,7 @@ public class MovePlayer : MonoBehaviour
             }
             else
             {
-                AudioSource.PlayClipAtPoint(Blaster, transform.position, 0.5f);
+                AudioSource.PlayClipAtPoint(blasterShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaPistola, transform.position, Quaternion.identity);
                 --municionPistolaCargadorAct;
                 if(municionPistolaCargadorAct == 0) Recarga();
