@@ -11,6 +11,7 @@ public class bulletScript : MonoBehaviour
     private float tiempoVidaAct;
     public int damageHit;
     private Vector3 center;
+    private GameObject player;
 
     void Start() {
         float tiempoVidaMax = 7f;
@@ -35,6 +36,7 @@ public class bulletScript : MonoBehaviour
         //rotationSpeed = 100f;
         Destroy(gameObject, tiempoVidaMax);
         center = new Vector3(0f,transform.position.y,0f);
+        player = GameObject.Find("Player");
     }
 
     void FixedUpdate()
@@ -59,7 +61,11 @@ public class bulletScript : MonoBehaviour
     void OnTriggerEnter(Collider collision)
     {
         // Destruye la bala cuando colisiona con otro objeto
-        if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player") Destroy(gameObject);
+        if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player") {
+            MovePlayer playerScript = player.GetComponent<MovePlayer>();
+            playerScript.reproducirSonido("destroyBullet");
+            Destroy(gameObject);
+        }
         if((gameObject.tag == "BulletEnemy" || gameObject.tag == "Corte") && (collision.gameObject.tag != "EnemyV1" && collision.gameObject.tag != "EnemyV2" && collision.gameObject.tag != "Boss")) {
             if(collision.gameObject.tag == "Player") {
                 MovePlayer p = collision.GetComponent<MovePlayer>();
@@ -68,6 +74,8 @@ public class bulletScript : MonoBehaviour
                 }
             }
             else {
+                MovePlayer playerScript = player.GetComponent<MovePlayer>();
+                playerScript.reproducirSonido("destroyBullet");
                 Destroy(gameObject);
             }
         }

@@ -68,6 +68,11 @@ public class MovePlayer : MonoBehaviour
     public AudioClip emptyMagazineShoot;
     public AudioClip reloadRifle;
     public AudioClip reloadPistol;
+    public AudioClip changeSameHighRing;
+    public AudioClip changeTopHighRing;
+    public AudioSource musicAudioSource;
+    public AudioClip destroyBullet;
+    public AudioClip enemyDie;
 
 
     //tema anillos
@@ -459,6 +464,7 @@ public class MovePlayer : MonoBehaviour
                 tiempoPulsandoJ += Time.deltaTime;
                 barraPressingJ.updateHealthBar(tiempoPulsandoJ, tiempoRequeridoJ);
                 if (tiempoPulsandoJ >= tiempoRequeridoJ) {
+                    audioSource.PlayOneShot(changeTopHighRing);
                     subiendoDeNivel = true;
                     altura += 1f;
                     barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
@@ -489,6 +495,7 @@ public class MovePlayer : MonoBehaviour
                 barraPressingJ.updateHealthBar(tiempoPulsandoJ, tiempoRequeridoJ);
                 if (tiempoPulsandoJ >= tiempoRequeridoJ)
                 {
+                    audioSource.PlayOneShot(changeSameHighRing);
                     ringExterior = !ringExterior;
                     barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
                     barraPressingJ.esconderBarraPressingJ();
@@ -528,6 +535,15 @@ public class MovePlayer : MonoBehaviour
         if(collision.gameObject.tag == "Enemy") {
             print("Hit");
             lessLive(30);
+        }
+    }
+
+    public void reproducirSonido(string sonido) {
+        if(sonido == "destroyBullet") {
+            audioSource.PlayOneShot(destroyBullet);
+        }
+        else if(sonido == "enemyDie") {
+            audioSource.PlayOneShot(enemyDie);
         }
     }
 

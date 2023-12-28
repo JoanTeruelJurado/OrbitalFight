@@ -20,7 +20,7 @@ public class enemyV2 : MonoBehaviour
 
 
     //V2
-    public GameObject target;
+    private GameObject target;
     private float tiempoEntreDisparosMin = 2.5f;
     private float tiempoEntreDisparos = 10f;
     public GameObject bala;
@@ -31,7 +31,6 @@ public class enemyV2 : MonoBehaviour
     public AudioClip armorHitSound;
     public AudioClip armorCrashSound;
     public AudioClip fleshHitSound;
-    public AudioClip dieSound;
 
     //calcular distancia player
     public GameObject delante;
@@ -99,7 +98,8 @@ public class enemyV2 : MonoBehaviour
     }
 
     private void die() {
-        audioSource.PlayOneShot(dieSound);
+        MovePlayer playerScript = target.GetComponent<MovePlayer>();
+        playerScript.reproducirSonido("enemyDie");
         Destroy(gameObject);
     }
 
