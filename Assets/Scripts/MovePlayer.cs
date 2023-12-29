@@ -73,7 +73,7 @@ public class MovePlayer : MonoBehaviour
     public AudioSource musicAudioSource;
     public AudioClip destroyBullet;
     public AudioClip enemyDie;
-
+    public AudioClip sparks;
 
     //tema anillos
     private bool ringExterior = true;
@@ -350,6 +350,7 @@ public class MovePlayer : MonoBehaviour
     }
 
     public void lessLive(int damage) {
+        audioSource.PlayOneShot(sparks);
         if(immortalityTime == -1f) { //no está en tiempo de immortalidad
             shield -= damage;
             _gameController.SetShield(shield);

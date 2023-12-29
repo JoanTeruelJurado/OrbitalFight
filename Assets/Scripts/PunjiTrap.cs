@@ -10,8 +10,8 @@ public class PunjiTrap : MonoBehaviour
     private float retSound = 8.5f;
     private Animator _animator;
     private AudioSource _audioSource;
-
-
+    private float lasthittime = 0.0f;
+    private bool beenhit = false;
 
     // Start is called before the first frame update
     void Start()
@@ -26,18 +26,24 @@ public class PunjiTrap : MonoBehaviour
         retSound -= Time.deltaTime;
         if (ActualTime <= 0)
         {
+            _audioSource.Play(0);
             _animator.SetTrigger("Throw");
         }
         if (retSound <= 0) { _audioSource.Play(0); retSound = 8.5f; ActualTime = tiempoReset; }
-
+        if (beenhit) lasthittime += Time.deltaTime;
+        if (lasthittime >= 6.0f) {lasthittime = 0.0f; beenhit=false; }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (ActualTime <= 0) { // ACTIVE TRAP
+        print("HI");
+        print(ActualTime);
+        if (ActualTime <= 0.0f && lasthittime <= 0.0f) { // ACTIVE TRAP
+
             if (other.gameObject.tag == "Player") {
                 other.GetComponent<MovePlayer>().lessLive(50);
-            } 
+                beenhit = true;
+            }
         }
         /*  if (other.gameObject.tag == "Enemy") {
               other.GetComponent<enemyV1>().lessLive(50);
@@ -46,11 +52,13 @@ public class PunjiTrap : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (ActualTime <= 0)
-        { // ACTIVE TRAP
+        print("HI");
+        print(ActualTime);
+        if (ActualTime <= 0.0f && lasthittime <= 0.0f) { // ACTIVE TRAP
             if (other.gameObject.tag == "Player")
             {
                 other.GetComponent<MovePlayer>().lessLive(50);
+                beenhit = true;
             }
         }
     }

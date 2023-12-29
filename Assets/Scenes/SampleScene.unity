@@ -3299,6 +3299,7 @@ MonoBehaviour:
   musicAudioSource: {fileID: 0}
   destroyBullet: {fileID: 8300000, guid: 72d50f94636c04743b105ed7eef0f30a, type: 3}
   enemyDie: {fileID: 8300000, guid: b523c3e03b4c7614a98ee0a1ef19df1f, type: 3}
+  sparks: {fileID: 8300000, guid: 33e6c72aab413b544ba1ee9a498a678e, type: 3}
   barraPressingJGO: {fileID: 1740054745}
   boss: {fileID: 6931894794492508755}
 --- !u!33 &1083843996
@@ -3321,13 +3322,13 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 119ddb31524df054ab53ef05707296e8, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.75
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 3
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -6731,14 +6732,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7371617657534870872, guid: 60392295506ed9f41a2aa8cc7bab1769, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7371617657534870872, guid: 60392295506ed9f41a2aa8cc7bab1769, type: 3}
       propertyPath: m_ProvidesContacts
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 6561564304296118187, guid: 60392295506ed9f41a2aa8cc7bab1769, type: 3}
+    - target: {fileID: 8483006607908920631, guid: 60392295506ed9f41a2aa8cc7bab1769, type: 3}
+      propertyPath: Priority
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8483006607908920631, guid: 60392295506ed9f41a2aa8cc7bab1769, type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
