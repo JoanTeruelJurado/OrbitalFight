@@ -63,7 +63,7 @@ public class enemyV1 : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void lessLive(int damage) {
+    public void lessLive(int damage) {
         shield -= damage;
         if(shield > 0) {
             healthBar.updateHealthBar(shield, shieldMax);

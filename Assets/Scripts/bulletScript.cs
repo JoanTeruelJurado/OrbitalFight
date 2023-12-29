@@ -61,7 +61,7 @@ public class bulletScript : MonoBehaviour
     void OnTriggerEnter(Collider collision)
     {
         // Destruye la bala cuando colisiona con otro objeto
-        if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player") {
+        if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player" && collision.gameObject.tag != "Trampa") {
             MovePlayer playerScript = player.GetComponent<MovePlayer>();
             playerScript.reproducirSonido("destroyBullet");
             Destroy(gameObject);

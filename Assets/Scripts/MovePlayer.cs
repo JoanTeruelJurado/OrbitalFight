@@ -141,6 +141,7 @@ public class MovePlayer : MonoBehaviour
         animatorFunction();
         if (live == -100) { _gameController.Setplayerkilled(); return; }  // When dead do not compute a thing
         //if (live <= 0) return; 
+
         CharacterController charControl = GetComponent<CharacterController>();
         Vector3 position;
         
@@ -284,6 +285,16 @@ public class MovePlayer : MonoBehaviour
                 tiempoEntreDisparos = 0f;
             }
         }
+
+        switch (armaEquipada)
+        {
+            case Armas.Fusil:
+                _gameController.SetAmmoMag(municionFusilCargadorAct);
+                break;
+            case Armas.Pistola:
+                _gameController.SetAmmoMag(municionPistolaCargadorAct);
+                break;
+        }
     }
 
     private void Dash() {
@@ -338,7 +349,7 @@ public class MovePlayer : MonoBehaviour
         }
     }
 
-    void lessLive(int damage) {
+    public void lessLive(int damage) {
         if(immortalityTime == -1f) { //no está en tiempo de immortalidad
             shield -= damage;
             _gameController.SetShield(shield);

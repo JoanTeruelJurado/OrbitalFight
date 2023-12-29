@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour
 
     public Image _image;
     [SerializeField] private TextMeshProUGUI _timer;
-
+    [SerializeField] private TextMeshProUGUI _Ammo;
     private int GunSelected = 2;
 
     private bool Paused = false;
@@ -106,25 +106,19 @@ public class GameController : MonoBehaviour
         Debug.Log("Closing Application.");
     }
 
-    public void MuteButton(Button button)
-    {
-        if (Muted) Muted = false;
-        else Muted = true;
+    public void SetAmmoMag(int ammoleft) {
+        int MaxAmmoPistol = 6;
+        int MaxAmmoRifle = 20;
 
-        var State = button.spriteState;
-
-        if (Muted)
-        {
-            button.image.sprite = spriteArray[0];
-            State.pressedSprite = spriteArray[1];
-           // source.Pause();
+        int MagCapacity = 0;
+        if (GunSelected == 1) {//rifle
+            MagCapacity = MaxAmmoRifle;
+            _Ammo.SetText("{0:00}/{1:00}", ammoleft, MagCapacity);
         }
-        else
-        {
-            button.image.sprite = spriteArray[2];
-            State.pressedSprite = spriteArray[3];
-           // source.Play();
+        if (GunSelected == 2) {//pistola
+            MagCapacity = MaxAmmoPistol;
+            _Ammo.SetText("{0:00}/{1:00}", ammoleft, MagCapacity);
         }
-        button.spriteState = State;
+        if (GunSelected == 0) _Ammo.SetText("");
     }
 }

@@ -11,8 +11,11 @@ public class PunjiTrap : MonoBehaviour
     private Animator _animator;
     private AudioSource _audioSource;
 
+
+
     // Start is called before the first frame update
-    void Start() {
+    void Start()
+    {
         _audioSource = GetComponent<AudioSource>();
         _animator = GetComponent<Animator>();
     }
@@ -21,11 +24,34 @@ public class PunjiTrap : MonoBehaviour
     {
         ActualTime -= Time.deltaTime;
         retSound -= Time.deltaTime;
-        if (ActualTime <= 0) { 
-            ActualTime = tiempoReset;
+        if (ActualTime <= 0)
+        {
             _animator.SetTrigger("Throw");
         }
-        if (retSound <= 0) { _audioSource.Play(0); retSound = 8.5f; }
+        if (retSound <= 0) { _audioSource.Play(0); retSound = 8.5f; ActualTime = tiempoReset; }
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (ActualTime <= 0) { // ACTIVE TRAP
+            if (other.gameObject.tag == "Player") {
+                other.GetComponent<MovePlayer>().lessLive(50);
+            } 
+        }
+        /*  if (other.gameObject.tag == "Enemy") {
+              other.GetComponent<enemyV1>().lessLive(50);
+          } */
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (ActualTime <= 0)
+        { // ACTIVE TRAP
+            if (other.gameObject.tag == "Player")
+            {
+                other.GetComponent<MovePlayer>().lessLive(50);
+            }
+        }
     }
 }
