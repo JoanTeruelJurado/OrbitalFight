@@ -14,11 +14,12 @@ public class MovePlayer : MonoBehaviour
     const float radioExterior = 6.77f;
     public bool miraDerecha = true;
     private bool hayQueGirar = false;
-
     Vector3 startDirection;
     float speedY;
     private bool isJumping;
     private bool seEstaPulsandoW = false;
+    private bool godMode = false;
+    private bool seEstaPulsandoG = false;
 
     //dash
     private bool canDash;
@@ -52,12 +53,15 @@ public class MovePlayer : MonoBehaviour
     private int municionPistolaCargadorMax = 6;
     private int municionFusilCargadorMax = 20; 
     private int municionPistolaRestante = 7; //60
+    private int municionPistolaMaxima; //60
     private int municionFusilRestante = 25; //100
+    private int municionFusilMaxima; //100
     private float timerRecarga = -1f;
     private float timeRecargaPistola = 0.8f;
     private float timeRecargaFusil = 1.8f;
     private bool canDisparar = true;
     private bool seEstaPulsandoQ = false;
+    private bool seEstaPulsandoM = false;
 
 
     //sounds
@@ -120,6 +124,9 @@ public class MovePlayer : MonoBehaviour
         dashingCooldown = 0.5f;
         dashingPower = 150f;
         alturaPlataformaBoss = 3;
+
+        municionPistolaMaxima = municionPistolaRestante;
+        municionFusilMaxima = municionFusilRestante;
 
         _gameController.SetHealth(100);
         _gameController.SetShield(100);
@@ -272,6 +279,22 @@ public class MovePlayer : MonoBehaviour
         else { speedY -= gravity * Time.deltaTime; }
         if(seEstaPulsandoW && !Input.GetKey(KeyCode.W)) seEstaPulsandoW = false;
 
+        //Atajos
+        if(Input.GetKey(KeyCode.G) && !seEstaPulsandoG) { //god mode
+            godMode = !godMode;
+            seEstaPulsandoG = true;
+        }
+        if(seEstaPulsandoG && !Input.GetKey(KeyCode.G)) seEstaPulsandoG = false;
+
+        if(Input.GetKey(KeyCode.M) && !seEstaPulsandoM) { //max ammo
+            municionPistolaCargadorAct = municionPistolaCargadorMax;
+            municionFusilCargadorAct = municionFusilCargadorMax;
+            municionPistolaRestante = municionPistolaMaxima;
+            municionFusilRestante = municionFusilMaxima;
+            seEstaPulsandoM = true;
+        }
+        if(seEstaPulsandoM && !Input.GetKey(KeyCode.M)) seEstaPulsandoM = false;
+
         //Disparar
         tiempoEntreDisparos += Time.deltaTime;
         if ((Input.GetMouseButtonDown(0) || Input.GetKey(KeyCode.K)) && canDisparar) // 0 representa el botón izquierdo del ratón
@@ -350,8 +373,8 @@ public class MovePlayer : MonoBehaviour
     }
 
     public void lessLive(int damage) {
-        audioSource.PlayOneShot(sparks);
-        if(immortalityTime == -1f) { //no está en tiempo de immortalidad
+        if(immortalityTime == -1f && !godMode) { //no está en tiempo de immortalidad
+            audioSource.PlayOneShot(sparks);
             shield -= damage;
             _gameController.SetShield(shield);
             if (shield < 0) {

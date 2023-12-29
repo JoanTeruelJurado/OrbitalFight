@@ -104,6 +104,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ObstacleV2
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f3905e921d084cf4a943fe5bcff34013, type: 3}
+      propertyPath: m_TagString
+      value: Entorno
+      objectReference: {fileID: 0}
     - target: {fileID: 7071182760956848314, guid: f3905e921d084cf4a943fe5bcff34013, type: 3}
       propertyPath: m_Enabled
       value: 1
