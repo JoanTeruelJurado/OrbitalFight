@@ -89,12 +89,18 @@ public class enemyV2 : MonoBehaviour
     }
 
     private void Disparar() {
-        GameObject nuevaBalaObject = Instantiate(bala, transform.position, Quaternion.identity);
-        Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
-        // 'miraDerecha' es un atributo del componente 'bulletScript'
-        bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
-        balita.miraDerecha = direccionDerecha;
-        balita.altura = transform.position.y;
+        if(mismaAltura()) {
+            GameObject nuevaBalaObject = Instantiate(bala, transform.position, Quaternion.identity);
+            Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
+            // 'miraDerecha' es un atributo del componente 'bulletScript'
+            bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
+            balita.miraDerecha = direccionDerecha;
+            balita.altura = transform.position.y;
+        }
+    }
+
+    private bool mismaAltura() {
+        return Mathf.Abs(transform.position.y - target.transform.position.y) < 2f;
     }
 
     private void die() {
