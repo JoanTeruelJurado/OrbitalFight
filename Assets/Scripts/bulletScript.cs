@@ -61,12 +61,13 @@ public class bulletScript : MonoBehaviour
     void OnTriggerEnter(Collider collision)
     {
         // Destruye la bala cuando colisiona con otro objeto
-        if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player" && collision.gameObject.tag != "Trampa") {
+        if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player" && collision.gameObject.tag != "Trampa" && collision.gameObject.tag != "ChangerRing" && collision.gameObject.tag != "Jumper") {
+            player = GameObject.Find("Player");
             MovePlayer playerScript = player.GetComponent<MovePlayer>();
             playerScript.reproducirSonido("destroyBullet");
             Destroy(gameObject);
         }
-        if((gameObject.tag == "BulletEnemy" || gameObject.tag == "Corte") && (collision.gameObject.tag != "EnemyV1" && collision.gameObject.tag != "EnemyV2" && collision.gameObject.tag != "Boss")) {
+        if((gameObject.tag == "BulletEnemy" || gameObject.tag == "Corte") && (collision.gameObject.tag != "EnemyV1" && collision.gameObject.tag != "EnemyV2" && collision.gameObject.tag != "Boss" && collision.gameObject.tag != "ChangerRing" && collision.gameObject.tag != "Jumper")) {
             if(collision.gameObject.tag == "Player") {
                 MovePlayer p = collision.GetComponent<MovePlayer>();
                 if(!p.immortal) {

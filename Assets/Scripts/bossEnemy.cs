@@ -66,6 +66,10 @@ public class bossEnemy : MonoBehaviour
     public Animator _animator;
     private bool isWalking = false;
 
+    //calcular distancia player
+    public GameObject delante;
+    public GameObject detras;
+
     void Start()
     {
         speed = 40f;
@@ -78,125 +82,141 @@ public class bossEnemy : MonoBehaviour
 
     void Update()
     {
-        isWalking = false;
-        if (dashing)
-        {
-            isWalking = true;
-            timerDashing += Time.deltaTime;
-            if (timerDashing >= timerDashingMax)
-            {
-                dashing = false;
-                return;
-            }
-            if (Vector3.Distance(transform.position, target.transform.position) > 5f)
-            {
-                Vector3 center = new Vector3(0f, transform.position.y, 0f);
-                float angle = 130f * Time.deltaTime;
-                if (direccionDerecha) angle *= -1f;
-                transform.RotateAround(center, Vector3.up, angle);
-            }
-            else
-            {
-                dashing = false;
-            }
-            return;
-        }
-
-        if (cronningNewAttack)
-        {
-            tiempoEntreAtaques = Random.Range(1, 4);
-            cronningNewAttack = false;
-        }
-        if (tiempoEntreAtaques > 0f)
-        {
-            tiempoEntreAtaques -= Time.deltaTime;
-        }
-        else if (tiempoEntreAtaques <= 0f)
-        {
-            vaAAtacar = true;
-        }
-
-        if (!attacking && !vaAAtacar)
-        {
-            if (Vector3.Distance(transform.position, target.transform.position) > 4f)
+        if(mismaAltura()) {
+            isWalking = false;
+            float distanciaAlPlayer = Vector3.Distance(transform.position, target.transform.position);
+            if (dashing)
             {
                 isWalking = true;
-                Vector3 center = new Vector3(0f, transform.position.y, 0f);
-                float angle = speed * Time.deltaTime;
-                if (direccionDerecha) angle *= -1f;
-                transform.RotateAround(center, Vector3.up, angle);
+                timerDashing += Time.deltaTime;
+                if (timerDashing >= timerDashingMax)
+                {
+                    dashing = false;
+                    return;
+                }
+                if (distanciaAlPlayer > 5f)
+                {
+                    Vector3 center = new Vector3(0f, transform.position.y, 0f);
+                    float angle = 130f * Time.deltaTime;
+                    if (direccionDerecha) angle *= -1f;
+                    transform.RotateAround(center, Vector3.up, angle);
+                }
+                else
+                {
+                    dashing = false;
+                }
+                return;
             }
-        }
 
-        if (Vector3.Distance(transform.position, target.transform.position) < 10f && !attacking && vaAAtacar)
-        {
-            disparandoFuego = true;
-            attacking = true;
-            bool aux = direccionDerecha;
-            //girar para encarar al player
-            direccionDerecha = !movePlayer.miraDerecha;
-            if (aux != direccionDerecha)
+            if (cronningNewAttack)
             {
-                Vector3 escalaActual = transform.localScale;
-                escalaActual.x *= -1;
-                transform.localScale = escalaActual;
+                tiempoEntreAtaques = Random.Range(1, 4);
+                cronningNewAttack = false;
             }
-        }
-        else if (Vector3.Distance(transform.position, target.transform.position) < 16f && !attacking && vaAAtacar)
-        {
-            lanzandoCortes = true;
-            attacking = true;
-        }
-        else if (Vector3.Distance(transform.position, target.transform.position) > 10f && !attacking && !vaAAtacar)
-        {
-            dashing = true;
-            timerDashing = 0f;
-        }
-
-
-        if (disparandoFuego)
-        {
-            timerDisparandoFuego += Time.deltaTime;
-            timeEntreFuego += Time.deltaTime;
-            if (timeEntreFuego >= timeEntreFuegoMin)
+            if (tiempoEntreAtaques > 0f)
             {
-                timeEntreFuego = 0f;
-                Lanzallamas();
+                tiempoEntreAtaques -= Time.deltaTime;
             }
-            if (timerDisparandoFuego > timerDisparandoFuegoMax)
+            else if (tiempoEntreAtaques <= 0f)
             {
-                timerDisparandoFuego = 0f;
-                timeEntreFuego = 0f;
-                disparandoFuego = false;
-                attacking = false;
-                vaAAtacar = false;
-                cronningNewAttack = true;
+                vaAAtacar = true;
             }
 
+            if (!attacking && !vaAAtacar)
+            {
+                if (distanciaAlPlayer > 4f)
+                {
+                    isWalking = true;
+                    Vector3 center = new Vector3(0f, transform.position.y, 0f);
+                    float angle = speed * Time.deltaTime;
+                    if (direccionDerecha) angle *= -1f;
+                    transform.RotateAround(center, Vector3.up, angle);
+                }
+            }
+
+            if (distanciaAlPlayer < 5f && !attacking && vaAAtacar)
+            {
+                disparandoFuego = true;
+                attacking = true;
+                bool aux = direccionDerecha;
+                if(Vector3.Distance(detras.transform.position, target.transform.position) < Vector3.Distance(delante.transform.position, target.transform.position)) {
+                    direccionDerecha = !direccionDerecha;
+                }
+                if(aux != direccionDerecha) { //se gira si lo detecta en el otro sentido
+                    girar();
+                }
+            }
+            else if (distanciaAlPlayer > 7f && !attacking && vaAAtacar)
+            {
+                lanzandoCortes = true;
+                attacking = true;
+            }
+            else if (distanciaAlPlayer > 10f && !attacking && !vaAAtacar)
+            {
+                dashing = true;
+                timerDashing = 0f;
+            }
+
+
+            if (disparandoFuego)
+            {
+                timerDisparandoFuego += Time.deltaTime;
+                timeEntreFuego += Time.deltaTime;
+                if (timeEntreFuego >= timeEntreFuegoMin)
+                {
+                    timeEntreFuego = 0f;
+                    Lanzallamas();
+                }
+                if (timerDisparandoFuego > timerDisparandoFuegoMax)
+                {
+                    timerDisparandoFuego = 0f;
+                    timeEntreFuego = 0f;
+                    disparandoFuego = false;
+                    attacking = false;
+                    vaAAtacar = false;
+                    cronningNewAttack = true;
+                }
+
+            }
+            else audioSource.Pause();
+
+            if (lanzandoCortes)
+            {
+                timerDisparandoCorte += Time.deltaTime;
+                timeEntreCorte += Time.deltaTime;
+                if (timeEntreCorte >= timeEntreCorteMin)
+                {
+                    timeEntreCorte = 0f;
+                    Cortar();
+                }
+                if (timerDisparandoCorte > timerDisparandoCorteMax)
+                {
+                    timerDisparandoCorte = 0f;
+                    timeEntreCorte = 0f;
+                    lanzandoCortes = false;
+                    attacking = false;
+                    vaAAtacar = false;
+                    cronningNewAttack = true;
+                }
+            }
+            animatorFunction();
         }
-        else audioSource.Pause();
+    }
 
-        if (lanzandoCortes)
-        {
-            timerDisparandoCorte += Time.deltaTime;
-            timeEntreCorte += Time.deltaTime;
-            if (timeEntreCorte >= timeEntreCorteMin)
-            {
-                timeEntreCorte = 0f;
-                Cortar();
-            }
-            if (timerDisparandoCorte > timerDisparandoCorteMax)
-            {
-                timerDisparandoCorte = 0f;
-                timeEntreCorte = 0f;
-                lanzandoCortes = false;
-                attacking = false;
-                vaAAtacar = false;
-                cronningNewAttack = true;
-            }
-        }
-        animatorFunction();
+    private void girar() {
+        Vector3 aux1 = delante.transform.position;
+        Vector3 aux2 = detras.transform.position;
 
+        Vector3 escalaActual = transform.localScale;
+        escalaActual.z *= -1;
+        transform.localScale = escalaActual;
+
+        delante.transform.position = aux2;
+        detras.transform.position = aux1;
+    }
+
+    private bool mismaAltura() {
+        return Mathf.Abs(transform.position.y - target.transform.position.y) < 2f;
     }
 
     private void animatorFunction()

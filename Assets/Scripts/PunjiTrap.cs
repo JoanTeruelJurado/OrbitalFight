@@ -36,8 +36,8 @@ public class PunjiTrap : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print("HI");
-        print(ActualTime);
+        //print("HI");
+        //print(ActualTime);
         if (ActualTime <= 0.0f && lasthittime <= 0.0f) { // ACTIVE TRAP
 
             if (other.gameObject.tag == "Player") {
@@ -52,8 +52,8 @@ public class PunjiTrap : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        print("HI");
-        print(ActualTime);
+        //print("HI");
+        //print(ActualTime);
         if (ActualTime <= 0.0f && lasthittime <= 0.0f) { // ACTIVE TRAP
             if (other.gameObject.tag == "Player")
             {

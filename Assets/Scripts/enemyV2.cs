@@ -67,7 +67,6 @@ public class enemyV2 : MonoBehaviour
             MovePlayer player = target.GetComponent<MovePlayer>();
             
             bool aux = direccionDerecha;
-            //direccionDerecha = !player.miraDerecha;
             if(Vector3.Distance(detras.transform.position, target.transform.position) < Vector3.Distance(delante.transform.position, target.transform.position)) {
                 direccionDerecha = !direccionDerecha;
             }
@@ -92,7 +91,6 @@ public class enemyV2 : MonoBehaviour
         if(mismaAltura()) {
             GameObject nuevaBalaObject = Instantiate(bala, transform.position, Quaternion.identity);
             Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
-            // 'miraDerecha' es un atributo del componente 'bulletScript'
             bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
             balita.miraDerecha = direccionDerecha;
             balita.altura = transform.position.y;
