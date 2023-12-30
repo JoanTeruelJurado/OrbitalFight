@@ -51,6 +51,8 @@ public class enemyV1 : MonoBehaviour
             transform.localScale = escalaActual;
             hayQueGirar = false;
         }
+
+        destruirSiMuyAbajo();
     }
 
     private IEnumerator move() {
@@ -61,6 +63,11 @@ public class enemyV1 : MonoBehaviour
         MovePlayer playerScript = target.GetComponent<MovePlayer>();
         playerScript.reproducirSonido("enemyDie");
         Destroy(gameObject);
+    }
+
+    private void destruirSiMuyAbajo() {
+        target = GameObject.Find("Player");
+        if(target.transform.position.y - transform.position.y >= 5f) Destroy(gameObject);
     }
 
     public void lessLive(int damage) {

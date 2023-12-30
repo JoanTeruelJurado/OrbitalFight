@@ -12,26 +12,30 @@ public class PunjiTrap : MonoBehaviour
     private AudioSource _audioSource;
     private float lasthittime = 0.0f;
     private bool beenhit = false;
+    private GameObject target;
 
     // Start is called before the first frame update
     void Start()
     {
         _audioSource = GetComponent<AudioSource>();
         _animator = GetComponent<Animator>();
+        target = GameObject.Find("Player");
     }
     // Update is called once per frame
     void Update()
     {
-        ActualTime -= Time.deltaTime;
-        retSound -= Time.deltaTime;
-        if (ActualTime <= 0)
-        {
-            _audioSource.Play(0);
-            _animator.SetTrigger("Throw");
+        if(mismaAltura()) {
+            ActualTime -= Time.deltaTime;
+            retSound -= Time.deltaTime;
+            if (ActualTime <= 0)
+            {
+                _audioSource.Play(0);
+                _animator.SetTrigger("Throw");
+            }
+            if (retSound <= 0) {  _animator.ResetTrigger("Throw");_audioSource.Play(0); retSound = 8.5f; ActualTime = tiempoReset; }
+            if (beenhit) lasthittime += Time.deltaTime;
+            if (lasthittime >= 6.0f) {lasthittime = 0.0f; beenhit=false; }
         }
-        if (retSound <= 0) {  _animator.ResetTrigger("Throw");_audioSource.Play(0); retSound = 8.5f; ActualTime = tiempoReset; }
-        if (beenhit) lasthittime += Time.deltaTime;
-        if (lasthittime >= 6.0f) {lasthittime = 0.0f; beenhit=false; }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -61,5 +65,9 @@ public class PunjiTrap : MonoBehaviour
                 beenhit = true;
             }
         }
+    }
+
+    private bool mismaAltura() {
+        return Mathf.Abs(transform.position.y - target.transform.position.y) < 2f;
     }
 }

@@ -38,7 +38,7 @@ public class bossEnemy : MonoBehaviour
     private float timeEntreCorteMin = 0.5f;
     private float timerDisparandoCorte = 0f;
     private float timerDisparandoCorteMax = 2.5f;
-    private bool lanzandoCortes = true;
+    private bool lanzandoCortes = false;
     private List<Vector3> cortesLocations = new List<Vector3>();
     public GameObject corteLoc1;
     public GameObject corteLoc2;
