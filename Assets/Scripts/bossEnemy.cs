@@ -48,8 +48,10 @@ public class bossEnemy : MonoBehaviour
     //dashing
     private bool dashing = false;
     private float timerDashing = 0f;
-    private float timerDashingMax = 0.3f;
+    private float timerDashingMax = 0.9f;
     private float dashingSpeed;
+    private float dashCooldown = 2f;
+    private float dashTimerCooldown = -1f;
 
     //
     private float tiempoEntreAtaques = 0f;
@@ -62,6 +64,9 @@ public class bossEnemy : MonoBehaviour
     public AudioClip movement;
     public AudioClip flamethrower;
     public AudioSource _MovementaudioSource;
+    public AudioClip dashSound;
+    public AudioClip corteSound;
+
     //animations
     public Animator _animator;
     private bool isWalking = false;
@@ -77,21 +82,22 @@ public class bossEnemy : MonoBehaviour
         timer = 0f;
         movePlayer = target.GetComponent<MovePlayer>();
         center = new Vector3(0f, transform.position.y, 0f);
-        isWalking = false;
     }
 
     void Update()
     {
         if(mismaAltura()) {
+            if (!_MovementaudioSource.isPlaying) _MovementaudioSource.Play();
             isWalking = false;
             float distanciaAlPlayer = Vector3.Distance(transform.position, target.transform.position);
-            if (dashing)
-            {
+            if (dashing){
+                print("Dashing");
                 isWalking = true;
                 timerDashing += Time.deltaTime;
                 if (timerDashing >= timerDashingMax)
                 {
                     dashing = false;
+                    dashTimerCooldown = 0f;
                     return;
                 }
                 if (distanciaAlPlayer > 5f)
@@ -104,101 +110,112 @@ public class bossEnemy : MonoBehaviour
                 else
                 {
                     dashing = false;
+                    dashTimerCooldown = 0f;
                 }
                 return;
             }
-
-            if (cronningNewAttack)
-            {
-                tiempoEntreAtaques = Random.Range(1, 4);
-                cronningNewAttack = false;
-            }
-            if (tiempoEntreAtaques > 0f)
-            {
-                tiempoEntreAtaques -= Time.deltaTime;
-            }
-            else if (tiempoEntreAtaques <= 0f)
-            {
-                vaAAtacar = true;
-            }
-
-            if (!attacking && !vaAAtacar)
-            {
-                if (distanciaAlPlayer > 4f)
+            else {
+                if(dashTimerCooldown >= 0f) {
+                    dashTimerCooldown += Time.deltaTime;
+                    if(dashTimerCooldown >= dashCooldown) {
+                        dashTimerCooldown = -1f;
+                    }
+                }
+                if (cronningNewAttack)
                 {
-                    isWalking = true;
-                    Vector3 center = new Vector3(0f, transform.position.y, 0f);
-                    float angle = speed * Time.deltaTime;
-                    if (direccionDerecha) angle *= -1f;
-                    transform.RotateAround(center, Vector3.up, angle);
+                    tiempoEntreAtaques = Random.Range(1, 4);
+                    cronningNewAttack = false;
                 }
-            }
-
-            if (distanciaAlPlayer < 5f && !attacking && vaAAtacar)
-            {
-                disparandoFuego = true;
-                attacking = true;
-                bool aux = direccionDerecha;
-                if(Vector3.Distance(detras.transform.position, target.transform.position) < Vector3.Distance(delante.transform.position, target.transform.position)) {
-                    direccionDerecha = !direccionDerecha;
-                }
-                if(aux != direccionDerecha) { //se gira si lo detecta en el otro sentido
-                    girar();
-                }
-            }
-            else if (distanciaAlPlayer > 7f && !attacking && vaAAtacar)
-            {
-                lanzandoCortes = true;
-                attacking = true;
-            }
-            else if (distanciaAlPlayer > 10f && !attacking && !vaAAtacar)
-            {
-                dashing = true;
-                timerDashing = 0f;
-            }
-
-
-            if (disparandoFuego)
-            {
-                timerDisparandoFuego += Time.deltaTime;
-                timeEntreFuego += Time.deltaTime;
-                if (timeEntreFuego >= timeEntreFuegoMin)
+                if (tiempoEntreAtaques > 0f)
                 {
-                    timeEntreFuego = 0f;
-                    Lanzallamas();
+                    tiempoEntreAtaques -= Time.deltaTime;
                 }
-                if (timerDisparandoFuego > timerDisparandoFuegoMax)
+                else if (tiempoEntreAtaques <= 0f)
                 {
-                    timerDisparandoFuego = 0f;
-                    timeEntreFuego = 0f;
-                    disparandoFuego = false;
-                    attacking = false;
-                    vaAAtacar = false;
-                    cronningNewAttack = true;
+                    vaAAtacar = true;
                 }
 
-            }
-            else audioSource.Pause();
+                if (!attacking && !vaAAtacar)
+                {
+                    if (distanciaAlPlayer > 4f)
+                    {
+                        if(!_MovementaudioSource.isPlaying) _MovementaudioSource.Play();
+                        isWalking = true;
+                        Vector3 center = new Vector3(0f, transform.position.y, 0f);
+                        float angle = speed * Time.deltaTime;
+                        if (direccionDerecha) angle *= -1f;
+                        transform.RotateAround(center, Vector3.up, angle);
+                    }
+                }
 
-            if (lanzandoCortes)
-            {
-                timerDisparandoCorte += Time.deltaTime;
-                timeEntreCorte += Time.deltaTime;
-                if (timeEntreCorte >= timeEntreCorteMin)
+                if (distanciaAlPlayer < 6f && !attacking && vaAAtacar)
                 {
-                    timeEntreCorte = 0f;
-                    Cortar();
+                    disparandoFuego = true;
+                    attacking = true;
+                    bool aux = direccionDerecha;
+                    if(Vector3.Distance(detras.transform.position, target.transform.position) < Vector3.Distance(delante.transform.position, target.transform.position)) {
+                        direccionDerecha = !direccionDerecha;
+                    }
+                    if(aux != direccionDerecha) { //se gira si lo detecta en el otro sentido
+                        girar();
+                    }
                 }
-                if (timerDisparandoCorte > timerDisparandoCorteMax)
+                else if (distanciaAlPlayer >= 6f && distanciaAlPlayer <= 10f && !attacking && vaAAtacar)
                 {
-                    timerDisparandoCorte = 0f;
-                    timeEntreCorte = 0f;
-                    lanzandoCortes = false;
-                    attacking = false;
-                    vaAAtacar = false;
-                    cronningNewAttack = true;
+                    lanzandoCortes = true;
+                    attacking = true;
+                }
+                else if (distanciaAlPlayer > 10f && !attacking && dashTimerCooldown == -1f) // && !vaAAtacar
+                {
+                    audioSource.PlayOneShot(dashSound);
+                    dashing = true;
+                    timerDashing = 0f;
+                }
+
+
+                if (disparandoFuego)
+                {
+                    timerDisparandoFuego += Time.deltaTime;
+                    timeEntreFuego += Time.deltaTime;
+                    if (timeEntreFuego >= timeEntreFuegoMin)
+                    {
+                        timeEntreFuego = 0f;
+                        Lanzallamas();
+                    }
+                    if (timerDisparandoFuego > timerDisparandoFuegoMax)
+                    {
+                        timerDisparandoFuego = 0f;
+                        timeEntreFuego = 0f;
+                        disparandoFuego = false;
+                        attacking = false;
+                        vaAAtacar = false;
+                        cronningNewAttack = true;
+                    }
+
+                }
+                else audioSource.Pause();
+
+                if (lanzandoCortes)
+                {
+                    timerDisparandoCorte += Time.deltaTime;
+                    timeEntreCorte += Time.deltaTime;
+                    if (timeEntreCorte >= timeEntreCorteMin)
+                    {
+                        timeEntreCorte = 0f;
+                        Cortar();
+                    }
+                    if (timerDisparandoCorte > timerDisparandoCorteMax)
+                    {
+                        timerDisparandoCorte = 0f;
+                        timeEntreCorte = 0f;
+                        lanzandoCortes = false;
+                        attacking = false;
+                        vaAAtacar = false;
+                        cronningNewAttack = true;
+                    }
                 }
             }
+            
             animatorFunction();
         }
     }
@@ -208,7 +225,7 @@ public class bossEnemy : MonoBehaviour
         Vector3 aux2 = detras.transform.position;
 
         Vector3 escalaActual = transform.localScale;
-        escalaActual.z *= -1;
+        escalaActual.x *= -1;
         transform.localScale = escalaActual;
 
         delante.transform.position = aux2;
@@ -300,6 +317,7 @@ public class bossEnemy : MonoBehaviour
 
     void Lanzallamas()
     {
+        if(_MovementaudioSource.isPlaying) _MovementaudioSource.Pause();
         if (!audioSource.isPlaying) audioSource.PlayOneShot(flamethrower);
        
         
@@ -311,6 +329,7 @@ public class bossEnemy : MonoBehaviour
 
     void Cortar()
     {
+        if(_MovementaudioSource.isPlaying) _MovementaudioSource.Pause();
         int pos = Random.Range(0, 4) + 1;
         Vector3 position = new Vector3(0f, 0f, 0f);
         bool derecha = false;
@@ -333,6 +352,7 @@ public class bossEnemy : MonoBehaviour
                 derecha = true;
                 break;
         }
+        audioSource.PlayOneShot(corteSound);
         GameObject nuevoCorteObject = Instantiate(corte, position, Quaternion.identity);
         // 'miraDerecha' es un atributo del componente 'bulletScript'
         bulletScript corteLanzado = nuevoCorteObject.GetComponent<bulletScript>();
@@ -341,77 +361,3 @@ public class bossEnemy : MonoBehaviour
     }
 
 }
-
-/*
-//con rigidbody + capsule collider
-        Rigidbody rb = GetComponent<Rigidbody>();
-        Vector3 position;
-        float anglePerStep = speed * Time.deltaTime;
-        if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-        Vector3 center = new Vector3(0, transform.position.y, 0);
-        Vector3 direction;
-
-        float elapsedTime = 0f;
-        while (elapsedTime < 4f)
-        {
-            position = transform.position;
-            direction = position - center;
-            if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-            Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
-
-            // Calcular la dirección del movimiento
-            Vector3 movementDirection = (target - position).normalized;
-
-            // Realizar el barrido de colisión
-            RaycastHit hit;
-            if (rb.SweepTest(movementDirection, out hit, speed * Time.deltaTime))
-            {
-                // Hay una colisión, ajustar la posición
-                transform.position = hit.point;
-                Physics.SyncTransforms();
-            }
-            else
-            {
-                // No hay colisión, moverse a la nueva posición
-                rb.MovePosition(rb.position + movementDirection * speed * Time.deltaTime);
-                Physics.SyncTransforms();
-            }
-
-            // Rotación
-            transform.LookAt(new Vector3(0, transform.position.y, 0));
-
-            elapsedTime += Time.deltaTime;
-
-            yield return null;
-        }
-        rutina = 0;
-
-    //con character controller
-    CharacterController charControl = GetComponent<CharacterController>();
-        Vector3 position;
-        float anglePerStep = speed * Time.deltaTime;
-        if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-        Vector3 center = new Vector3(0, transform.position.y, 0);
-        Vector3 direction;
-
-        float elapsedTime = 0f;
-        while (elapsedTime < 4f)
-        {
-            position = transform.position;
-            direction = position - center;
-            if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-            Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
-
-            if (charControl.Move(target - position) != CollisionFlags.None) {
-                transform.position = position;
-            }
-
-            // Rotación
-            transform.LookAt(new Vector3(0, transform.position.y, 0));
-
-            elapsedTime += Time.deltaTime;
-
-            yield return null;
-        }
-        rutina = 0;
-*/
