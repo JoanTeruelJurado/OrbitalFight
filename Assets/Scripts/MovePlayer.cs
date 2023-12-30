@@ -192,16 +192,20 @@ public class MovePlayer : MonoBehaviour
             if(timerRecarga >= tiempoRecargaMin) {
                 timerRecarga = -1f;
                 canDisparar = true;
+                _animator.ResetTrigger("isReloading");
             }
         }
-
+         
+        
         //recarga botón
         if(Input.GetKey(KeyCode.R) && canDisparar) {
             Recarga();
+            _animator.SetTrigger("isReloading");
         }
+        
 
         //cambio de arma
-        if(Input.GetKey(KeyCode.Q) && canDisparar && !seEstaPulsandoQ) {
+        if (Input.GetKey(KeyCode.Q) && canDisparar && !seEstaPulsandoQ) {
             if(fusilDesbloqueado) {
                 if(armaEquipada == Armas.Pistola) {
                     armaEquipada = Armas.Fusil;
@@ -283,6 +287,7 @@ public class MovePlayer : MonoBehaviour
         if(Input.GetKey(KeyCode.G) && !seEstaPulsandoG) { //god mode
             godMode = !godMode;
             seEstaPulsandoG = true;
+            _gameController.SetGodMode(godMode);
         }
         if(seEstaPulsandoG && !Input.GetKey(KeyCode.G)) seEstaPulsandoG = false;
 
@@ -302,20 +307,25 @@ public class MovePlayer : MonoBehaviour
             if(armaEquipada == Armas.Fusil && tiempoEntreDisparos > tiempoEntreDisparosMinFusil) {
                 Disparar();
                 tiempoEntreDisparos = 0f;
+                
+                _animator.SetInteger("Firing", 2);
             }
             else if(armaEquipada == Armas.Pistola && tiempoEntreDisparos > tiempoEntreDisparosMinPistola) {
                 Disparar();
                 tiempoEntreDisparos = 0f;
+                _animator.SetInteger("Firing", 1);
             }
+            
         }
-
+        else _animator.SetInteger("Firing", 0);
+        
         switch (armaEquipada)
         {
             case Armas.Fusil:
-                _gameController.SetAmmoMag(municionFusilCargadorAct);
+                _gameController.SetAmmoMag(municionFusilCargadorAct,municionFusilRestante);
                 break;
             case Armas.Pistola:
-                _gameController.SetAmmoMag(municionPistolaCargadorAct);
+                _gameController.SetAmmoMag(municionPistolaCargadorAct,municionPistolaRestante);
                 break;
         }
     }
@@ -600,6 +610,8 @@ public class MovePlayer : MonoBehaviour
 
         if (isAlreadyJumping && !isJumping) { _animator.SetBool("isJumping", false); }
         if (!isAlreadyJumping && isJumping) { _animator.SetBool("isJumping", true); }
+
+
     }      
 }
 

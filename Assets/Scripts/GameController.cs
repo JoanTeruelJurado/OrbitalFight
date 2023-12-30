@@ -27,6 +27,8 @@ public class GameController : MonoBehaviour
     private bool bosskilled = false;
     private bool playerkilled = false;
 
+    [SerializeField] private Image _star;
+
     public TextMeshProUGUI _title;
     // Update is called once per frame
     void Update()
@@ -106,19 +108,23 @@ public class GameController : MonoBehaviour
         Debug.Log("Closing Application.");
     }
 
-    public void SetAmmoMag(int ammoleft) {
+    public void SetAmmoMag(int ammoleft, int total) {
         int MaxAmmoPistol = 6;
         int MaxAmmoRifle = 20;
 
         int MagCapacity = 0;
         if (GunSelected == 1) {//rifle
             MagCapacity = MaxAmmoRifle;
-            _Ammo.SetText("{0:00}/{1:00}", ammoleft, MagCapacity);
+            _Ammo.SetText("{0:00}/{1:00} - {2:00}", ammoleft, MagCapacity, total);
         }
         if (GunSelected == 2) {//pistola
             MagCapacity = MaxAmmoPistol;
-            _Ammo.SetText("{0:00}/{1:00}", ammoleft, MagCapacity);
+            _Ammo.SetText("{0:00}/{1:00} - {2:00}", ammoleft, MagCapacity, total);
         }
         if (GunSelected == 0) _Ammo.SetText("");
+    }
+
+    public void SetGodMode(bool godMode) {
+        _star.enabled = godMode;
     }
 }

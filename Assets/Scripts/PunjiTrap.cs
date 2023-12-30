@@ -29,7 +29,7 @@ public class PunjiTrap : MonoBehaviour
             _audioSource.Play(0);
             _animator.SetTrigger("Throw");
         }
-        if (retSound <= 0) { _audioSource.Play(0); retSound = 8.5f; ActualTime = tiempoReset; }
+        if (retSound <= 0) {  _animator.ResetTrigger("Throw");_audioSource.Play(0); retSound = 8.5f; ActualTime = tiempoReset; }
         if (beenhit) lasthittime += Time.deltaTime;
         if (lasthittime >= 6.0f) {lasthittime = 0.0f; beenhit=false; }
     }
