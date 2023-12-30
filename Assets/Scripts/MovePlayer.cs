@@ -453,22 +453,18 @@ public class MovePlayer : MonoBehaviour
             if (armaEquipada == Armas.Fusil)
             {
                 AudioSource.PlayClipAtPoint(rifleShot, transform.position, 0.5f);
-                nuevaBalaObject = Instantiate(balaFusil, transform.position, Quaternion.identity);
+                nuevaBalaObject = Instantiate(balaFusil, puntoDisparo.transform.position, Quaternion.identity);
                 --municionFusilCargadorAct;
                 if(municionFusilCargadorAct == 0) {
                     Recarga();
                 }
-                print(municionFusilCargadorAct);
-                print(municionFusilRestante);
             }
             else
             {
                 AudioSource.PlayClipAtPoint(blasterShot, transform.position, 0.5f);
-                nuevaBalaObject = Instantiate(balaPistola, transform.position, Quaternion.identity);
+                nuevaBalaObject = Instantiate(balaPistola, puntoDisparo.transform.position, Quaternion.identity);
                 --municionPistolaCargadorAct;
                 if(municionPistolaCargadorAct == 0) Recarga();
-                print(municionPistolaCargadorAct);
-                print(municionPistolaRestante);
             }
             Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
             // 'miraDerecha' es un atributo del componente 'bulletScript'
@@ -546,7 +542,7 @@ public class MovePlayer : MonoBehaviour
                     barraPressingJ.esconderBarraPressingJ();
 
                     Vector3 center = new Vector3(0f, transform.position.y, 0f);
-                    float distanciaSalto = ringExterior ? 3f : -3f;
+                    float distanciaSalto = ringExterior ? 3.3f : -3.3f;
                     Vector3 direccion = (transform.position - center).normalized;
                     float distanciaActual = Vector3.Distance(transform.position, center);
                     float nuevaDistancia = Mathf.Clamp(distanciaActual + distanciaSalto, 0f, float.MaxValue);
