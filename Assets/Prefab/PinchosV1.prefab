@@ -13,11 +13,11 @@ GameObject:
   - component: {fileID: 6761142327157852652}
   - component: {fileID: 666788806186472697}
   - component: {fileID: 8483006607908920631}
-  - component: {fileID: 7371617657534870872}
+  - component: {fileID: 6125167636710113719}
   - component: {fileID: 5424726681829542439}
   m_Layer: 0
   m_Name: PinchosV1
-  m_TagString: Untagged
+  m_TagString: Trampa
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -126,7 +126,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 0
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 15
@@ -164,7 +164,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -204,8 +204,8 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!65 &7371617657534870872
-BoxCollider:
+--- !u!136 &6125167636710113719
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -222,9 +222,11 @@ BoxCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.05421268, y: 0.054507155, z: 0.04449199}
-  m_Center: {x: 0.07895968, y: -0.10503534, z: 0.027146}
+  serializedVersion: 2
+  m_Radius: 0.0192176
+  m_Height: 0.05008448
+  m_Direction: 2
+  m_Center: {x: 0.08023885, y: -0.10688549, z: 0.025271503}
 --- !u!114 &5424726681829542439
 MonoBehaviour:
   m_ObjectHideFlags: 0

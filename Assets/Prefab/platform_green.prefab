@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6413467607057201031}
   - component: {fileID: 1721537764477388796}
-  - component: {fileID: 444138824768456410}
   m_Layer: 0
   m_Name: platform_green
   m_TagString: ChangerRing
@@ -55,20 +54,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 11.786437, y: 2.3489232, z: 10.153288}
-  m_Center: {x: -0.10537329, y: 0.67446125, z: -0.33749974}
---- !u!114 &444138824768456410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2358856621496796557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1636a5baccd0fa94e9a54b79b0305dda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Size: {x: 11.786437, y: 1.8189815, z: 10.153288}
+  m_Center: {x: -0.10537329, y: 0.40949038, z: -0.33749974}
 --- !u!1 &4890039080379077689
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,8 +172,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8310668498487881783}
   - component: {fileID: 9171334093119154545}
+  - component: {fileID: 2764082343762891337}
   m_Layer: 0
-  m_Name: Spot Light (4)
+  m_Name: SpotLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -269,6 +257,18 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &2764082343762891337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6143760820434449111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1636a5baccd0fa94e9a54b79b0305dda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5197450061998816240
 PrefabInstance:
   m_ObjectHideFlags: 0
