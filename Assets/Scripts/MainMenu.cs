@@ -9,7 +9,9 @@ public class MainMenu : MonoBehaviour
 
     public Sprite[] spriteArray;
 
-
+    [SerializeField] private Canvas _main;
+    [SerializeField] private Canvas _instructions;
+    [SerializeField] private Canvas _credits;
 
     public void GoToScene(string sceneName)
     {
@@ -39,7 +41,24 @@ public class MainMenu : MonoBehaviour
         Application.Quit();
         Debug.Log("Closing Application.");
     }
-    
+
+    public void Instructions() {
+        _instructions.enabled = true;
+        _credits.enabled = false;
+        _main.enabled = false;
+    }
+
+    public void Credits() {
+        _instructions.enabled = false;
+        _credits.enabled = true;
+        _main.enabled = false;
+    }
+
+    public void Back() {
+        _instructions.enabled = false;
+        _credits.enabled = false;
+        _main.enabled = true;
+    }
 
 
 }
