@@ -421,7 +421,7 @@ public class MovePlayer : MonoBehaviour
             if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = true;
             if (altura >= alturaPlataformaBoss)
             {
-                boss.respawn();
+                //boss.respawn();
             }
         }
     }
