@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 
 public class PressingJ : MonoBehaviour
 {
 
     [SerializeField] private Slider slider;
-
+    [SerializeField] private TextMeshProUGUI _text;
 
     public void hayQueGirar() {
         Vector3 escalaActual = transform.localScale;
@@ -19,7 +19,8 @@ public class PressingJ : MonoBehaviour
 
     }
 
-    public void pintarBarraPressingJ() {
+    public void pintarBarraPressingJ(string text) {
+        _text.SetText(text);
         gameObject.SetActive(true);
     }
     public void esconderBarraPressingJ() {

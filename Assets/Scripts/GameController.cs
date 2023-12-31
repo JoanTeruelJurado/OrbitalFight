@@ -73,6 +73,8 @@ public class GameController : MonoBehaviour
         if (_reloaded) {
             _ReloadMsgTime += Time.deltaTime;
             _ReloadMsg.enabled = true;
+            _ammoSprite.enabled = true;
+
         }
 
         if (_ReloadMsgTime >= TimeEnd)
@@ -80,6 +82,8 @@ public class GameController : MonoBehaviour
             _reloaded = false;
             _ReloadMsgTime = 0.0f;
             _ReloadMsg.enabled = false;
+            _ammoSprite.enabled = false;
+
         }
     }
 
@@ -155,8 +159,9 @@ public class GameController : MonoBehaviour
         int MagCapacity = 0;
         if (GunSelected == 1) {//rifle
             MagCapacity = MaxAmmoRifle;
-            if (total >= MaxCapRifle) _Ammo.SetText("{0:00}/{1:00} - MAX", ammoleft, MagCapacity);
-            else _Ammo.SetText("{0:00}/{1:00} - {2:00}", ammoleft, MagCapacity, total);
+            // if (total >= MaxCapRifle) _Ammo.SetText("{0:00}/{1:00} - MAX", ammoleft, MagCapacity);
+            // else _Ammo.SetText("{0:00}/{1:00} - {2:00}", ammoleft, MagCapacity, total);
+            _Ammo.SetText("{0:00}/{1:00} - {2:00}", ammoleft, MagCapacity, total);
         }
         if (GunSelected == 2) {//pistola
             MagCapacity = MaxAmmoPistol;
@@ -167,11 +172,6 @@ public class GameController : MonoBehaviour
 
     public void SetGodMode(bool godMode) {
         _star.enabled = godMode;
-    }
-
-    public void SetAmmoMode(bool ammoMode)
-    {
-        _ammoSprite.enabled = ammoMode;
     }
 
     public void SetReloaded() { _reloaded = true; }

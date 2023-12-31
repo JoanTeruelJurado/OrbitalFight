@@ -15,6 +15,7 @@ TagManager:
   - Corte
   - PoscCortes
   - Trampa
+  - Cofre
   layers:
   - Default
   - TransparentFX

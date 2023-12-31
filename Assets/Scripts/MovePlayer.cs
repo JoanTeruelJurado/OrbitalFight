@@ -330,7 +330,7 @@ public class MovePlayer : MonoBehaviour
                 municionPistolaRestante = municionPistolaMaxima;
                 municionFusilRestante = municionFusilMaxima;
                 seEstaPulsandoM = true;
-                _gameController.SetAmmoMode(seEstaPulsandoM);
+                _gameController.SetReloaded();
             }
             if (seEstaPulsandoM && !Input.GetKey(KeyCode.M)) seEstaPulsandoM = false;
 
@@ -552,7 +552,11 @@ public class MovePlayer : MonoBehaviour
         else if (other.gameObject.tag == "Jumper" || other.gameObject.tag == "ChangerRing")
         {
             tiempoPulsandoJ = 0.0f;
-            barraPressingJ.pintarBarraPressingJ();
+            barraPressingJ.pintarBarraPressingJ("Press J to jump");
+        }
+        else if (other.gameObject.tag == "Cofre") {
+            tiempoPulsandoJ = 0.0f;
+            if (!other.GetComponent<Cofre>().GetEmpty()) barraPressingJ.pintarBarraPressingJ("Press J to open");
         }
         else if (other.gameObject.tag == "Fire")
         {
@@ -616,17 +620,45 @@ public class MovePlayer : MonoBehaviour
                     tiempoPulsandoJ = 0.0f;
                 }
             }
-            else
+        }
+        else if (other.gameObject.tag == "Cofre")
+        {
+            if (Input.GetKey(KeyCode.J))
             {
-                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
-                tiempoPulsandoJ = 0.0f;
+                tiempoPulsandoJ += Time.deltaTime;
+                barraPressingJ.updateHealthBar(tiempoPulsandoJ, tiempoRequeridoJ);
+                if (tiempoPulsandoJ >= tiempoRequeridoJ)
+                {
+                    tiempoPulsandoJ = 0.0f;
+                    
+                    int tipodecofre = other.GetComponent<Cofre>().GetTipus();
+                    barraPressingJ.esconderBarraPressingJ();
+                    switch (tipodecofre)
+                    {
+                        case 0: //cofre de vida
+                            live = 100;
+                            shield = 100;
+
+                            break;
+                        case 1: //cofre de munición
+                            municionFusilRestante = municionFusilMaxima;
+                            municionPistolaRestante = municionPistolaMaxima;
+                            _gameController.SetReloaded();
+                            break;
+                        default: break;
+                    }
+                }
             }
+        }
+        else {
+            barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
+            tiempoPulsandoJ = 0.0f;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == "Jumper" || other.gameObject.tag == "ChangerRing")
+        if (other.gameObject.tag == "Jumper" || other.gameObject.tag == "ChangerRing" || other.gameObject.tag == "Cofre")
         {
             barraPressingJ.esconderBarraPressingJ();
         }
