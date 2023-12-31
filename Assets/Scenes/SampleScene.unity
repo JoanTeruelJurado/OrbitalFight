@@ -3218,7 +3218,10 @@ MonoBehaviour:
   musicAudioSource: {fileID: 0}
   destroyBullet: {fileID: 8300000, guid: 72d50f94636c04743b105ed7eef0f30a, type: 3}
   enemyDie: {fileID: 8300000, guid: b523c3e03b4c7614a98ee0a1ef19df1f, type: 3}
-  sparks: {fileID: 8300000, guid: 11fbcbd68b6661647832561577726177, type: 3}
+  sparks: {fileID: 8300000, guid: dba621284f4f575439f6ccf39b84e99f, type: 3}
+  dashBossSound: {fileID: 8300000, guid: 7bbebe1a6a4c24b4c938a2c3a3e8bd4b, type: 3}
+  corteBossSound: {fileID: 8300000, guid: 7434fd7b94d62fc4f94bfeac4a02c0b9, type: 3}
+  brakeBossSound: {fileID: 8300000, guid: 49c527d8ba5ba624791943e13235242a, type: 3}
   barraPressingJGO: {fileID: 1740054745}
   boss: {fileID: 2290883729347052440}
 --- !u!33 &1083843996
@@ -3240,8 +3243,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 119ddb31524df054ab53ef05707296e8, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_PlayOnAwake: 0
+  m_Volume: 0.37
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -5578,7 +5581,7 @@ RectTransform:
   m_Father: {fileID: 295178739}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: -4.899994, y: 0}
   m_SizeDelta: {x: 0.2, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6704,6 +6707,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1438241041}
     m_Modifications:
+    - target: {fileID: 1997040785923295740, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1997040785923295740, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.1851823
@@ -6756,6 +6767,14 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 1083843989}
+    - target: {fileID: 5645000040352427905, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
+      propertyPath: dashSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 6cc7a73735a92cb4a8d6e7a7b60392a7, type: 3}
+    - target: {fileID: 5645000040352427905, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
+      propertyPath: corteSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 74137d68953d3894bb644dab6c902d13, type: 3}
     - target: {fileID: 5645000040352427905, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: _gameController
       value: 

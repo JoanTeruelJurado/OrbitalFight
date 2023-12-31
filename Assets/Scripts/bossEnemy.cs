@@ -10,6 +10,7 @@ public class bossEnemy : MonoBehaviour
     private float speed;
     private int rutina;
     private float timer;
+    private bool armorActive = true;
     
     private bool followingPlayer;
     private bool attacking;
@@ -91,7 +92,6 @@ public class bossEnemy : MonoBehaviour
             isWalking = false;
             float distanciaAlPlayer = Vector3.Distance(transform.position, target.transform.position);
             if (dashing){
-                print("Dashing");
                 isWalking = true;
                 timerDashing += Time.deltaTime;
                 if (timerDashing >= timerDashingMax)
@@ -167,7 +167,9 @@ public class bossEnemy : MonoBehaviour
                 }
                 else if (distanciaAlPlayer > 10f && !attacking && dashTimerCooldown == -1f) // && !vaAAtacar
                 {
-                    audioSource.PlayOneShot(dashSound);
+                    MovePlayer playerScript = target.GetComponent<MovePlayer>();
+                    playerScript.reproducirSonido("dashBossSound");
+                    //audioSource.PlayOneShot(dashSound);
                     dashing = true;
                     timerDashing = 0f;
                 }
@@ -278,8 +280,13 @@ public class bossEnemy : MonoBehaviour
         {
             healthBar.updateHealthBar(shield, shieldMax);
         }
-        else
+        if(shield <= 0 && armorActive) {
+            MovePlayer playerScript = target.GetComponent<MovePlayer>();
+            playerScript.reproducirSonido("dashBossSound");
+        }
+        if(shield <= 0)
         {
+            armorActive = false;
             live += shield;
             shield = 0;
             healthBar.ShieldDestroyed();
@@ -352,7 +359,9 @@ public class bossEnemy : MonoBehaviour
                 derecha = true;
                 break;
         }
-        audioSource.PlayOneShot(corteSound);
+        MovePlayer playerScript = target.GetComponent<MovePlayer>();
+        playerScript.reproducirSonido("corteBossSound");
+        //audioSource.PlayOneShot(corteSound);
         GameObject nuevoCorteObject = Instantiate(corte, position, Quaternion.identity);
         // 'miraDerecha' es un atributo del componente 'bulletScript'
         bulletScript corteLanzado = nuevoCorteObject.GetComponent<bulletScript>();

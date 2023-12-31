@@ -78,6 +78,9 @@ public class MovePlayer : MonoBehaviour
     public AudioClip destroyBullet;
     public AudioClip enemyDie;
     public AudioClip sparks;
+    public AudioClip dashBossSound;
+    public AudioClip corteBossSound;
+    public AudioClip brakeBossSound;
 
     //tema anillos
     private bool ringExterior = true;
@@ -585,6 +588,15 @@ public class MovePlayer : MonoBehaviour
         }
         else if(sonido == "enemyDie") {
             audioSource.PlayOneShot(enemyDie);
+        }
+        else if(sonido == "dashBossSound") {
+            audioSource.PlayOneShot(dashBossSound);
+        }
+        else if(sonido == "corteBossSound") {
+            audioSource.PlayOneShot(corteBossSound);
+        }
+        else if(sonido == "brakeBossSound") {
+            audioSource.PlayOneShot(brakeBossSound);
         }
     }
 
