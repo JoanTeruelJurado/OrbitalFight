@@ -31,6 +31,11 @@ public class GameController : MonoBehaviour
     private float TimeStart = 0.0f;
 
     [SerializeField] private Image _star;
+    [SerializeField] private Image _ammoSprite;
+    [SerializeField] private TextMeshProUGUI _ReloadMsg;
+
+    private bool _reloaded = false;
+    private float _ReloadMsgTime = 0.0f;
 
     public TextMeshProUGUI _title;
     // Update is called once per frame
@@ -63,6 +68,18 @@ public class GameController : MonoBehaviour
             playerkilled = false;
             bosskilled = false;
 
+        }
+
+        if (_reloaded) {
+            _ReloadMsgTime += Time.deltaTime;
+            _ReloadMsg.enabled = true;
+        }
+
+        if (_ReloadMsgTime >= TimeEnd)
+        {
+            _reloaded = false;
+            _ReloadMsgTime = 0.0f;
+            _ReloadMsg.enabled = false;
         }
     }
 
@@ -151,4 +168,11 @@ public class GameController : MonoBehaviour
     public void SetGodMode(bool godMode) {
         _star.enabled = godMode;
     }
+
+    public void SetAmmoMode(bool ammoMode)
+    {
+        _ammoSprite.enabled = ammoMode;
+    }
+
+    public void SetReloaded() { _reloaded = true; }
 }

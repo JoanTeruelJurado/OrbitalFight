@@ -2084,6 +2084,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: INSTRUCCIONS
       objectReference: {fileID: 0}
+    - target: {fileID: 8254134250190196212, guid: c6318a2c8575de042aeffb9002fe4022, type: 3}
+      propertyPath: m_text
+      value: instructions
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

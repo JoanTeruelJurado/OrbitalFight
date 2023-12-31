@@ -330,6 +330,7 @@ public class MovePlayer : MonoBehaviour
                 municionPistolaRestante = municionPistolaMaxima;
                 municionFusilRestante = municionFusilMaxima;
                 seEstaPulsandoM = true;
+                _gameController.SetAmmoMode(seEstaPulsandoM);
             }
             if (seEstaPulsandoM && !Input.GetKey(KeyCode.M)) seEstaPulsandoM = false;
 
