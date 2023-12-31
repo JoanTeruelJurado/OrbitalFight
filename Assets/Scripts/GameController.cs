@@ -27,6 +27,9 @@ public class GameController : MonoBehaviour
     private bool bosskilled = false;
     private bool playerkilled = false;
 
+    private float TimeEnd = 4.0f;
+    private float TimeStart = 0.0f;
+
     [SerializeField] private Image _star;
 
     public TextMeshProUGUI _title;
@@ -48,6 +51,19 @@ public class GameController : MonoBehaviour
                 break;
             default: break;
         }
+
+        if (playerkilled || bosskilled) {
+            TimeStart += Time.deltaTime;
+        }
+
+        if (TimeStart >= TimeEnd) { 
+            if (playerkilled) EndDefeat();
+            else if (bosskilled) EndVictory();
+            TimeStart = 0.0f;
+            playerkilled = false;
+            bosskilled = false;
+
+        }
     }
 
     public void SetGunSelected(int n) { GunSelected = n; }
@@ -63,6 +79,9 @@ public class GameController : MonoBehaviour
 
     public void Setplayerkilled() {
         playerkilled = true;
+    }
+
+    private void EndDefeat() {
         print("You lost!");
         canvasobj.enabled = false;
         endgame.enabled = true;
@@ -70,13 +89,16 @@ public class GameController : MonoBehaviour
         _title.SetText("You lost!");
     }
 
-    public void Setbosskilled() {
-        bosskilled = true;
+    private void EndVictory() {
         print("You won!");
         canvasobj.enabled = false;
         endgame.enabled = true;
         Time.timeScale = 0;
         _title.SetText("You won!");
+    }
+
+    public void Setbosskilled() {
+        bosskilled = true;
     }
 
     public void ReturnApp() {
@@ -111,11 +133,13 @@ public class GameController : MonoBehaviour
     public void SetAmmoMag(int ammoleft, int total) {
         int MaxAmmoPistol = 6;
         int MaxAmmoRifle = 20;
+        int MaxCapRifle = 60;
 
         int MagCapacity = 0;
         if (GunSelected == 1) {//rifle
             MagCapacity = MaxAmmoRifle;
-            _Ammo.SetText("{0:00}/{1:00} - {2:00}", ammoleft, MagCapacity, total);
+            if (total >= MaxCapRifle) _Ammo.SetText("{0:00}/{1:00} - MAX", ammoleft, MagCapacity);
+            else _Ammo.SetText("{0:00}/{1:00} - {2:00}", ammoleft, MagCapacity, total);
         }
         if (GunSelected == 2) {//pistola
             MagCapacity = MaxAmmoPistol;
