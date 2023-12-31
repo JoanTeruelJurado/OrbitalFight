@@ -20,6 +20,7 @@ public class MovePlayer : MonoBehaviour
     private bool seEstaPulsandoW = false;
     private bool godMode = false;
     private bool seEstaPulsandoG = false;
+    private bool playerIsBlocked = false;
 
     //dash
     private bool canDash;
@@ -83,6 +84,8 @@ public class MovePlayer : MonoBehaviour
     public AudioClip brakeBossSound;
     public AudioClip gameOver;
     public AudioClip victory;
+    public AudioClip caidaBoss;
+    public AudioClip gritoBoss;
 
     //tema anillos
     private bool ringExterior = true;
@@ -145,221 +148,223 @@ public class MovePlayer : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(!playerIsBlocked) {
+            if (timeLEFT <= 0) live = 0; // TIME HAS RUN OUT!
 
-        if (timeLEFT <= 0) live = 0; // TIME HAS RUN OUT!
+            timeLEFT -= Time.deltaTime;
+            _gameController.SetTimer(timeLEFT);
 
-        timeLEFT -= Time.deltaTime;
-        _gameController.SetTimer(timeLEFT);
+            if (Input.GetKey(KeyCode.I)) live = 0; //DEBUG FOR DEAD ANIMATION
+            animatorFunction();
+            if (live == -100) { _gameController.Setplayerkilled(); audioSource.PlayOneShot(gameOver); return; }  // When dead do not compute a thing
+            if (live <= 0) return;
+            
+        // if (Alreadydead) audioSource.PlayOneShot(gameOver);
 
-        if (Input.GetKey(KeyCode.I)) live = 0; //DEBUG FOR DEAD ANIMATION
-        animatorFunction();
-        if (live == -100) { _gameController.Setplayerkilled(); audioSource.PlayOneShot(gameOver); return; }  // When dead do not compute a thing
-        if (live <= 0) return;
-         
-       // if (Alreadydead) audioSource.PlayOneShot(gameOver);
+            CharacterController charControl = GetComponent<CharacterController>();
+            Vector3 position;
 
-        CharacterController charControl = GetComponent<CharacterController>();
-        Vector3 position;
-
-        if (immortalityTime >= 0)
-        {
-            immortalityTime += Time.deltaTime;
-            if (immortalityTime > immortalityTimeMax) immortalityTime = -1f;
-        }
-
-        if (dashingCooldownTimer >= 0.0f)
-        {
-            dashingCooldownTimer += Time.deltaTime;
-            if (dashingCooldownTimer >= dashingCooldown)
+            if (immortalityTime >= 0)
             {
-                canDash = true;
-                dashingCooldownTimer = -1f;
+                immortalityTime += Time.deltaTime;
+                if (immortalityTime > immortalityTimeMax) immortalityTime = -1f;
             }
-        }
 
-        if (isDashing || subiendoDeNivel)
-        {
-            if (isDashing)
+            if (dashingCooldownTimer >= 0.0f)
             {
-                Dash();
-            }
-            if (subiendoDeNivel)
-            {
-                SubirDeNivel();
-            }
-            return;
-        }
-
-
-        if (Input.GetKey(KeyCode.E) && canDash)
-        {
-            isDashing = true;
-            canDash = false;
-            dashingTimeTimer = 0f;
-        }
-
-        //recarga timer
-        if (timerRecarga >= 0f)
-        {
-            timerRecarga += Time.deltaTime;
-            float tiempoRecargaMin = 99f;
-            if (armaEquipada == Armas.Fusil) tiempoRecargaMin = timeRecargaFusil;
-            else if (armaEquipada == Armas.Pistola) tiempoRecargaMin = timeRecargaPistola;
-
-            if (timerRecarga >= tiempoRecargaMin)
-            {
-                timerRecarga = -1f;
-                canDisparar = true;
-                _animator.ResetTrigger("isReloading");
-            }
-        }
-
-
-        //recarga botón
-        if (Input.GetKey(KeyCode.R) && canDisparar)
-        {
-            Recarga();
-            _animator.SetTrigger("isReloading");
-        }
-
-
-        //cambio de arma
-        if (Input.GetKey(KeyCode.Q) && canDisparar && !seEstaPulsandoQ)
-        {
-            if (fusilDesbloqueado)
-            {
-                if (armaEquipada == Armas.Pistola)
+                dashingCooldownTimer += Time.deltaTime;
+                if (dashingCooldownTimer >= dashingCooldown)
                 {
-                    armaEquipada = Armas.Fusil;
-                    _gameController.SetGunSelected(1);
+                    canDash = true;
+                    dashingCooldownTimer = -1f;
                 }
-                else if (armaEquipada == Armas.Fusil)
-                {
-                    armaEquipada = Armas.Pistola;
-                    _gameController.SetGunSelected(2);
-                }
-                audioSource.PlayOneShot(changeGun);
-                tiempoEntreDisparos = 0f;
             }
-            seEstaPulsandoQ = true;
-        }
-        if (seEstaPulsandoQ && !Input.GetKey(KeyCode.Q)) seEstaPulsandoQ = false;
 
-        // Left-right movement
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-        {
-            float angle;
-            Vector3 direction, target;
+            if (isDashing || subiendoDeNivel)
+            {
+                if (isDashing)
+                {
+                    Dash();
+                }
+                if (subiendoDeNivel)
+                {
+                    SubirDeNivel();
+                }
+                return;
+            }
 
+
+            if (Input.GetKey(KeyCode.E) && canDash)
+            {
+                isDashing = true;
+                canDash = false;
+                dashingTimeTimer = 0f;
+            }
+
+            //recarga timer
+            if (timerRecarga >= 0f)
+            {
+                timerRecarga += Time.deltaTime;
+                float tiempoRecargaMin = 99f;
+                if (armaEquipada == Armas.Fusil) tiempoRecargaMin = timeRecargaFusil;
+                else if (armaEquipada == Armas.Pistola) tiempoRecargaMin = timeRecargaPistola;
+
+                if (timerRecarga >= tiempoRecargaMin)
+                {
+                    timerRecarga = -1f;
+                    canDisparar = true;
+                    _animator.ResetTrigger("isReloading");
+                }
+            }
+
+
+            //recarga botón
+            if (Input.GetKey(KeyCode.R) && canDisparar)
+            {
+                Recarga();
+                _animator.SetTrigger("isReloading");
+            }
+
+
+            //cambio de arma
+            if (Input.GetKey(KeyCode.Q) && canDisparar && !seEstaPulsandoQ)
+            {
+                if (fusilDesbloqueado)
+                {
+                    if (armaEquipada == Armas.Pistola)
+                    {
+                        armaEquipada = Armas.Fusil;
+                        _gameController.SetGunSelected(1);
+                    }
+                    else if (armaEquipada == Armas.Fusil)
+                    {
+                        armaEquipada = Armas.Pistola;
+                        _gameController.SetGunSelected(2);
+                    }
+                    audioSource.PlayOneShot(changeGun);
+                    tiempoEntreDisparos = 0f;
+                }
+                seEstaPulsandoQ = true;
+            }
+            if (seEstaPulsandoQ && !Input.GetKey(KeyCode.Q)) seEstaPulsandoQ = false;
+
+            // Left-right movement
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+            {
+                float angle;
+                Vector3 direction, target;
+
+                position = transform.position;
+                angle = rotationSpeed * Time.deltaTime;
+                Vector3 center = new Vector3(0, transform.position.y, 0);
+                direction = position - center;
+
+                if (Input.GetKey(KeyCode.D))
+                {
+                    angle = -angle;
+                    if (!miraDerecha) hayQueGirar = true;
+                    miraDerecha = true;
+                }
+                else
+                {
+                    if (miraDerecha) hayQueGirar = true;
+                    miraDerecha = false;
+                }
+
+                target = center + Quaternion.AngleAxis(angle, Vector3.up) * direction;
+
+                if (charControl.Move(target - position) != CollisionFlags.None)
+                {
+                    transform.position = position;
+                    Physics.SyncTransforms();
+                }
+            }
+
+            //ajustar orientación
+            transform.LookAt(new Vector3(0, transform.position.y, 0));
+            if (hayQueGirar)
+            {
+                Vector3 escalaActual = transform.localScale;
+                escalaActual.x *= -1;
+                transform.localScale = escalaActual;
+                hayQueGirar = false;
+
+                barraPressingJ.hayQueGirar();
+            }
+
+            // Apply up-down movement
             position = transform.position;
-            angle = rotationSpeed * Time.deltaTime;
-            Vector3 center = new Vector3(0, transform.position.y, 0);
-            direction = position - center;
-
-            if (Input.GetKey(KeyCode.D))
-            {
-                angle = -angle;
-                if (!miraDerecha) hayQueGirar = true;
-                miraDerecha = true;
-            }
-            else
-            {
-                if (miraDerecha) hayQueGirar = true;
-                miraDerecha = false;
-            }
-
-            target = center + Quaternion.AngleAxis(angle, Vector3.up) * direction;
-
-            if (charControl.Move(target - position) != CollisionFlags.None)
+            if (charControl.Move(speedY * Time.deltaTime * Vector3.up) != CollisionFlags.None)
             {
                 transform.position = position;
                 Physics.SyncTransforms();
             }
-        }
-
-        //ajustar orientación
-        transform.LookAt(new Vector3(0, transform.position.y, 0));
-        if (hayQueGirar)
-        {
-            Vector3 escalaActual = transform.localScale;
-            escalaActual.x *= -1;
-            transform.localScale = escalaActual;
-            hayQueGirar = false;
-
-            barraPressingJ.hayQueGirar();
-        }
-
-        // Apply up-down movement
-        position = transform.position;
-        if (charControl.Move(speedY * Time.deltaTime * Vector3.up) != CollisionFlags.None)
-        {
-            transform.position = position;
-            Physics.SyncTransforms();
-        }
-        isJumping = false;
-        if (charControl.isGrounded)
-        {
             isJumping = false;
-            if (speedY < 0.0f) speedY = 0.0f;
-            if (Input.GetKey(KeyCode.W) && !seEstaPulsandoW)
-            { //jumping
-                isJumping = true;
-                speedY = jumpSpeed;
-                seEstaPulsandoW = true;
-            }
-        }
-        else { speedY -= gravity * Time.deltaTime; }
-        if (seEstaPulsandoW && !Input.GetKey(KeyCode.W)) seEstaPulsandoW = false;
-
-        //Atajos
-        if (Input.GetKey(KeyCode.G) && !seEstaPulsandoG)
-        { //god mode
-            godMode = !godMode;
-            seEstaPulsandoG = true;
-            _gameController.SetGodMode(godMode);
-        }
-        if (seEstaPulsandoG && !Input.GetKey(KeyCode.G)) seEstaPulsandoG = false;
-
-        if (Input.GetKey(KeyCode.M) && !seEstaPulsandoM)
-        { //max ammo
-            municionPistolaCargadorAct = municionPistolaCargadorMax;
-            municionFusilCargadorAct = municionFusilCargadorMax;
-            municionPistolaRestante = municionPistolaMaxima;
-            municionFusilRestante = municionFusilMaxima;
-            seEstaPulsandoM = true;
-        }
-        if (seEstaPulsandoM && !Input.GetKey(KeyCode.M)) seEstaPulsandoM = false;
-
-        //Disparar
-        tiempoEntreDisparos += Time.deltaTime;
-        if ((Input.GetMouseButtonDown(0) || Input.GetKey(KeyCode.K)) && canDisparar) // 0 representa el botón izquierdo del ratón
-        {
-            if (armaEquipada == Armas.Fusil && tiempoEntreDisparos > tiempoEntreDisparosMinFusil)
+            if (charControl.isGrounded)
             {
-                Disparar();
-                tiempoEntreDisparos = 0f;
-
-                _animator.SetInteger("Firing", 2);
+                isJumping = false;
+                if (speedY < 0.0f) speedY = 0.0f;
+                if (Input.GetKey(KeyCode.W) && !seEstaPulsandoW)
+                { //jumping
+                    isJumping = true;
+                    speedY = jumpSpeed;
+                    seEstaPulsandoW = true;
+                }
             }
-            else if (armaEquipada == Armas.Pistola && tiempoEntreDisparos > tiempoEntreDisparosMinPistola)
+            else { speedY -= gravity * Time.deltaTime; }
+            if (seEstaPulsandoW && !Input.GetKey(KeyCode.W)) seEstaPulsandoW = false;
+
+            //Atajos
+            if (Input.GetKey(KeyCode.G) && !seEstaPulsandoG)
+            { //god mode
+                godMode = !godMode;
+                seEstaPulsandoG = true;
+                _gameController.SetGodMode(godMode);
+            }
+            if (seEstaPulsandoG && !Input.GetKey(KeyCode.G)) seEstaPulsandoG = false;
+
+            if (Input.GetKey(KeyCode.M) && !seEstaPulsandoM)
+            { //max ammo
+                municionPistolaCargadorAct = municionPistolaCargadorMax;
+                municionFusilCargadorAct = municionFusilCargadorMax;
+                municionPistolaRestante = municionPistolaMaxima;
+                municionFusilRestante = municionFusilMaxima;
+                seEstaPulsandoM = true;
+            }
+            if (seEstaPulsandoM && !Input.GetKey(KeyCode.M)) seEstaPulsandoM = false;
+
+            //Disparar
+            tiempoEntreDisparos += Time.deltaTime;
+            if ((Input.GetMouseButtonDown(0) || Input.GetKey(KeyCode.K)) && canDisparar) // 0 representa el botón izquierdo del ratón
             {
-                Disparar();
-                tiempoEntreDisparos = 0f;
-                _animator.SetInteger("Firing", 1);
+                if (armaEquipada == Armas.Fusil && tiempoEntreDisparos > tiempoEntreDisparosMinFusil)
+                {
+                    Disparar();
+                    tiempoEntreDisparos = 0f;
+
+                    _animator.SetInteger("Firing", 2);
+                }
+                else if (armaEquipada == Armas.Pistola && tiempoEntreDisparos > tiempoEntreDisparosMinPistola)
+                {
+                    Disparar();
+                    tiempoEntreDisparos = 0f;
+                    _animator.SetInteger("Firing", 1);
+                }
+
             }
+            else _animator.SetInteger("Firing", 0);
 
+            switch (armaEquipada)
+            {
+                case Armas.Fusil:
+                    _gameController.SetAmmoMag(municionFusilCargadorAct, municionFusilRestante);
+                    break;
+                case Armas.Pistola:
+                    _gameController.SetAmmoMag(municionPistolaCargadorAct, municionPistolaRestante);
+                    break;
+            }
         }
-        else _animator.SetInteger("Firing", 0);
-
-        switch (armaEquipada)
-        {
-            case Armas.Fusil:
-                _gameController.SetAmmoMag(municionFusilCargadorAct, municionFusilRestante);
-                break;
-            case Armas.Pistola:
-                _gameController.SetAmmoMag(municionPistolaCargadorAct, municionPistolaRestante);
-                break;
-        }
+        
     }
 
     private void Dash()
@@ -661,6 +666,26 @@ public class MovePlayer : MonoBehaviour
         {
             audioSource.PlayOneShot(victory);
         }
+        else if(sonido == "caidaBoss") {
+            audioSource.PlayOneShot(caidaBoss);
+            Invoke("LlamarRugido", 1.7f);
+        }
+        else if(sonido == "gritoBoss") {
+            audioSource.PlayOneShot(gritoBoss);
+        }
+    }
+
+    private void LlamarRugido() {
+        reproducirSonido("gritoBoss");
+    }
+
+    public void block() {
+        boss.respawn();
+        playerIsBlocked = true;
+    }
+
+    public void unblock() {
+        playerIsBlocked = false;
     }
 
     private void animatorFunction()

@@ -439,9 +439,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1438241041}
     m_Modifications:
+    - target: {fileID: 906895916192917612, guid: 0ae583ecf63c3aa4ab363d0c6b4eab66, type: 3}
+      propertyPath: m_TagString
+      value: Entorno
+      objectReference: {fileID: 0}
     - target: {fileID: 3669786425188440893, guid: 0ae583ecf63c3aa4ab363d0c6b4eab66, type: 3}
       propertyPath: m_Name
       value: RingV3 Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669786425188440893, guid: 0ae583ecf63c3aa4ab363d0c6b4eab66, type: 3}
+      propertyPath: m_TagString
+      value: Entorno
       objectReference: {fileID: 0}
     - target: {fileID: 4154117536802668935, guid: 0ae583ecf63c3aa4ab363d0c6b4eab66, type: 3}
       propertyPath: m_LocalScale.x
@@ -3243,6 +3251,8 @@ MonoBehaviour:
   brakeBossSound: {fileID: 8300000, guid: 49c527d8ba5ba624791943e13235242a, type: 3}
   gameOver: {fileID: 8300000, guid: 04cfd13367c64bc4a9471d6ee5641f53, type: 3}
   victory: {fileID: 8300000, guid: 987142bcec958d4478b54b458ecabe3b, type: 3}
+  caidaBoss: {fileID: 8300000, guid: 4f232e13af9094949938f6730ac0483f, type: 3}
+  gritoBoss: {fileID: 8300000, guid: 2382fa284da92fa42a458f026587c435, type: 3}
   barraPressingJGO: {fileID: 1740054745}
   boss: {fileID: 2290883729347052440}
 --- !u!33 &1083843996
@@ -5522,7 +5532,7 @@ GameObject:
   - component: {fileID: 1923211410}
   m_Layer: 0
   m_Name: Cylinder (1)
-  m_TagString: Untagged
+  m_TagString: Entorno
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6866,31 +6876,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.1851823
+      value: -4.98
       objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 25
+      value: 24.4
       objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -8.2
+      value: -2.46
       objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7064895
       objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: -0.70772356
       objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6898,7 +6908,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -90.1
       objectReference: {fileID: 0}
     - target: {fileID: 2260829824180861195, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z

@@ -9,7 +9,6 @@ public class fireScript : MonoBehaviour
     float tiempoVidaMax = 1f;
     public bool direccionDerecha;
     public float rotationSpeed = 60;
-    public int damageHit = 40;
     private Vector3 center;
     
     // Start is called before the first frame update

@@ -11,8 +11,8 @@ public class enemyV1 : MonoBehaviour
     private bool direccionDerecha;
     private int shield = 100;
     private int shieldMax = 100;
-    private int live = 50;
-    private int liveMax = 50;
+    private int live = 100;
+    private int liveMax = 100;
     private bool armorActive = true;
     private bool hayQueGirar = false; 
     private GameObject target;   

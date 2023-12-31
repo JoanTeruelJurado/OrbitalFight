@@ -53,12 +53,12 @@ public class bossEnemy : MonoBehaviour
     private float dashingSpeed;
     private float dashCooldown = 2f;
     private float dashTimerCooldown = -1f;
+    private float dashSpeed = 130f;
 
     //
     private float tiempoEntreAtaques = 0f;
     private bool vaAAtacar = false;
     private bool cronningNewAttack = true;
-    private float dashSpeed = 120f;
 
     //sounds
     public AudioSource audioSource;
@@ -76,6 +76,10 @@ public class bossEnemy : MonoBehaviour
     public GameObject delante;
     public GameObject detras;
 
+    //animación entrada
+    private bool isAnimacionEntrada = true;
+    private Rigidbody miRigidbody;
+
     void Start()
     {
         speed = 40f;
@@ -83,142 +87,151 @@ public class bossEnemy : MonoBehaviour
         timer = 0f;
         movePlayer = target.GetComponent<MovePlayer>();
         center = new Vector3(0f, transform.position.y, 0f);
+        miRigidbody = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
         if(mismaAltura()) {
-            if (!_MovementaudioSource.isPlaying) _MovementaudioSource.Play();
-            isWalking = false;
-            float distanciaAlPlayer = Vector3.Distance(transform.position, target.transform.position);
-            if (dashing){
-                isWalking = true;
-                timerDashing += Time.deltaTime;
-                if (timerDashing >= timerDashingMax)
-                {
-                    dashing = false;
-                    dashTimerCooldown = 0f;
-                    return;
-                }
-                if (distanciaAlPlayer > 5f)
-                {
-                    Vector3 center = new Vector3(0f, transform.position.y, 0f);
-                    float angle = 130f * Time.deltaTime;
-                    if (direccionDerecha) angle *= -1f;
-                    transform.RotateAround(center, Vector3.up, angle);
-                }
-                else
-                {
-                    dashing = false;
-                    dashTimerCooldown = 0f;
-                }
-                return;
+            if(isAnimacionEntrada) {
+                //block player
+                MovePlayer player = target.GetComponent<MovePlayer>();
+                player.block();
+                miRigidbody.useGravity = true;
             }
             else {
-                if(dashTimerCooldown >= 0f) {
-                    dashTimerCooldown += Time.deltaTime;
-                    if(dashTimerCooldown >= dashCooldown) {
-                        dashTimerCooldown = -1f;
-                    }
-                }
-                if (cronningNewAttack)
-                {
-                    tiempoEntreAtaques = Random.Range(1, 4);
-                    cronningNewAttack = false;
-                }
-                if (tiempoEntreAtaques > 0f)
-                {
-                    tiempoEntreAtaques -= Time.deltaTime;
-                }
-                else if (tiempoEntreAtaques <= 0f)
-                {
-                    vaAAtacar = true;
-                }
-
-                if (!attacking && !vaAAtacar)
-                {
-                    if (distanciaAlPlayer > 4f)
+                if (!_MovementaudioSource.isPlaying) _MovementaudioSource.Play();
+                isWalking = false;
+                float distanciaAlPlayer = Vector3.Distance(transform.position, target.transform.position);
+                if (dashing){
+                    isWalking = true;
+                    timerDashing += Time.deltaTime;
+                    if (timerDashing >= timerDashingMax)
                     {
-                        if(!_MovementaudioSource.isPlaying) _MovementaudioSource.Play();
-                        isWalking = true;
+                        dashing = false;
+                        dashTimerCooldown = 0f;
+                        return;
+                    }
+                    if (distanciaAlPlayer > 5f)
+                    {
                         Vector3 center = new Vector3(0f, transform.position.y, 0f);
-                        float angle = speed * Time.deltaTime;
+                        float angle = dashSpeed * Time.deltaTime;
                         if (direccionDerecha) angle *= -1f;
                         transform.RotateAround(center, Vector3.up, angle);
                     }
-                }
-
-                if (distanciaAlPlayer < 6f && !attacking && vaAAtacar)
-                {
-                    disparandoFuego = true;
-                    attacking = true;
-                    bool aux = direccionDerecha;
-                    if(Vector3.Distance(detras.transform.position, target.transform.position) < Vector3.Distance(delante.transform.position, target.transform.position)) {
-                        direccionDerecha = !direccionDerecha;
-                    }
-                    if(aux != direccionDerecha) { //se gira si lo detecta en el otro sentido
-                        girar();
-                    }
-                }
-                else if (distanciaAlPlayer >= 6f && distanciaAlPlayer <= 10f && !attacking && vaAAtacar)
-                {
-                    lanzandoCortes = true;
-                    attacking = true;
-                }
-                else if (distanciaAlPlayer > 10f && !attacking && dashTimerCooldown == -1f) // && !vaAAtacar
-                {
-                    MovePlayer playerScript = target.GetComponent<MovePlayer>();
-                    playerScript.reproducirSonido("dashBossSound");
-                    //audioSource.PlayOneShot(dashSound);
-                    dashing = true;
-                    timerDashing = 0f;
-                }
-
-
-                if (disparandoFuego)
-                {
-                    timerDisparandoFuego += Time.deltaTime;
-                    timeEntreFuego += Time.deltaTime;
-                    if (timeEntreFuego >= timeEntreFuegoMin)
+                    else
                     {
-                        timeEntreFuego = 0f;
-                        Lanzallamas();
+                        dashing = false;
+                        dashTimerCooldown = 0f;
                     }
-                    if (timerDisparandoFuego > timerDisparandoFuegoMax)
+                    return;
+                }
+                else {
+                    if(dashTimerCooldown >= 0f) {
+                        dashTimerCooldown += Time.deltaTime;
+                        if(dashTimerCooldown >= dashCooldown) {
+                            dashTimerCooldown = -1f;
+                        }
+                    }
+                    if (cronningNewAttack)
                     {
-                        timerDisparandoFuego = 0f;
-                        timeEntreFuego = 0f;
-                        disparandoFuego = false;
-                        attacking = false;
-                        vaAAtacar = false;
-                        cronningNewAttack = true;
+                        tiempoEntreAtaques = Random.Range(1, 4);
+                        cronningNewAttack = false;
+                    }
+                    if (tiempoEntreAtaques > 0f)
+                    {
+                        tiempoEntreAtaques -= Time.deltaTime;
+                    }
+                    else if (tiempoEntreAtaques <= 0f)
+                    {
+                        vaAAtacar = true;
                     }
 
-                }
-                else audioSource.Pause();
+                    if (!attacking && !vaAAtacar)
+                    {
+                        if (distanciaAlPlayer > 4f)
+                        {
+                            if(!_MovementaudioSource.isPlaying) _MovementaudioSource.Play();
+                            isWalking = true;
+                            Vector3 center = new Vector3(0f, transform.position.y, 0f);
+                            float angle = speed * Time.deltaTime;
+                            if (direccionDerecha) angle *= -1f;
+                            transform.RotateAround(center, Vector3.up, angle);
+                        }
+                    }
 
-                if (lanzandoCortes)
-                {
-                    timerDisparandoCorte += Time.deltaTime;
-                    timeEntreCorte += Time.deltaTime;
-                    if (timeEntreCorte >= timeEntreCorteMin)
+                    if (distanciaAlPlayer < 6f && !attacking && vaAAtacar)
                     {
-                        timeEntreCorte = 0f;
-                        Cortar();
+                        disparandoFuego = true;
+                        attacking = true;
+                        bool aux = direccionDerecha;
+                        if(Vector3.Distance(detras.transform.position, target.transform.position) < Vector3.Distance(delante.transform.position, target.transform.position)) {
+                            direccionDerecha = !direccionDerecha;
+                        }
+                        if(aux != direccionDerecha) { //se gira si lo detecta en el otro sentido
+                            girar();
+                        }
                     }
-                    if (timerDisparandoCorte > timerDisparandoCorteMax)
+                    else if (distanciaAlPlayer >= 6f && distanciaAlPlayer <= 10f && !attacking && vaAAtacar)
                     {
-                        timerDisparandoCorte = 0f;
-                        timeEntreCorte = 0f;
-                        lanzandoCortes = false;
-                        attacking = false;
-                        vaAAtacar = false;
-                        cronningNewAttack = true;
+                        lanzandoCortes = true;
+                        attacking = true;
+                    }
+                    else if (distanciaAlPlayer > 10f && !attacking && dashTimerCooldown == -1f) // && !vaAAtacar
+                    {
+                        MovePlayer playerScript = target.GetComponent<MovePlayer>();
+                        playerScript.reproducirSonido("dashBossSound");
+                        //audioSource.PlayOneShot(dashSound);
+                        dashing = true;
+                        timerDashing = 0f;
+                    }
+
+
+                    if (disparandoFuego)
+                    {
+                        timerDisparandoFuego += Time.deltaTime;
+                        timeEntreFuego += Time.deltaTime;
+                        if (timeEntreFuego >= timeEntreFuegoMin)
+                        {
+                            timeEntreFuego = 0f;
+                            Lanzallamas();
+                        }
+                        if (timerDisparandoFuego > timerDisparandoFuegoMax)
+                        {
+                            timerDisparandoFuego = 0f;
+                            timeEntreFuego = 0f;
+                            disparandoFuego = false;
+                            attacking = false;
+                            vaAAtacar = false;
+                            cronningNewAttack = true;
+                        }
+
+                    }
+                    else audioSource.Pause();
+
+                    if (lanzandoCortes)
+                    {
+                        timerDisparandoCorte += Time.deltaTime;
+                        timeEntreCorte += Time.deltaTime;
+                        if (timeEntreCorte >= timeEntreCorteMin)
+                        {
+                            timeEntreCorte = 0f;
+                            Cortar();
+                        }
+                        if (timerDisparandoCorte > timerDisparandoCorteMax)
+                        {
+                            timerDisparandoCorte = 0f;
+                            timeEntreCorte = 0f;
+                            lanzandoCortes = false;
+                            attacking = false;
+                            vaAAtacar = false;
+                            cronningNewAttack = true;
+                        }
                     }
                 }
+                
+                animatorFunction();
             }
-            
-            animatorFunction();
         }
     }
 
@@ -235,7 +248,7 @@ public class bossEnemy : MonoBehaviour
     }
 
     private bool mismaAltura() {
-        return Mathf.Abs(transform.position.y - target.transform.position.y) < 2f;
+        return Mathf.Abs(transform.position.y - target.transform.position.y) < 15f;
     }
 
     private void animatorFunction()
@@ -305,11 +318,19 @@ public class bossEnemy : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Entorno")
+        if (collision.gameObject.tag == "Entorno" && isAnimacionEntrada) 
         {
-            direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
+            MovePlayer playerScript = target.GetComponent<MovePlayer>();
+            playerScript.reproducirSonido("caidaBoss");
+            Invoke("desactivarAnimacionEntrada", 5f);
         }
+    }
 
+    private void desactivarAnimacionEntrada() {
+        isAnimacionEntrada = false;
+        //unblock player
+        MovePlayer player = target.GetComponent<MovePlayer>();
+        player.unblock();
     }
 
     void OnTriggerEnter(Collider collider)

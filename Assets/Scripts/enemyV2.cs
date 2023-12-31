@@ -41,7 +41,7 @@ public class enemyV2 : MonoBehaviour
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
         healthBar.updateHealthBar(shield, shieldMax);
-        speed = 20f;
+        speed = 30f;
         //direccionDerecha = Random.Range(0,2) == 0 ? false : true;
         direccionDerecha = false;
 
