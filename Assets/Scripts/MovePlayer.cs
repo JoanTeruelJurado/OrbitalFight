@@ -53,9 +53,9 @@ public class MovePlayer : MonoBehaviour
     private int municionFusilCargadorAct = 20;
     private int municionPistolaCargadorMax = 6;
     private int municionFusilCargadorMax = 20;
-    private int municionPistolaRestante = 7; //60
+    private int municionPistolaRestante = 60; //60
     private int municionPistolaMaxima; //60
-    private int municionFusilRestante = 25; //100
+    private int municionFusilRestante = 100; //100
     private int municionFusilMaxima; //100
     private float timerRecarga = -1f;
     private float timeRecargaPistola = 0.8f;
