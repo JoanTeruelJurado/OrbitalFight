@@ -264,6 +264,9 @@ public class bossEnemy : MonoBehaviour
     {
         _gameController.Setbosskilled();
 
+        MovePlayer playerScript = target.GetComponent<MovePlayer>();
+        playerScript.reproducirSonido("victory");
+
         Destroy(gameObject);
     }
 

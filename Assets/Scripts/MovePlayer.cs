@@ -81,6 +81,8 @@ public class MovePlayer : MonoBehaviour
     public AudioClip dashBossSound;
     public AudioClip corteBossSound;
     public AudioClip brakeBossSound;
+    public AudioClip gameOver;
+    public AudioClip victory;
 
     //tema anillos
     private bool ringExterior = true;
@@ -394,12 +396,11 @@ public class MovePlayer : MonoBehaviour
                 live += shield;
                 _gameController.SetHealth(live);
                 shield = 0;
-                if(live < 0) { //muere
+                if(live <= 0) { //muere
                     live = 0;
+                    audioSource.PlayOneShot(gameOver);
                 }
             }
-            print(shield);
-            print(live);
         }
     }
 
@@ -515,17 +516,6 @@ public class MovePlayer : MonoBehaviour
                     barraPressingJ.esconderBarraPressingJ();
                     if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = false;
                 }
-                // {
-                //     Vector3 position = transform.position;
-                //     position.y += 6.1f;
-                //     altura += 1f;
-                //     transform.position = position;
-
-                //     //control boss
-                //     if(alturaPlataformaBoss < position.y) {
-                //         boss.respawn();
-                //     }
-                // }
             }
             else
             {
@@ -597,6 +587,9 @@ public class MovePlayer : MonoBehaviour
         }
         else if(sonido == "brakeBossSound") {
             audioSource.PlayOneShot(brakeBossSound);
+        }
+        else if(sonido == "victory") {
+            audioSource.PlayOneShot(victory);
         }
     }
 
