@@ -156,7 +156,7 @@ public class MovePlayer : MonoBehaviour
 
             if (Input.GetKey(KeyCode.I)) live = 0; //DEBUG FOR DEAD ANIMATION
             animatorFunction();
-            if (live == -100) { _gameController.Setplayerkilled(); audioSource.PlayOneShot(gameOver); return; }  // When dead do not compute a thing
+            //if (live == -100) { _gameController.Setplayerkilled(); audioSource.PlayOneShot(gameOver); return; }  // When dead do not compute a thing
             if (live <= 0) return;
             
         // if (Alreadydead) audioSource.PlayOneShot(gameOver);
@@ -638,7 +638,9 @@ public class MovePlayer : MonoBehaviour
                         case 0: //cofre de vida
                             live = 100;
                             shield = 100;
-
+                            _gameController.SetHealth(live);
+                            _gameController.SetShield(shield);
+                            _gameController.SetHealthIncreased();
                             break;
                         case 1: //cofre de munición
                             municionFusilRestante = municionFusilMaxima;
@@ -647,6 +649,7 @@ public class MovePlayer : MonoBehaviour
                             break;
                         case 2: 
                             fusilDesbloqueado = true;
+                            _gameController.SetRifleFound();
                             break;
                         default: break;
                     }
@@ -734,9 +737,8 @@ public class MovePlayer : MonoBehaviour
 
         if (!isWalking && ADpressed) { _animator.SetBool("isWalking", true); }
         if (isWalking && !ADpressed) { _animator.SetBool("isWalking", false); }
-
-        if (live == -100) { _animator.SetBool("isDead", false); live = -200; }
-        else if (live <= 0 && live > -100) { _animator.SetBool("isDead", true);  live = -100; }
+        if(live == -100 && AnimatorIsPlaying("Die")) { _animator.SetBool("isDead", false); live = -200; }
+        else if (live <= 0 && live > -100) { _animator.SetBool("isDead", true);  live = -100; _gameController.Setplayerkilled(); audioSource.PlayOneShot(gameOver); }
 
         if (isAlreadyDashing && !isDashing) { _animator.SetBool("isDashing", false); }
         if (!isAlreadyDashing && isDashing) { _animator.SetBool("isDashing", true); }
@@ -751,6 +753,19 @@ public class MovePlayer : MonoBehaviour
         }
 
     }
+
+    private bool AnimatorIsPlaying()
+    {
+        return _animator.GetCurrentAnimatorStateInfo(0).length >
+               _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+    }
+
+    private bool AnimatorIsPlaying(string stateName)
+    {
+        return AnimatorIsPlaying() && _animator.GetCurrentAnimatorStateInfo(0).IsName(stateName);
+    }
+
+
 }
 
 

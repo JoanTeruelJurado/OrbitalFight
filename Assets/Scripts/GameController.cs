@@ -34,7 +34,9 @@ public class GameController : MonoBehaviour
     [SerializeField] private Image _ammoSprite;
     [SerializeField] private TextMeshProUGUI _ReloadMsg;
 
+    private bool _increased = false;
     private bool _reloaded = false;
+    private bool _rifle = false;
     private float _ReloadMsgTime = 0.0f;
 
     public TextMeshProUGUI _title;
@@ -70,15 +72,31 @@ public class GameController : MonoBehaviour
 
         }
 
-        if (_reloaded) {
+        if (_reloaded)
+        {
             _ReloadMsgTime += Time.deltaTime;
+            _ReloadMsg.SetText("Received Ammo");
             _ReloadMsg.enabled = true;
             _ammoSprite.enabled = true;
 
         }
+        else if (_rifle) {
+            _ReloadMsgTime += Time.deltaTime;
+            _ReloadMsg.SetText("You've found the Rifle, switch with 'Q'");
+            _ReloadMsg.enabled = true;
+        }
+        else if (_increased)
+        {
+            _ReloadMsgTime += Time.deltaTime;
+            _ReloadMsg.SetText("Received Health");
+            _ReloadMsg.enabled = true;
+        }
+
 
         if (_ReloadMsgTime >= TimeEnd)
         {
+            _increased = false;
+            _rifle = false;
             _reloaded = false;
             _ReloadMsgTime = 0.0f;
             _ReloadMsg.enabled = false;
@@ -175,4 +193,8 @@ public class GameController : MonoBehaviour
     }
 
     public void SetReloaded() { _reloaded = true; }
+
+    public void SetRifleFound() { _rifle = true; }
+
+    public void SetHealthIncreased() { _increased = true; }
 }

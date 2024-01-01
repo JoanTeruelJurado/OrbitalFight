@@ -79,9 +79,10 @@ public class bossEnemy : MonoBehaviour
     //animación entrada
     private bool isAnimacionEntrada = true;
     private Rigidbody miRigidbody;
-
+    private bool isDead = false;
     void Start()
     {
+        isDead = false;
         speed = 40f;
         rutina = 0;
         timer = 0f;
@@ -92,6 +93,7 @@ public class bossEnemy : MonoBehaviour
 
     void Update()
     {
+        if (isDead) { return; }
         if(mismaAltura()) {
             if(isAnimacionEntrada) {
                 //block player
@@ -275,12 +277,15 @@ public class bossEnemy : MonoBehaviour
 
     private void die()
     {
+        isDead = true;
         _gameController.Setbosskilled();
 
         MovePlayer playerScript = target.GetComponent<MovePlayer>();
         playerScript.reproducirSonido("victory");
-
-        Destroy(gameObject);
+        _animator.SetTrigger("isDead");
+        disparandoFuego = false;
+        lanzandoCortes = false;
+        _MovementaudioSource.Pause();
     }
 
     public void respawn()
@@ -310,7 +315,7 @@ public class bossEnemy : MonoBehaviour
             if (live < 0)
             { //muere
                 live = 0;
-                die();
+                if (!isDead) die();
             }
         }
 
