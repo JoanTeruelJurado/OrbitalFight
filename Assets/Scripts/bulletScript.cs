@@ -32,10 +32,6 @@ public class bulletScript : MonoBehaviour
             tiempoVidaMax = 1.5f;
             damageHit = 40;
         }
-        else {
-            tiempoVidaMax = 1.5f;
-            damageHit = 20;
-        }
 
         //rotationSpeed = 100f;
         Destroy(gameObject, tiempoVidaMax);
