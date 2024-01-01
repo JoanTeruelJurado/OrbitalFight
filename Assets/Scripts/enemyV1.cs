@@ -11,10 +11,11 @@ public class enemyV1 : MonoBehaviour
     private bool direccionDerecha;
     private int shield = 100;
     private int shieldMax = 100;
-    private int live = 50;
-    private int liveMax = 50;
+    private int live = 100;
+    private int liveMax = 100;
     private bool armorActive = true;
-
+    private bool hayQueGirar = false; 
+    private GameObject target;   
     private FloatingHealthBar healthBar;
 
 
@@ -23,16 +24,17 @@ public class enemyV1 : MonoBehaviour
     public AudioClip armorHitSound;
     public AudioClip armorCrashSound;
     public AudioClip fleshHitSound;
-    public AudioClip dieSound;
 
     void Start()
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
         healthBar.updateHealthBar(shield, shieldMax);
-        speed = 40f;
-        direccionDerecha = Random.Range(0,2) == 0 ? false : true;
+        speed = 20f;
+        //direccionDerecha = Random.Range(0,2) == 0 ? false : true;
+        direccionDerecha = false;
 
         audioSource = GetComponent<AudioSource>();
+        target = GameObject.Find("Player");
     }
 
 
@@ -42,6 +44,15 @@ public class enemyV1 : MonoBehaviour
         float angle = speed * Time.deltaTime;
         if(direccionDerecha) angle *= -1f;
         transform.RotateAround(center, Vector3.up, angle);
+
+        if(hayQueGirar) {
+            Vector3 escalaActual = transform.localScale;
+            escalaActual.z *= -1;
+            transform.localScale = escalaActual;
+            hayQueGirar = false;
+        }
+
+        destruirSiMuyAbajo();
     }
 
     private IEnumerator move() {
@@ -49,11 +60,17 @@ public class enemyV1 : MonoBehaviour
     }
 
     private void die() {
-        audioSource.PlayOneShot(dieSound);
+        MovePlayer playerScript = target.GetComponent<MovePlayer>();
+        playerScript.reproducirSonido("enemyDie");
         Destroy(gameObject);
     }
 
-    void lessLive(int damage) {
+    private void destruirSiMuyAbajo() {
+        target = GameObject.Find("Player");
+        if(target.transform.position.y - transform.position.y >= 5f) Destroy(gameObject);
+    }
+
+    public void lessLive(int damage) {
         shield -= damage;
         if(shield > 0) {
             healthBar.updateHealthBar(shield, shieldMax);
@@ -61,6 +78,7 @@ public class enemyV1 : MonoBehaviour
         }
         if(shield <= 0 && armorActive) {
             audioSource.PlayOneShot(armorCrashSound);
+            //AudioSource.PlayClipAtPoint(armorCrashSound, transform.position, 0.7f);
         }
         if(shield <= 0) {
             armorActive = false;
@@ -79,92 +97,20 @@ public class enemyV1 : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Entorno") {
+        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Player" || collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Trampa") {
             direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
+            hayQueGirar = true;
         }
-        else if(collision.gameObject.tag == "BulletPlayer") {
-            bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
+        
+    }
+
+    void OnTriggerEnter(Collider collider) {
+        if(collider.gameObject.tag == "BulletPlayer") {
+            bulletScript scriptBullet = collider.gameObject.GetComponent<bulletScript>();
             if (scriptBullet != null){
                 int damage = scriptBullet.damageHit;
                 lessLive(damage);
             }
         }
     }
-
-
-
 }
-
-/*
-//con rigidbody + capsule collider
-        Rigidbody rb = GetComponent<Rigidbody>();
-        Vector3 position;
-        float anglePerStep = speed * Time.deltaTime;
-        if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-        Vector3 center = new Vector3(0, transform.position.y, 0);
-        Vector3 direction;
-
-        float elapsedTime = 0f;
-        while (elapsedTime < 4f)
-        {
-            position = transform.position;
-            direction = position - center;
-            if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-            Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
-
-            // Calcular la dirección del movimiento
-            Vector3 movementDirection = (target - position).normalized;
-
-            // Realizar el barrido de colisión
-            RaycastHit hit;
-            if (rb.SweepTest(movementDirection, out hit, speed * Time.deltaTime))
-            {
-                // Hay una colisión, ajustar la posición
-                transform.position = hit.point;
-                Physics.SyncTransforms();
-            }
-            else
-            {
-                // No hay colisión, moverse a la nueva posición
-                rb.MovePosition(rb.position + movementDirection * speed * Time.deltaTime);
-                Physics.SyncTransforms();
-            }
-
-            // Rotación
-            transform.LookAt(new Vector3(0, transform.position.y, 0));
-
-            elapsedTime += Time.deltaTime;
-
-            yield return null;
-        }
-        rutina = 0;
-
-    //con character controller
-    CharacterController charControl = GetComponent<CharacterController>();
-        Vector3 position;
-        float anglePerStep = speed * Time.deltaTime;
-        if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-        Vector3 center = new Vector3(0, transform.position.y, 0);
-        Vector3 direction;
-
-        float elapsedTime = 0f;
-        while (elapsedTime < 4f)
-        {
-            position = transform.position;
-            direction = position - center;
-            if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-            Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
-
-            if (charControl.Move(target - position) != CollisionFlags.None) {
-                transform.position = position;
-            }
-
-            // Rotación
-            transform.LookAt(new Vector3(0, transform.position.y, 0));
-
-            elapsedTime += Time.deltaTime;
-
-            yield return null;
-        }
-        rutina = 0;
-*/

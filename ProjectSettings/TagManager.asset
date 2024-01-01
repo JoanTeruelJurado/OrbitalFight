@@ -11,6 +11,11 @@ TagManager:
   - Boss
   - BulletEnemy
   - BulletPlayer
+  - Fire
+  - Corte
+  - PoscCortes
+  - Trampa
+  - Cofre
   layers:
   - Default
   - TransparentFX

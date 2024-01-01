@@ -11,6 +11,7 @@ public class bulletScript : MonoBehaviour
     private float tiempoVidaAct;
     public int damageHit;
     private Vector3 center;
+    private GameObject player;
 
     void Start() {
         float tiempoVidaMax = 7f;
@@ -20,7 +21,16 @@ public class bulletScript : MonoBehaviour
         }
         else if(equipedGun == "Pistola") {
             tiempoVidaMax = 0.3f;
-            damageHit = 33;
+            damageHit = 35;
+        }
+        else if(equipedGun == "Corte") {
+            tiempoVidaMax = 1.7f;
+            damageHit = 40;
+            rotationSpeed = 120f;
+        }
+        else {
+            tiempoVidaMax = 1.5f;
+            damageHit = 40;
         }
         else {
             tiempoVidaMax = 1.5f;
@@ -30,6 +40,7 @@ public class bulletScript : MonoBehaviour
         //rotationSpeed = 100f;
         Destroy(gameObject, tiempoVidaMax);
         center = new Vector3(0f,transform.position.y,0f);
+        player = GameObject.Find("Player");
     }
 
     void FixedUpdate()
@@ -43,13 +54,36 @@ public class bulletScript : MonoBehaviour
         Quaternion rotacionActual = transform.rotation;
         Quaternion nuevaRotacion = Quaternion.Euler(rotacionActual.eulerAngles + new Vector3(0, 0, 90f));
         transform.rotation = nuevaRotacion;
+
+        if(equipedGun == "Corte") {
+            rotacionActual = transform.rotation;
+            nuevaRotacion = Quaternion.Euler(rotacionActual.eulerAngles + new Vector3(0f, 0, 90f));
+            transform.rotation = nuevaRotacion;
+        }
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider collision)
     {
         // Destruye la bala cuando colisiona con otro objeto
-        if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player") Destroy(gameObject);
-        if(gameObject.tag == "BulletEnemy" && (collision.gameObject.tag != "EnemyV1" || collision.gameObject.tag != "EnemyV2")) Destroy(gameObject);
+        if(gameObject.tag == "BulletPlayer" && collision.gameObject.tag != "Player" && collision.gameObject.tag != "Cofre" && collision.gameObject.tag != "Trampa" && collision.gameObject.tag != "ChangerRing" && collision.gameObject.tag != "Jumper" && collision.gameObject.tag != "Cofre") {
+            player = GameObject.Find("Player");
+            MovePlayer playerScript = player.GetComponent<MovePlayer>();
+            playerScript.reproducirSonido("destroyBullet");
+            Destroy(gameObject);
+        }
+        if((gameObject.tag == "BulletEnemy" || gameObject.tag == "Corte") && (collision.gameObject.tag != "EnemyV1" && collision.gameObject.tag != "EnemyV2" && collision.gameObject.tag != "Boss" && collision.gameObject.tag != "ChangerRing" && collision.gameObject.tag != "Jumper" && collision.gameObject.tag != "Cofre")) {
+            if(collision.gameObject.tag == "Player") {
+                MovePlayer p = collision.GetComponent<MovePlayer>();
+                if(!p.immortal) {
+                    Destroy(gameObject);
+                }
+            }
+            else {
+                MovePlayer playerScript = player.GetComponent<MovePlayer>();
+                playerScript.reproducirSonido("destroyBullet");
+                Destroy(gameObject);
+            }
+        }
     }
 
     // Calcula la nueva posición de la bala

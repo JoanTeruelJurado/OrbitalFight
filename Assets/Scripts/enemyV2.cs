@@ -7,19 +7,20 @@ public class enemyV2 : MonoBehaviour
     private float speed;
     private Animator ani;
     private bool followingPlayer;
-    private bool attacking;
+    private bool attacking = false;
     private bool direccionDerecha;
     private int shield = 100;
     private int shieldMax = 100;
     private int live = 50;
     private int liveMax = 50;
     private bool armorActive = true;
+    private bool hayQueGirar = false;
 
     private FloatingHealthBar healthBar;
 
 
     //V2
-    public GameObject target;
+    private GameObject target;
     private float tiempoEntreDisparosMin = 2.5f;
     private float tiempoEntreDisparos = 10f;
     public GameObject bala;
@@ -30,14 +31,19 @@ public class enemyV2 : MonoBehaviour
     public AudioClip armorHitSound;
     public AudioClip armorCrashSound;
     public AudioClip fleshHitSound;
-    public AudioClip dieSound;
+
+    //calcular distancia player
+    public GameObject delante;
+    public GameObject detras;
+
 
     void Start()
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
         healthBar.updateHealthBar(shield, shieldMax);
-        speed = 20f;
-        direccionDerecha = Random.Range(0,2) == 0 ? false : true;
+        speed = 30f;
+        //direccionDerecha = Random.Range(0,2) == 0 ? false : true;
+        direccionDerecha = false;
 
         audioSource = GetComponent<AudioSource>();
 
@@ -48,36 +54,76 @@ public class enemyV2 : MonoBehaviour
 
     void Update()
     {
-        if(Vector3.Distance(transform.position, target.transform.position) > 10f) {
+        if(Vector3.Distance(transform.position, target.transform.position) > 9f) tiempoEntreDisparos = 99f;
+
+        if(Vector3.Distance(transform.position, target.transform.position) > 8f) { //anda
             Vector3 center = new Vector3(0f,transform.position.y,0f);
             float angle = speed * Time.deltaTime;
             if(direccionDerecha) angle *= -1f;
             transform.RotateAround(center, Vector3.up, angle);
+            attacking = false;
         }
-        else {
+        else { //dispara
+            MovePlayer player = target.GetComponent<MovePlayer>();
+            
+            bool aux = direccionDerecha;
+            if(Vector3.Distance(detras.transform.position, target.transform.position) < Vector3.Distance(delante.transform.position, target.transform.position)) {
+                direccionDerecha = !direccionDerecha;
+            }
+            if(aux != direccionDerecha) { //se gira si lo detecta en el otro sentido
+                girar();
+            }
+            attacking = true;
             tiempoEntreDisparos += Time.deltaTime;
             if(tiempoEntreDisparos > tiempoEntreDisparosMin) {
-                MovePlayer player = target.GetComponent<MovePlayer>();
-                direccionDerecha = !player.miraDerecha;
                 Disparar();
                 tiempoEntreDisparos = 0f;
             }
         }
-        
+
+        if(hayQueGirar) {
+            girar();
+            hayQueGirar = false;
+        }
+
+        destruirSiMuyAbajo();
     }
 
     private void Disparar() {
-        GameObject nuevaBalaObject = Instantiate(bala, transform.position, Quaternion.identity);
-        Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
-        // 'miraDerecha' es un atributo del componente 'bulletScript'
-        bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
-        balita.miraDerecha = direccionDerecha;
-        balita.altura = transform.position.y;
+        if(mismaAltura()) {
+            GameObject nuevaBalaObject = Instantiate(bala, transform.position, Quaternion.identity);
+            Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
+            bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
+            balita.miraDerecha = direccionDerecha;
+            balita.altura = transform.position.y;
+        }
+    }
+
+    private bool mismaAltura() {
+        return Mathf.Abs(transform.position.y - target.transform.position.y) < 2f;
     }
 
     private void die() {
-        audioSource.PlayOneShot(dieSound);
+        MovePlayer playerScript = target.GetComponent<MovePlayer>();
+        playerScript.reproducirSonido("enemyDie");
         Destroy(gameObject);
+    }
+
+    private void destruirSiMuyAbajo() {
+        target = GameObject.Find("Player");
+        if(target.transform.position.y - transform.position.y >= 5f) Destroy(gameObject);
+    }
+
+    private void girar() {
+        Vector3 aux1 = delante.transform.position;
+        Vector3 aux2 = detras.transform.position;
+
+        Vector3 escalaActual = transform.localScale;
+        escalaActual.z *= -1;
+        transform.localScale = escalaActual;
+
+        delante.transform.position = aux2;
+        detras.transform.position = aux1;
     }
 
     void lessLive(int damage) {
@@ -106,12 +152,16 @@ public class enemyV2 : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Entorno") {
-            direccionDerecha = !direccionDerecha;
+        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Player" || collision.gameObject.tag == "Trampa") {
+            direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
+            hayQueGirar = true;
         }
-        else if(collision.gameObject.tag == "BulletPlayer") {
-            Physics.IgnoreCollision(GetComponent<Collider>(), collision.collider);
-            bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
+        
+    }
+
+    void OnTriggerEnter(Collider collider) {
+        if(collider.gameObject.tag == "BulletPlayer") {
+            bulletScript scriptBullet = collider.gameObject.GetComponent<bulletScript>();
             if (scriptBullet != null){
                 int damage = scriptBullet.damageHit;
                 lessLive(damage);
@@ -119,77 +169,3 @@ public class enemyV2 : MonoBehaviour
         }
     }
 }
-
-/*
-//con rigidbody + capsule collider
-        Rigidbody rb = GetComponent<Rigidbody>();
-        Vector3 position;
-        float anglePerStep = speed * Time.deltaTime;
-        if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-        Vector3 center = new Vector3(0, transform.position.y, 0);
-        Vector3 direction;
-
-        float elapsedTime = 0f;
-        while (elapsedTime < 4f)
-        {
-            position = transform.position;
-            direction = position - center;
-            if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-            Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
-
-            // Calcular la dirección del movimiento
-            Vector3 movementDirection = (target - position).normalized;
-
-            // Realizar el barrido de colisión
-            RaycastHit hit;
-            if (rb.SweepTest(movementDirection, out hit, speed * Time.deltaTime))
-            {
-                // Hay una colisión, ajustar la posición
-                transform.position = hit.point;
-                Physics.SyncTransforms();
-            }
-            else
-            {
-                // No hay colisión, moverse a la nueva posición
-                rb.MovePosition(rb.position + movementDirection * speed * Time.deltaTime);
-                Physics.SyncTransforms();
-            }
-
-            // Rotación
-            transform.LookAt(new Vector3(0, transform.position.y, 0));
-
-            elapsedTime += Time.deltaTime;
-
-            yield return null;
-        }
-        rutina = 0;
-
-    //con character controller
-    CharacterController charControl = GetComponent<CharacterController>();
-        Vector3 position;
-        float anglePerStep = speed * Time.deltaTime;
-        if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-        Vector3 center = new Vector3(0, transform.position.y, 0);
-        Vector3 direction;
-
-        float elapsedTime = 0f;
-        while (elapsedTime < 4f)
-        {
-            position = transform.position;
-            direction = position - center;
-            if (direccionDerecha == 1) anglePerStep = -anglePerStep;
-            Vector3 target = center + Quaternion.AngleAxis(anglePerStep, Vector3.up) * direction;
-
-            if (charControl.Move(target - position) != CollisionFlags.None) {
-                transform.position = position;
-            }
-
-            // Rotación
-            transform.LookAt(new Vector3(0, transform.position.y, 0));
-
-            elapsedTime += Time.deltaTime;
-
-            yield return null;
-        }
-        rutina = 0;
-*/
