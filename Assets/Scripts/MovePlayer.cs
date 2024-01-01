@@ -40,7 +40,7 @@ public class MovePlayer : MonoBehaviour
     //shooting
     public GameObject balaPistola;
     public GameObject balaFusil;
-    private bool fusilDesbloqueado = true;
+    private bool fusilDesbloqueado = false;
     private enum Armas { Ninguna, Fusil, Pistola };
     private Armas armaEquipada = Armas.Pistola;
     private float tiempoEntreDisparosMinFusil = 0.3f;
@@ -644,6 +644,9 @@ public class MovePlayer : MonoBehaviour
                             municionFusilRestante = municionFusilMaxima;
                             municionPistolaRestante = municionPistolaMaxima;
                             _gameController.SetReloaded();
+                            break;
+                        case 2: 
+                            fusilDesbloqueado = true;
                             break;
                         default: break;
                     }
