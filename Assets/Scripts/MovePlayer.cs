@@ -144,8 +144,6 @@ public class MovePlayer : MonoBehaviour
         _gameController.SetHealth(100);
         _gameController.SetShield(100);
 
-        timeLEFT = 120f;
-
         barraPressingJ = barraPressingJGO.GetComponent<PressingJ>();
     }
 
