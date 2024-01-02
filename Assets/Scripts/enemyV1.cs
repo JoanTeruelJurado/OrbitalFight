@@ -97,7 +97,7 @@ public class enemyV1 : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Player" || collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Trampa") {
+        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Player" || collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Trampa" || collision.gameObject.tag == "Cofre") {
             direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
             hayQueGirar = true;
         }
