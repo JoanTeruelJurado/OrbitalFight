@@ -112,7 +112,7 @@ public class GameController : MonoBehaviour
         minutes = (int)(TIMELEFT / 60f);
         seconds = (int)(TIMELEFT - minutes*60f);
         cents = (int)((TIMELEFT - (int)TIMELEFT) * 100f);
-
+       
         _timer.SetText("{0:00}:{1:00}:{2:00}", minutes, seconds, cents);
     }
 

@@ -4304,6 +4304,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 1958791885}
   _gameController: {fileID: 1296622140}
+  _bossEnemy: {fileID: 2290883729347052440}
   rotationSpeed: 70
   jumpSpeed: 7.5
   gravity: 25
@@ -4353,7 +4354,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 119ddb31524df054ab53ef05707296e8, type: 3}
-  m_PlayOnAwake: 0
+  m_PlayOnAwake: 1
   m_Volume: 0.37
   m_Pitch: 1
   Loop: 1

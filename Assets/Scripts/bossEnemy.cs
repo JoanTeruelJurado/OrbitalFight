@@ -275,6 +275,8 @@ public class bossEnemy : MonoBehaviour
         return null;
     }
 
+    public bool GetisDead() { return isDead;  }
+
     private void die()
     {
         isDead = true;

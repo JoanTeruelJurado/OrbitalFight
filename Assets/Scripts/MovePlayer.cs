@@ -8,6 +8,7 @@ public class MovePlayer : MonoBehaviour
     public Animator _animator;
     //
     public GameController _gameController;
+    public bossEnemy _bossEnemy;
 
     public float rotationSpeed, jumpSpeed, gravity, radius;
     const float radioInterior = 3.5f;
@@ -104,7 +105,7 @@ public class MovePlayer : MonoBehaviour
     public bossEnemy boss;
 
     //temporizador
-    private float timeLEFT = 120f;
+    private float timeLEFT = 180f;
 
     // Start is called before the first frame update
     void Start()
@@ -151,7 +152,7 @@ public class MovePlayer : MonoBehaviour
         if(!playerIsBlocked) {
             if (timeLEFT <= 0) live = 0; // TIME HAS RUN OUT!
 
-            timeLEFT -= Time.deltaTime;
+            if (!_bossEnemy.GetisDead()) timeLEFT -= Time.deltaTime;
             _gameController.SetTimer(timeLEFT);
 
             if (Input.GetKey(KeyCode.I)) live = 0; //DEBUG FOR DEAD ANIMATION
@@ -759,6 +760,8 @@ public class MovePlayer : MonoBehaviour
             _animator.SetBool("isWalking", false);
             _animator.SetBool("isJumping", false);
             _animator.SetBool("isWalking", false);
+            _animator.ResetTrigger("isReloading");
+            _animator.SetInteger("Firing", 0);
         }
 
     }
