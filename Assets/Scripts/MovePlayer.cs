@@ -7,6 +7,8 @@ public class MovePlayer : MonoBehaviour
     //animator
     public Animator _animator;
     //
+    [SerializeField] private ParticleSystem _dashtrail;
+
     public GameController _gameController;
     public bossEnemy _bossEnemy;
 
@@ -110,6 +112,7 @@ public class MovePlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _dashtrail.Pause();
         audioSource = GetComponent<AudioSource>();
         if (isDashing)
         {
@@ -197,6 +200,7 @@ public class MovePlayer : MonoBehaviour
 
             if (Input.GetKey(KeyCode.E) && canDash)
             {
+                _dashtrail.Play(true);
                 isDashing = true;
                 canDash = false;
                 dashingTimeTimer = 0f;
@@ -407,6 +411,7 @@ public class MovePlayer : MonoBehaviour
         }
         else
         {
+            _dashtrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             isDashing = false;
             immortal = false;
             //se empieza a contar el cooldown
