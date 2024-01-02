@@ -580,6 +580,7 @@ public class MovePlayer : MonoBehaviour
                     audioSource.PlayOneShot(changeTopHighRing);
                     subiendoDeNivel = true;
                     altura += 1f;
+                    tiempoPulsandoJ = 0.0f;
                     barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
                     barraPressingJ.esconderBarraPressingJ();
                     if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = false;
@@ -587,8 +588,8 @@ public class MovePlayer : MonoBehaviour
             }
             else
             {
-                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
                 tiempoPulsandoJ = 0.0f;
+                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
             }
         }
         else if (other.gameObject.tag == "ChangerRing")
@@ -601,6 +602,7 @@ public class MovePlayer : MonoBehaviour
                 {
                     audioSource.PlayOneShot(changeSameHighRing);
                     ringExterior = !ringExterior;
+                    tiempoPulsandoJ = 0.0f;
                     barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
                     barraPressingJ.esconderBarraPressingJ();
 
@@ -616,9 +618,11 @@ public class MovePlayer : MonoBehaviour
                         transform.position = nuevaPosicion;
                         Physics.SyncTransforms();
                     }
-
-                    tiempoPulsandoJ = 0.0f;
                 }
+            }
+            else {
+                tiempoPulsandoJ = 0.0f;
+                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
             }
         }
         else if (other.gameObject.tag == "Cofre")
@@ -630,6 +634,7 @@ public class MovePlayer : MonoBehaviour
                 if (tiempoPulsandoJ >= tiempoRequeridoJ)
                 {
                     tiempoPulsandoJ = 0.0f;
+                    barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
                     
                     int tipodecofre = other.GetComponent<Cofre>().GetTipus();
                     barraPressingJ.esconderBarraPressingJ();
@@ -654,6 +659,10 @@ public class MovePlayer : MonoBehaviour
                         default: break;
                     }
                 }
+            }
+            else {
+                tiempoPulsandoJ = 0.0f;
+                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
             }
         }
         else {
