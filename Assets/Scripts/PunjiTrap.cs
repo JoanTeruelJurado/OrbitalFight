@@ -38,7 +38,7 @@ public class PunjiTrap : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+   /* private void OnTriggerEnter(Collider other)
     {
         //print("HI");
         //print(ActualTime);
@@ -49,10 +49,8 @@ public class PunjiTrap : MonoBehaviour
                 beenhit = true;
             }
         }
-        /*  if (other.gameObject.tag == "Enemy") {
-              other.GetComponent<enemyV1>().lessLive(50);
-          } */
-    }
+       } 
+    }*/
 
     private void OnTriggerStay(Collider other)
     {

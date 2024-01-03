@@ -525,7 +525,7 @@ public class MovePlayer : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(rifleShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaFusil, puntoDisparo.transform.position, Quaternion.identity);
-                _muzzleflash.Play(true);
+                _electricflash.Play(true);
                 --municionFusilCargadorAct;
                 if (municionFusilCargadorAct == 0)
                 {
@@ -536,7 +536,7 @@ public class MovePlayer : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(blasterShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaPistola, puntoDisparo.transform.position, Quaternion.identity);
-                _electricflash.Play(true);
+                _muzzleflash.Play(true);
                 --municionPistolaCargadorAct;
                 if (municionPistolaCargadorAct == 0) Recarga();
             }
