@@ -7,7 +7,12 @@ public class MovePlayer : MonoBehaviour
     //animator
     public Animator _animator;
     //
+    [SerializeField] private ParticleSystem _dashtrail;
+    [SerializeField] private ParticleSystem _muzzleflash;
+    [SerializeField] private ParticleSystem _electricflash;
+
     public GameController _gameController;
+    public bossEnemy _bossEnemy;
 
     public float rotationSpeed, jumpSpeed, gravity, radius;
     const float radioInterior = 3.5f;
@@ -104,11 +109,14 @@ public class MovePlayer : MonoBehaviour
     public bossEnemy boss;
 
     //temporizador
-    private float timeLEFT = 120f;
+    private float timeLEFT = 180f;
 
     // Start is called before the first frame update
     void Start()
     {
+        _electricflash.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        _muzzleflash.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        _dashtrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         audioSource = GetComponent<AudioSource>();
         if (isDashing)
         {
@@ -140,8 +148,6 @@ public class MovePlayer : MonoBehaviour
         _gameController.SetHealth(100);
         _gameController.SetShield(100);
 
-        timeLEFT = 120f;
-
         barraPressingJ = barraPressingJGO.GetComponent<PressingJ>();
     }
 
@@ -151,12 +157,12 @@ public class MovePlayer : MonoBehaviour
         if(!playerIsBlocked) {
             if (timeLEFT <= 0) live = 0; // TIME HAS RUN OUT!
 
-            timeLEFT -= Time.deltaTime;
+            if (!_bossEnemy.GetisDead()) timeLEFT -= Time.deltaTime;
             _gameController.SetTimer(timeLEFT);
 
             if (Input.GetKey(KeyCode.I)) live = 0; //DEBUG FOR DEAD ANIMATION
             animatorFunction();
-            if (live == -100) { _gameController.Setplayerkilled(); audioSource.PlayOneShot(gameOver); return; }  // When dead do not compute a thing
+            //if (live == -100) { _gameController.Setplayerkilled(); audioSource.PlayOneShot(gameOver); return; }  // When dead do not compute a thing
             if (live <= 0) return;
             
         // if (Alreadydead) audioSource.PlayOneShot(gameOver);
@@ -196,6 +202,7 @@ public class MovePlayer : MonoBehaviour
 
             if (Input.GetKey(KeyCode.E) && canDash)
             {
+                _dashtrail.Play(true);
                 isDashing = true;
                 canDash = false;
                 dashingTimeTimer = 0f;
@@ -406,11 +413,17 @@ public class MovePlayer : MonoBehaviour
         }
         else
         {
+            _dashtrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             isDashing = false;
-            immortal = false;
+            //immortal = false;
+            Invoke("desactivarImmortal", 0.2f);
             //se empieza a contar el cooldown
             dashingCooldownTimer = 0f;
         }
+    }
+
+    private void desactivarImmortal() {
+        immortal = false;
     }
 
     private void SubirDeNivel()
@@ -431,7 +444,7 @@ public class MovePlayer : MonoBehaviour
     {
         if (immortalityTime == -1f && !godMode)
         { //no está en tiempo de immortalidad
-            audioSource.PlayOneShot(sparks);
+            if (live > 0) audioSource.PlayOneShot(sparks);
             shield -= damage;
             _gameController.SetShield(shield);
             if (shield < 0)
@@ -512,16 +525,18 @@ public class MovePlayer : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(rifleShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaFusil, puntoDisparo.transform.position, Quaternion.identity);
+                _electricflash.Play(true);
                 --municionFusilCargadorAct;
                 if (municionFusilCargadorAct == 0)
                 {
                     Recarga();
                 }
             }
-            else
+            else //pistola
             {
-                AudioSource.PlayClipAtPoint(blasterShot, transform.position, 0.5f);
+                AudioSource.PlayClipAtPoint(blasterShot, transform.position, 1f);
                 nuevaBalaObject = Instantiate(balaPistola, puntoDisparo.transform.position, Quaternion.identity);
+                _muzzleflash.Play(true);
                 --municionPistolaCargadorAct;
                 if (municionPistolaCargadorAct == 0) Recarga();
             }
@@ -580,6 +595,7 @@ public class MovePlayer : MonoBehaviour
                     audioSource.PlayOneShot(changeTopHighRing);
                     subiendoDeNivel = true;
                     altura += 1f;
+                    tiempoPulsandoJ = 0.0f;
                     barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
                     barraPressingJ.esconderBarraPressingJ();
                     if (TryGetComponent<Collider>(out Collider collider)) collider.enabled = false;
@@ -598,8 +614,8 @@ public class MovePlayer : MonoBehaviour
             }
             else
             {
-                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
                 tiempoPulsandoJ = 0.0f;
+                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
             }
         }
         else if (other.gameObject.tag == "ChangerRing")
@@ -612,6 +628,7 @@ public class MovePlayer : MonoBehaviour
                 {
                     audioSource.PlayOneShot(changeSameHighRing);
                     ringExterior = !ringExterior;
+                    tiempoPulsandoJ = 0.0f;
                     barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
                     barraPressingJ.esconderBarraPressingJ();
 
@@ -627,9 +644,11 @@ public class MovePlayer : MonoBehaviour
                         transform.position = nuevaPosicion;
                         Physics.SyncTransforms();
                     }
-
-                    tiempoPulsandoJ = 0.0f;
                 }
+            }
+            else {
+                tiempoPulsandoJ = 0.0f;
+                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
             }
         }
         else if (other.gameObject.tag == "Cofre")
@@ -641,6 +660,7 @@ public class MovePlayer : MonoBehaviour
                 if (tiempoPulsandoJ >= tiempoRequeridoJ)
                 {
                     tiempoPulsandoJ = 0.0f;
+                    barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
                     
                     int tipodecofre = other.GetComponent<Cofre>().GetTipus();
                     barraPressingJ.esconderBarraPressingJ();
@@ -649,7 +669,9 @@ public class MovePlayer : MonoBehaviour
                         case 0: //cofre de vida
                             live = 100;
                             shield = 100;
-
+                            _gameController.SetHealth(live);
+                            _gameController.SetShield(shield);
+                            _gameController.SetHealthIncreased();
                             break;
                         case 1: //cofre de munición
                             municionFusilRestante = municionFusilMaxima;
@@ -658,10 +680,15 @@ public class MovePlayer : MonoBehaviour
                             break;
                         case 2: 
                             fusilDesbloqueado = true;
+                            _gameController.SetRifleFound();
                             break;
                         default: break;
                     }
                 }
+            }
+            else {
+                tiempoPulsandoJ = 0.0f;
+                barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
             }
         }
         else {
@@ -682,8 +709,9 @@ public class MovePlayer : MonoBehaviour
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            print("Hit");
-            lessLive(30);
+            if(!immortal) {
+                lessLive(30);
+            }
         }
         else if(collision.gameObject.tag == "BulletEnemy") {
             bulletScript scriptBullet = collision.gameObject.GetComponent<bulletScript>();
@@ -752,9 +780,8 @@ public class MovePlayer : MonoBehaviour
 
         if (!isWalking && ADpressed) { _animator.SetBool("isWalking", true); }
         if (isWalking && !ADpressed) { _animator.SetBool("isWalking", false); }
-
-        if (live == -100) { _animator.SetBool("isDead", false); live = -200; }
-        else if (live <= 0 && live > -100) { _animator.SetBool("isDead", true);  live = -100; }
+        if(live == -100 && AnimatorIsPlaying("Die")) { _animator.SetBool("isDead", false); live = -200; }
+        else if (live <= 0 && live > -100) { _animator.SetBool("isDead", true);  live = -100; _gameController.Setplayerkilled(); audioSource.PlayOneShot(gameOver); }
 
         if (isAlreadyDashing && !isDashing) { _animator.SetBool("isDashing", false); }
         if (!isAlreadyDashing && isDashing) { _animator.SetBool("isDashing", true); }
@@ -766,9 +793,23 @@ public class MovePlayer : MonoBehaviour
             _animator.SetBool("isWalking", false);
             _animator.SetBool("isJumping", false);
             _animator.SetBool("isWalking", false);
+            _animator.ResetTrigger("isReloading");
+            _animator.SetInteger("Firing", 0);
         }
-
     }
+
+    private bool AnimatorIsPlaying()
+    {
+        return _animator.GetCurrentAnimatorStateInfo(0).length >
+               _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+    }
+
+    private bool AnimatorIsPlaying(string stateName)
+    {
+        return AnimatorIsPlaying() && _animator.GetCurrentAnimatorStateInfo(0).IsName(stateName);
+    }
+
+
 }
 
 

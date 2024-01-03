@@ -94,9 +94,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1603315559533296539, guid: e2b35f74cc304fc4ca69f3c42fd84aa8, type: 3}
+      propertyPath: _explosion
+      value: 
+      objectReference: {fileID: 6622192286422365929, guid: 2445d76b846bd2448afc5a0019b1a0c1, type: 3}
     - target: {fileID: 3755730440209029804, guid: e2b35f74cc304fc4ca69f3c42fd84aa8, type: 3}
       propertyPath: m_Name
-      value: Enemy (1)
+      value: Enemy+Asset
       objectReference: {fileID: 0}
     - target: {fileID: 4104459802753533591, guid: e2b35f74cc304fc4ca69f3c42fd84aa8, type: 3}
       propertyPath: m_Enabled
@@ -229,8 +233,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.0757221, z: 1.1255419}
-  m_Center: {x: 0, y: 0.18826038, z: 0.030743241}
+  m_Size: {x: 1, y: 1.661229, z: 1.1255419}
+  m_Center: {x: 0, y: 0.48101377, z: 0.030743241}
 --- !u!4 &5351767515565342552 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7873430452622728139, guid: e2b35f74cc304fc4ca69f3c42fd84aa8, type: 3}

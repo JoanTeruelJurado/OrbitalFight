@@ -8,6 +8,7 @@ public class enemyV1 : MonoBehaviour
     private Animator ani;
     private bool followingPlayer;
     private bool attacking;
+    private Vector3 center;
     private bool direccionDerecha;
     private int shield = 100;
     private int shieldMax = 100;
@@ -17,13 +18,20 @@ public class enemyV1 : MonoBehaviour
     private bool hayQueGirar = false; 
     private GameObject target;   
     private FloatingHealthBar healthBar;
-
+    [SerializeField] private GameObject _explosion;
 
     //sounds
     private AudioSource audioSource;
     public AudioClip armorHitSound;
     public AudioClip armorCrashSound;
     public AudioClip fleshHitSound;
+
+    //fix bug
+    private Vector3 startPosition;
+    private Quaternion startRotation;
+    private float startDistance;
+    private Vector3 preveviousPosition;
+    private int contadorVecesGirado;
 
     void Start()
     {
@@ -35,12 +43,18 @@ public class enemyV1 : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>();
         target = GameObject.Find("Player");
+
+        center = new Vector3(0f,transform.position.y,0f);
+        startPosition = transform.position;
+        startRotation = transform.rotation;
+        startDistance = Vector3.Distance(transform.position, center);
+        contadorVecesGirado = 0;
     }
 
 
     void Update()
     {
-        Vector3 center = new Vector3(0f,transform.position.y,0f);
+        //Vector3 center = new Vector3(0f,transform.position.y,0f);
         float angle = speed * Time.deltaTime;
         if(direccionDerecha) angle *= -1f;
         transform.RotateAround(center, Vector3.up, angle);
@@ -50,6 +64,14 @@ public class enemyV1 : MonoBehaviour
             escalaActual.z *= -1;
             transform.localScale = escalaActual;
             hayQueGirar = false;
+            ++contadorVecesGirado;
+        }
+
+        if(Vector3.Distance(transform.position, center) - 1f > startDistance) {
+            transform.position = startPosition;
+            transform.rotation = startRotation;
+            print(contadorVecesGirado);
+            if(contadorVecesGirado%2 == 0) hayQueGirar=true;
         }
 
         destruirSiMuyAbajo();
@@ -62,6 +84,7 @@ public class enemyV1 : MonoBehaviour
     private void die() {
         MovePlayer playerScript = target.GetComponent<MovePlayer>();
         playerScript.reproducirSonido("enemyDie");
+        Destroy( Instantiate(_explosion, transform.position + new Vector3(0.0f, 1.0f, 0.0f), Quaternion.identity), 2.0f);
         Destroy(gameObject);
     }
 
@@ -87,7 +110,7 @@ public class enemyV1 : MonoBehaviour
             healthBar.ShieldDestroyed();
             healthBar.updateHealthBar(live, liveMax);
             audioSource.PlayOneShot(fleshHitSound);
-            if(live < 0) { //muere
+            if(live <= 0) { //muere
                 live = 0;
                 die();
             }
@@ -97,7 +120,7 @@ public class enemyV1 : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Player" || collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Trampa") {
+        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Player" || collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Trampa" || collision.gameObject.tag == "Cofre") {
             direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
             hayQueGirar = true;
         }

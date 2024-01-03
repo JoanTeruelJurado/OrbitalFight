@@ -15,7 +15,7 @@ public class enemyV2 : MonoBehaviour
     private int liveMax = 50;
     private bool armorActive = true;
     private bool hayQueGirar = false;
-
+    [SerializeField] private GameObject _explosion;
     private FloatingHealthBar healthBar;
 
 
@@ -106,6 +106,7 @@ public class enemyV2 : MonoBehaviour
     private void die() {
         MovePlayer playerScript = target.GetComponent<MovePlayer>();
         playerScript.reproducirSonido("enemyDie");
+        Destroy(Instantiate(_explosion, transform.position + new Vector3(0.0f, 1.0f, 0.0f), Quaternion.identity), 2.0f);
         Destroy(gameObject);
     }
 
@@ -142,7 +143,7 @@ public class enemyV2 : MonoBehaviour
             healthBar.ShieldDestroyed();
             healthBar.updateHealthBar(live, liveMax);
             audioSource.PlayOneShot(fleshHitSound);
-            if(live < 0) { //muere
+            if(live <= 0) { //muere
                 live = 0;
                 die();
             }
@@ -152,7 +153,7 @@ public class enemyV2 : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Player" || collision.gameObject.tag == "Trampa") {
+        if(collision.gameObject.tag == "Entorno" || collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Player" || collision.gameObject.tag == "Trampa" || collision.gameObject.tag == "Cofre") {
             direccionDerecha = !direccionDerecha; // Cambia el signo de anglePerStep
             hayQueGirar = true;
         }

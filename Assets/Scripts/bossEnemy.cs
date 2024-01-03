@@ -72,6 +72,9 @@ public class bossEnemy : MonoBehaviour
     public Animator _animator;
     private bool isWalking = false;
 
+    //particulas
+    [SerializeField] private ParticleSystem _flamethrowerfire;
+
     //calcular distancia player
     public GameObject delante;
     public GameObject detras;
@@ -79,9 +82,11 @@ public class bossEnemy : MonoBehaviour
     //animación entrada
     private bool isAnimacionEntrada = true;
     private Rigidbody miRigidbody;
-
+    private bool isDead = false;
     void Start()
     {
+        _flamethrowerfire.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        isDead = false;
         speed = 40f;
         rutina = 0;
         timer = 0f;
@@ -92,6 +97,7 @@ public class bossEnemy : MonoBehaviour
 
     void Update()
     {
+        if (isDead) { return; }
         if(mismaAltura()) {
             if(isAnimacionEntrada) {
                 //block player
@@ -198,6 +204,7 @@ public class bossEnemy : MonoBehaviour
                         }
                         if (timerDisparandoFuego > timerDisparandoFuegoMax)
                         {
+                            _flamethrowerfire.Stop(true, ParticleSystemStopBehavior.StopEmitting);
                             timerDisparandoFuego = 0f;
                             timeEntreFuego = 0f;
                             disparandoFuego = false;
@@ -273,14 +280,19 @@ public class bossEnemy : MonoBehaviour
         return null;
     }
 
+    public bool GetisDead() { return isDead;  }
+
     private void die()
     {
+        isDead = true;
         _gameController.Setbosskilled();
 
         MovePlayer playerScript = target.GetComponent<MovePlayer>();
         playerScript.reproducirSonido("victory");
-
-        Destroy(gameObject);
+        _animator.SetTrigger("isDead");
+        disparandoFuego = false;
+        lanzandoCortes = false;
+        _MovementaudioSource.Pause();
     }
 
     public void respawn()
@@ -310,7 +322,7 @@ public class bossEnemy : MonoBehaviour
             if (live < 0)
             { //muere
                 live = 0;
-                die();
+                if (!isDead) die();
             }
         }
 
@@ -350,8 +362,8 @@ public class bossEnemy : MonoBehaviour
     {
         if(_MovementaudioSource.isPlaying) _MovementaudioSource.Pause();
         if (!audioSource.isPlaying) audioSource.PlayOneShot(flamethrower);
-       
-        
+
+        _flamethrowerfire.Play(true);
         GameObject nuevoFireObject = Instantiate(fire, gun.transform.position, Quaternion.identity);
         // 'miraDerecha' es un atributo del componente 'bulletScript'
         fireScript fueguito = nuevoFireObject.GetComponent<fireScript>();
@@ -364,6 +376,7 @@ public class bossEnemy : MonoBehaviour
         int pos = Random.Range(0, 4) + 1;
         Vector3 position = new Vector3(0f, 0f, 0f);
         bool derecha = false;
+
         switch (pos)
         {
             case (1):
@@ -387,6 +400,7 @@ public class bossEnemy : MonoBehaviour
         playerScript.reproducirSonido("corteBossSound");
         //audioSource.PlayOneShot(corteSound);
         GameObject nuevoCorteObject = Instantiate(corte, position, Quaternion.identity);
+        if (!derecha) nuevoCorteObject.transform.localScale = new Vector3(-1f, 1f, 1f);
         // 'miraDerecha' es un atributo del componente 'bulletScript'
         bulletScript corteLanzado = nuevoCorteObject.GetComponent<bulletScript>();
         corteLanzado.miraDerecha = derecha;
