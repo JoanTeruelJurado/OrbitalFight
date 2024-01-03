@@ -534,7 +534,7 @@ public class MovePlayer : MonoBehaviour
             }
             else //pistola
             {
-                AudioSource.PlayClipAtPoint(blasterShot, transform.position, 0.5f);
+                AudioSource.PlayClipAtPoint(blasterShot, transform.position, 1f);
                 nuevaBalaObject = Instantiate(balaPistola, puntoDisparo.transform.position, Quaternion.identity);
                 _muzzleflash.Play(true);
                 --municionPistolaCargadorAct;
