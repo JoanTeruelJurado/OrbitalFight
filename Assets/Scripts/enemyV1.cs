@@ -110,7 +110,7 @@ public class enemyV1 : MonoBehaviour
             healthBar.ShieldDestroyed();
             healthBar.updateHealthBar(live, liveMax);
             audioSource.PlayOneShot(fleshHitSound);
-            if(live < 0) { //muere
+            if(live <= 0) { //muere
                 live = 0;
                 die();
             }
