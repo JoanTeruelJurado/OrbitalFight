@@ -106,7 +106,7 @@ public class enemyV2 : MonoBehaviour
     private void die() {
         MovePlayer playerScript = target.GetComponent<MovePlayer>();
         playerScript.reproducirSonido("enemyDie");
-        Instantiate(_explosion, transform.position, Quaternion.identity);
+        Destroy(Instantiate(_explosion, transform.position + new Vector3(0.0f, 1.0f, 0.0f), Quaternion.identity), 2.0f);
         Destroy(gameObject);
     }
 

@@ -8,7 +8,8 @@ public class MovePlayer : MonoBehaviour
     public Animator _animator;
     //
     [SerializeField] private ParticleSystem _dashtrail;
-    [SerializeField] private GameObject _muzzleflash;
+    [SerializeField] private ParticleSystem _muzzleflash;
+    [SerializeField] private ParticleSystem _electricflash;
 
     public GameController _gameController;
     public bossEnemy _bossEnemy;
@@ -113,7 +114,8 @@ public class MovePlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _muzzleflash.GetComponent<ParticleSystem>().Pause();
+        _electricflash.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        _muzzleflash.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         _dashtrail.Pause();
         audioSource = GetComponent<AudioSource>();
         if (isDashing)
@@ -518,18 +520,18 @@ public class MovePlayer : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(rifleShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaFusil, puntoDisparo.transform.position, Quaternion.identity);
-                _muzzleflash.GetComponent<ParticleSystem>().Play();
+                _muzzleflash.Play(true);
                 --municionFusilCargadorAct;
                 if (municionFusilCargadorAct == 0)
                 {
                     Recarga();
                 }
             }
-            else
+            else //pistola
             {
                 AudioSource.PlayClipAtPoint(blasterShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaPistola, puntoDisparo.transform.position, Quaternion.identity);
-                _muzzleflash.GetComponent<ParticleSystem>().Play();
+                _electricflash.Play(true);
                 --municionPistolaCargadorAct;
                 if (municionPistolaCargadorAct == 0) Recarga();
             }
