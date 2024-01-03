@@ -28,8 +28,10 @@ public class enemyV1 : MonoBehaviour
 
     //fix bug
     private Vector3 startPosition;
+    private Quaternion startRotation;
     private float startDistance;
     private Vector3 preveviousPosition;
+    private int contadorVecesGirado;
 
     void Start()
     {
@@ -44,8 +46,9 @@ public class enemyV1 : MonoBehaviour
 
         center = new Vector3(0f,transform.position.y,0f);
         startPosition = transform.position;
-        startPosition.y = startPosition.y;
+        startRotation = transform.rotation;
         startDistance = Vector3.Distance(transform.position, center);
+        contadorVecesGirado = 0;
     }
 
 
@@ -61,10 +64,14 @@ public class enemyV1 : MonoBehaviour
             escalaActual.z *= -1;
             transform.localScale = escalaActual;
             hayQueGirar = false;
+            ++contadorVecesGirado;
         }
 
         if(Vector3.Distance(transform.position, center) - 1f > startDistance) {
             transform.position = startPosition;
+            transform.rotation = startRotation;
+            print(contadorVecesGirado);
+            if(contadorVecesGirado%2 == 0) hayQueGirar=true;
         }
 
         destruirSiMuyAbajo();
