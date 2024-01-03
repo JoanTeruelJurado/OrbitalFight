@@ -31,6 +31,7 @@ public class enemyV2 : MonoBehaviour
     public AudioClip armorHitSound;
     public AudioClip armorCrashSound;
     public AudioClip fleshHitSound;
+    public AudioClip disparo;
 
     //calcular distancia player
     public GameObject delante;
@@ -91,6 +92,7 @@ public class enemyV2 : MonoBehaviour
 
     private void Disparar() {
         if(mismaAltura()) {
+            audioSource.PlayOneShot(disparo);
             GameObject nuevaBalaObject = Instantiate(bala, transform.position, Quaternion.identity);
             Physics.IgnoreCollision(nuevaBalaObject.GetComponent<Collider>(), GetComponent<Collider>());
             bulletScript balita = nuevaBalaObject.GetComponent<bulletScript>();
