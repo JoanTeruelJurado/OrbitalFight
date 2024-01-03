@@ -116,7 +116,7 @@ public class MovePlayer : MonoBehaviour
     {
         _electricflash.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         _muzzleflash.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-        _dashtrail.Pause();
+        _dashtrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         audioSource = GetComponent<AudioSource>();
         if (isDashing)
         {
