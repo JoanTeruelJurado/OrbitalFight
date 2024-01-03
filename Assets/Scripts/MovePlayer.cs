@@ -8,6 +8,7 @@ public class MovePlayer : MonoBehaviour
     public Animator _animator;
     //
     [SerializeField] private ParticleSystem _dashtrail;
+    [SerializeField] private GameObject _muzzleflash;
 
     public GameController _gameController;
     public bossEnemy _bossEnemy;
@@ -516,6 +517,7 @@ public class MovePlayer : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(rifleShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaFusil, puntoDisparo.transform.position, Quaternion.identity);
+               // Instantiate(_muzzleflash, puntoDisparo.transform.position, Quaternion.identity);
                 --municionFusilCargadorAct;
                 if (municionFusilCargadorAct == 0)
                 {
@@ -526,6 +528,7 @@ public class MovePlayer : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(blasterShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaPistola, puntoDisparo.transform.position, Quaternion.identity);
+                //Instantiate(_muzzleflash, puntoDisparo.transform.position, Quaternion.identity);
                 --municionPistolaCargadorAct;
                 if (municionPistolaCargadorAct == 0) Recarga();
             }

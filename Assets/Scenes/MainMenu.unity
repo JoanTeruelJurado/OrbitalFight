@@ -1434,8 +1434,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Player movement:\nTo Reload use:\nto shoot use:\nto use portals or chests:\nto
-    switch gun use:\nTo pause:\ngod mode: \nmore ammo: "
+  m_text: "Player movement:\nReload:\nshoot:\nuse portals or chests:\nto switch gun:\npause:\ngod
+    mode: \nmore ammo: "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}

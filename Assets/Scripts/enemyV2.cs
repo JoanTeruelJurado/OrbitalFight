@@ -15,7 +15,7 @@ public class enemyV2 : MonoBehaviour
     private int liveMax = 50;
     private bool armorActive = true;
     private bool hayQueGirar = false;
-
+    [SerializeField] private GameObject _explosion;
     private FloatingHealthBar healthBar;
 
 
@@ -106,6 +106,7 @@ public class enemyV2 : MonoBehaviour
     private void die() {
         MovePlayer playerScript = target.GetComponent<MovePlayer>();
         playerScript.reproducirSonido("enemyDie");
+        Instantiate(_explosion, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 

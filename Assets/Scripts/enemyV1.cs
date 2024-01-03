@@ -17,7 +17,7 @@ public class enemyV1 : MonoBehaviour
     private bool hayQueGirar = false; 
     private GameObject target;   
     private FloatingHealthBar healthBar;
-
+    [SerializeField] private GameObject _explosion;
 
     //sounds
     private AudioSource audioSource;
@@ -62,6 +62,7 @@ public class enemyV1 : MonoBehaviour
     private void die() {
         MovePlayer playerScript = target.GetComponent<MovePlayer>();
         playerScript.reproducirSonido("enemyDie");
+        Instantiate(_explosion, transform.position + new Vector3(0.0f, 1.0f, 0.0f), Quaternion.identity);
         Destroy(gameObject);
     }
 
