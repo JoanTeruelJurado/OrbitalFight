@@ -681,7 +681,7 @@ public class MovePlayer : MonoBehaviour
             }
         }
         else {
-            barraPressingJ.updateHealthBar(0f, tiempoRequeridoJ);
+            barraPressingJ.updateHealthBar(tiempoPulsandoJ, tiempoRequeridoJ);
            // tiempoPulsandoJ = 0.0f;
         }
     }
