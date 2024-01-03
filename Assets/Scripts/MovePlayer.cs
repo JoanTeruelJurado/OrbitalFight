@@ -415,10 +415,15 @@ public class MovePlayer : MonoBehaviour
         {
             _dashtrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             isDashing = false;
-            immortal = false;
+            //immortal = false;
+            Invoke("desactivarImmortal", 0.2f);
             //se empieza a contar el cooldown
             dashingCooldownTimer = 0f;
         }
+    }
+
+    private void desactivarImmortal() {
+        immortal = false;
     }
 
     private void SubirDeNivel()
@@ -693,8 +698,9 @@ public class MovePlayer : MonoBehaviour
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            print("Hit");
-            lessLive(30);
+            if(!immortal) {
+                lessLive(30);
+            }
         }
     }
 
