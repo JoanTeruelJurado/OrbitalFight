@@ -113,6 +113,7 @@ public class MovePlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _muzzleflash.GetComponent<ParticleSystem>().Pause();
         _dashtrail.Pause();
         audioSource = GetComponent<AudioSource>();
         if (isDashing)
@@ -517,7 +518,7 @@ public class MovePlayer : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(rifleShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaFusil, puntoDisparo.transform.position, Quaternion.identity);
-               // Instantiate(_muzzleflash, puntoDisparo.transform.position, Quaternion.identity);
+                _muzzleflash.GetComponent<ParticleSystem>().Play();
                 --municionFusilCargadorAct;
                 if (municionFusilCargadorAct == 0)
                 {
@@ -528,7 +529,7 @@ public class MovePlayer : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(blasterShot, transform.position, 0.5f);
                 nuevaBalaObject = Instantiate(balaPistola, puntoDisparo.transform.position, Quaternion.identity);
-                //Instantiate(_muzzleflash, puntoDisparo.transform.position, Quaternion.identity);
+                _muzzleflash.GetComponent<ParticleSystem>().Play();
                 --municionPistolaCargadorAct;
                 if (municionPistolaCargadorAct == 0) Recarga();
             }
