@@ -2969,7 +2969,7 @@ PrefabInstance:
     - target: {fileID: 5004241060995948609, guid: 2eeb7d6d812d2624180f2795c1990910, type: 3}
       propertyPath: GunspriteArray.Array.data[1]
       value: 
-      objectReference: {fileID: 21300000, guid: e0537dd4039bd3845a22f9fb6fa87829, type: 3}
+      objectReference: {fileID: 21300000, guid: 86ca588caf3afc7489e4e7611996d41c, type: 3}
     - target: {fileID: 5144340229568126846, guid: 2eeb7d6d812d2624180f2795c1990910, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
