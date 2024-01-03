@@ -8,6 +8,7 @@ public class enemyV1 : MonoBehaviour
     private Animator ani;
     private bool followingPlayer;
     private bool attacking;
+    private Vector3 center;
     private bool direccionDerecha;
     private int shield = 100;
     private int shieldMax = 100;
@@ -25,6 +26,11 @@ public class enemyV1 : MonoBehaviour
     public AudioClip armorCrashSound;
     public AudioClip fleshHitSound;
 
+    //fix bug
+    private Vector3 startPosition;
+    private float startDistance;
+    private Vector3 preveviousPosition;
+
     void Start()
     {
         healthBar = GetComponentInChildren<FloatingHealthBar>();
@@ -35,12 +41,17 @@ public class enemyV1 : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>();
         target = GameObject.Find("Player");
+
+        center = new Vector3(0f,transform.position.y,0f);
+        startPosition = transform.position;
+        startPosition.y = startPosition.y;
+        startDistance = Vector3.Distance(transform.position, center);
     }
 
 
     void Update()
     {
-        Vector3 center = new Vector3(0f,transform.position.y,0f);
+        //Vector3 center = new Vector3(0f,transform.position.y,0f);
         float angle = speed * Time.deltaTime;
         if(direccionDerecha) angle *= -1f;
         transform.RotateAround(center, Vector3.up, angle);
@@ -50,6 +61,10 @@ public class enemyV1 : MonoBehaviour
             escalaActual.z *= -1;
             transform.localScale = escalaActual;
             hayQueGirar = false;
+        }
+
+        if(Vector3.Distance(transform.position, center) - 1f > startDistance) {
+            transform.position = startPosition;
         }
 
         destruirSiMuyAbajo();
