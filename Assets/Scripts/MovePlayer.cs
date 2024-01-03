@@ -728,6 +728,7 @@ public class MovePlayer : MonoBehaviour
         }
         else if (sonido == "victory")
         {
+            musicAudioSource.clip = null;
             audioSource.PlayOneShot(victory);
         }
         else if(sonido == "caidaBoss") {
@@ -763,7 +764,7 @@ public class MovePlayer : MonoBehaviour
         if (!isWalking && ADpressed) { _animator.SetBool("isWalking", true); }
         if (isWalking && !ADpressed) { _animator.SetBool("isWalking", false); }
         if(live == -100 && AnimatorIsPlaying("Die")) { _animator.SetBool("isDead", false); live = -200; }
-        else if (live <= 0 && live > -100) { _animator.SetBool("isDead", true);  live = -100; _gameController.Setplayerkilled(); audioSource.PlayOneShot(gameOver); }
+        else if (live <= 0 && live > -100) { _animator.SetBool("isDead", true);  live = -100; _gameController.Setplayerkilled(); musicAudioSource.clip = null; audioSource.PlayOneShot(gameOver); }
 
         if (isAlreadyDashing && !isDashing) { _animator.SetBool("isDashing", false); }
         if (!isAlreadyDashing && isDashing) { _animator.SetBool("isDashing", true); }
