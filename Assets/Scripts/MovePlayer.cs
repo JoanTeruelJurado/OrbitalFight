@@ -439,7 +439,7 @@ public class MovePlayer : MonoBehaviour
     {
         if (immortalityTime == -1f && !godMode)
         { //no está en tiempo de immortalidad
-            audioSource.PlayOneShot(sparks);
+            if (live > 0) audioSource.PlayOneShot(sparks);
             shield -= damage;
             _gameController.SetShield(shield);
             if (shield < 0)
@@ -772,7 +772,6 @@ public class MovePlayer : MonoBehaviour
             _animator.ResetTrigger("isReloading");
             _animator.SetInteger("Firing", 0);
         }
-
     }
 
     private bool AnimatorIsPlaying()

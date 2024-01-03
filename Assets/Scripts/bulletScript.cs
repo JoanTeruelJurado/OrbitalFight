@@ -13,6 +13,8 @@ public class bulletScript : MonoBehaviour
     private Vector3 center;
     private GameObject player;
 
+    [SerializeField] private GameObject _explosion;
+
     void Start() {
         float tiempoVidaMax = 7f;
         if(equipedGun == "Fusil") {
@@ -79,6 +81,11 @@ public class bulletScript : MonoBehaviour
                 playerScript.reproducirSonido("destroyBullet");
                 Destroy(gameObject);
             }
+        }
+    }
+    void OnDestroy() {
+        if (equipedGun == "Corte") {
+            Destroy(Instantiate(_explosion, transform.position + new Vector3(0.0f, 1.0f, 0.0f), Quaternion.identity), 2.0f);
         }
     }
 
