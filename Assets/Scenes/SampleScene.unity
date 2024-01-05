@@ -10068,6 +10068,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6751480232655099205, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
+      propertyPath: m_text
+      value: Universal Pain Collector (UPC)
+      objectReference: {fileID: 0}
     - target: {fileID: 7016012370432813592, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.463
