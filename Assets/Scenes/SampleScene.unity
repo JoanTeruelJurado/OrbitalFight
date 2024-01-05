@@ -4672,7 +4672,7 @@ MonoBehaviour:
   reloadPistol: {fileID: 8300000, guid: 87a915275f3542c448a7edc05c9fb235, type: 3}
   changeSameHighRing: {fileID: 8300000, guid: 42404f0af0d322a4e9e671ead0aa8014, type: 3}
   changeTopHighRing: {fileID: 8300000, guid: 829bfa043e24a3a42a49b00e793bf27d, type: 3}
-  musicAudioSource: {fileID: 0}
+  musicAudioSource: {fileID: 1083843997}
   destroyBullet: {fileID: 8300000, guid: 72d50f94636c04743b105ed7eef0f30a, type: 3}
   enemyDie: {fileID: 8300000, guid: b523c3e03b4c7614a98ee0a1ef19df1f, type: 3}
   sparks: {fileID: 8300000, guid: dba621284f4f575439f6ccf39b84e99f, type: 3}
@@ -10067,6 +10067,10 @@ PrefabInstance:
     - target: {fileID: 6578435570428632062, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6751480232655099205, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
+      propertyPath: m_text
+      value: Universal Pain Collector (UPC)
       objectReference: {fileID: 0}
     - target: {fileID: 7016012370432813592, guid: 7406fa585527a974e93b5a11ac9dffc0, type: 3}
       propertyPath: m_LocalPosition.x

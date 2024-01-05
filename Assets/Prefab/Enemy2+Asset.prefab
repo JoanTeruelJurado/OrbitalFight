@@ -388,9 +388,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55bd3fc5cfb9a964bb9e4fdc4e46de6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _explosion: {fileID: 0}
   bala: {fileID: 2268661865022488080, guid: b41a782e9e3672b42b330909ec25ca3d, type: 3}
   armorHitSound: {fileID: 8300000, guid: 61fb454f20a52424e9768dc1177a0375, type: 3}
   armorCrashSound: {fileID: 8300000, guid: 570b5f1d6375e13409a8df8288e8c825, type: 3}
   fleshHitSound: {fileID: 8300000, guid: c771e3696e2c8064f9ed54a2857cce32, type: 3}
+  disparo: {fileID: 8300000, guid: 3defac4c421ef3841a8bd16924d6ad66, type: 3}
   delante: {fileID: 5154644512354959322}
   detras: {fileID: 4100815091414267791}
